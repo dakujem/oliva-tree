@@ -4,7 +4,7 @@
 namespace Oliva\Utils\Tree\Node;
 
 use IteratorAggregate;
-use Oliva\Tree\TreeIterator;
+use Oliva\Utils\Tree\Iterator\TreeIterator;
 
 /**
  * The base INode implementation for tree structures.
@@ -180,7 +180,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Returns the index of the child within the children array.
 	 *
 	 *
-	 * @param \Oliva\Tree\INode $node
+	 * @param INode $node
 	 * @return int|FALSE returns FALSE if the node is not a child of this node.
 	 */
 	public function getChildIndex(INode $node)
@@ -211,7 +211,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * 
 	 * @param string|NULL $recursion
-	 * @return \Oliva\Tree\TreeIterator
+	 * @return TreeIterator
 	 */
 	public function getIterator($recursion = TreeIterator::NON_RECURSIVE)
 	{
