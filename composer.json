@@ -1,0 +1,19 @@
+{
+  "name": "oliva/utils/tree",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Andrej Rypak",
+      "email": "xrypak@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "nette/utils": "~2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Oliva\\Utils\\Tree\\": "src/"
+    }
+  }
+}
