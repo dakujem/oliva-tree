@@ -1,5 +1,5 @@
 {
-	"name": "oliva/utils/tree",
+	"name": "oliva/utils-tree",
 	"type": "library",
 	"authors": [
 		{
@@ -10,7 +10,7 @@
 	"repositories": [
 		{
 			"type": "vcs",
-			"url": "https://github.com/xr/php-oliva-utils-tree"
+			"url": "https://github.com/xr/oliva-utils-tree"
 		}
 	],
 	"require": {
