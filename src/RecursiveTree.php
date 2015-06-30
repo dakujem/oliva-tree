@@ -4,12 +4,13 @@
 namespace Oliva\Utils\Tree;
 
 use Nette\InvalidStateException;
+use Oliva\Utils\Tree\Node\Node;
 
 
 /**
  * RecursiveTree.
  *
- * 
+ *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class RecursiveTree extends Tree

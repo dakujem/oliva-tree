@@ -3,6 +3,8 @@
 
 namespace Oliva\Utils\Tree;
 
+use Oliva\Utils\Tree\Node\Node;
+
 
 /**
  * PathTree.
@@ -19,7 +21,7 @@ class PathTree extends Tree
 
 	/**
 	 * The number of characters per each level of tree.
-	 * @var int 
+	 * @var int
 	 */
 	public $charsPerLevel = 3;
 
