@@ -15,8 +15,8 @@ interface INode
 	 * Set the node's direct parent.
 	 *
 	 *
-	 * @param \Oliva\Tree\INode $node
-	 * @return \Oliva\Tree\INode fluent
+	 * @param INode $node
+	 * @return INode fluent
 	 */
 	public function setParent(self $node = NULL);
 
@@ -25,7 +25,7 @@ interface INode
 	 * Returns the node's direct parent.
 	 *
 	 *
-	 * @return \Oliva\Tree\INode
+	 * @return INode
 	 */
 	public function getParent();
 
@@ -35,7 +35,7 @@ interface INode
 	 *
 	 *
 	 * @param scalar $index
-	 * @return \Oliva\Tree\INode
+	 * @return INode
 	 */
 	public function getChild($index);
 
@@ -44,7 +44,7 @@ interface INode
 	 * Returns the index of the child within the children array.
 	 *
 	 *
-	 * @param \Oliva\Tree\INode $node
+	 * @param INode $node
 	 * @return int|FALSE returns FALSE if the node is not a child of this node.
 	 */
 	public function getChildIndex(self $node);
@@ -66,9 +66,9 @@ interface INode
 	 * This node becomes the direct parent of the inserted child node.
 	 *
 	 *
-	 * @param \Oliva\Tree\INode $node
+	 * @param INode $node
 	 * @param scalar $index = NULL index
-	 * @return \Oliva\Tree\INode the new/inserted node
+	 * @return INode the new/inserted node
 	 */
 	public function addChild(self $node, $index = NULL);
 
@@ -78,7 +78,7 @@ interface INode
 	 *
 	 *
 	 * @param type $index
-	 * @return \Oliva\Tree\INode
+	 * @return INode
 	 */
 	public function removeChild($index);
 
@@ -87,7 +87,7 @@ interface INode
 	 * Removes all the node's children.
 	 *
 	 *
-	 * @return \Oliva\Tree\INode fluent
+	 * @return INode fluent
 	 */
 	public function removeChildren();
 

@@ -49,7 +49,7 @@ class Node extends NodeBase implements ArrayAccess
 	 *
 	 *
 	 * @param mixed $data
-	 * @return \Oliva\Tree\Node
+	 * @return Node
 	 */
 	public function setObject($data)
 	{

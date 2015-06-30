@@ -147,7 +147,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * The node becomes a root node.
 	 *
 	 *
-	 * @return \Oliva\Tree\NodeBase fluent
+	 * @return NodeBase fluent
 	 */
 	public function detach()
 	{
@@ -165,7 +165,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * 
 	 * @param scalar $index
-	 * @return \Oliva\Tree\NodeBase|FALSE
+	 * @return NodeBase|FALSE
 	 */
 	public function getChild($index)
 	{
@@ -233,7 +233,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * 
 	 *
 	 * @param array $children
-	 * @return \Oliva\Tree\NodeBase fluent
+	 * @return NodeBase fluent
 	 */
 	public function addChildren(array $children)
 	{
@@ -251,9 +251,9 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * This node becomes the direct parent of the inserted child node.
 	 *
 	 *
-	 * @param \Oliva\Tree\INode $node
+	 * @param INode $node
 	 * @param scalar $index = NULL index
-	 * @return \Oliva\Tree\NodeBase the new/inserted node
+	 * @return NodeBase the new/inserted node
 	 */
 	public function addChild(INode $node, $index = NULL)
 	{
@@ -278,8 +278,8 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * @deprecated
 	 *
-	 * @param \Oliva\Tree\INode $node
-	 * @return \Oliva\Tree\NodeBase the input/inserted node
+	 * @param INode $node
+	 * @return NodeBase the input/inserted node
 	 */
 	public function setChild(INode $node, $index)
 	{
@@ -292,7 +292,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * 
 	 *
 	 * @param type $index
-	 * @return \Oliva\Tree\NodeBase
+	 * @return NodeBase
 	 */
 	public function removeChild($index)
 	{
@@ -307,7 +307,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Removes all the node's children.
 	 *
 	 *
-	 * @return \Oliva\Tree\NodeBase fluent
+	 * @return NodeBase fluent
 	 */
 	public function removeChildren()
 	{

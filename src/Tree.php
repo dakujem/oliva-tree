@@ -5,10 +5,14 @@ namespace Oliva\Utils\Tree;
 
 use Exception,
 	Iterator,
-	IteratorAggregate;
+	IteratorAggregate,
+	Traversable;
 use Nette\InvalidStateException;
 use Oliva\Utils\Tree\Node\INode,
-	Oliva\Utils\Tree\Node\NodeBase;
+	Oliva\Utils\Tree\Node\NodeBase,
+	Oliva\Utils\Tree\Iterator\TreeIterator,
+	Oliva\Utils\Tree\Iterator\TreeFilterIterator,
+	Oliva\Utils\Tree\Iterator\TreeCallbackFilterIterator;
 
 
 /**
@@ -17,7 +21,7 @@ use Oliva\Utils\Tree\Node\INode,
  * 
  * @author Andrej Rypak <xrypak@gmail.com>
  */
-class Tree implements ITree, \IteratorAggregate
+class Tree implements ITree, IteratorAggregate
 {
 	/**
 	 *
@@ -38,8 +42,8 @@ class Tree implements ITree, \IteratorAggregate
 	 * Set the root node.
 	 * 
 	 *
-	 * @param \Oliva\Tree\INode $root
-	 * @return \Oliva\Tree\Tree
+	 * @param INode $root
+	 * @return Tree
 	 */
 	public function setRoot(INode $root)
 	{
@@ -52,7 +56,7 @@ class Tree implements ITree, \IteratorAggregate
 	 * Return the root node.
 	 *
 	 *
-	 * @return \Oliva\Tree\INode
+	 * @return INode
 	 */
 	public function getRoot()
 	{
@@ -67,7 +71,7 @@ class Tree implements ITree, \IteratorAggregate
 	 * 
 	 *
 	 * @param string|NULL $recursion
-	 * @return \Traversable
+	 * @return Traversable
 	 */
 	public function getIterator($recursion = TreeIterator::BREADTH_FIRST_RECURSION)
 	{
@@ -93,7 +97,7 @@ class Tree implements ITree, \IteratorAggregate
 	 * @param array $conditions
 	 * @param string $mode
 	 * @param string|NULL $recursion
-	 * @return \Oliva\Tree\TreeFilterIterator
+	 * @return TreeFilterIterator
 	 */
 	public function getFilterIterator(array $conditions, $mode = TreeFilterIterator::MODE_AND, $recursion = TreeIterator::BREADTH_FIRST_RECURSION)
 	{
@@ -114,10 +118,10 @@ class Tree implements ITree, \IteratorAggregate
 	 * 	});
 	 *
 	 *
-	 * @param \Oliva\Tree\callable $filteringCallback
+	 * @param callable $filteringCallback
 	 * @param string|NULL $recursion
 	 * @param ...
-	 * @return \Oliva\Tree\TreeFilteringCallbackIterator
+	 * @return TreeCallbackFilterIterator
 	 */
 	public function getCallbackFilterIterator(callable $filteringCallback, $recursion = TreeIterator::BREADTH_FIRST_RECURSION, ...$params)
 	{
