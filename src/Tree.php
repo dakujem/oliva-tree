@@ -11,6 +11,7 @@ use Nette\InvalidStateException;
 use Oliva\Utils\Tree\Node\INode,
 	Oliva\Utils\Tree\Node\NodeBase,
 	Oliva\Utils\Tree\Iterator\TreeIterator,
+	Oliva\Utils\Tree\Iterator\TreeSimpleFilterIterator,
 	Oliva\Utils\Tree\Iterator\TreeFilterIterator,
 	Oliva\Utils\Tree\Iterator\TreeCallbackFilterIterator;
 
