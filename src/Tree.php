@@ -3,8 +3,7 @@
 
 namespace Oliva\Utils\Tree;
 
-use LogicException,
-	RuntimeException,
+use RuntimeException,
 	Iterator,
 	IteratorAggregate,
 	Traversable;
@@ -18,6 +17,8 @@ use Oliva\Utils\Tree\Node\INode,
 
 /**
  * Tree.
+ *
+ * A basic tree. Supports searching, filtering (via iterators) and linear transformations.
  *
  * 
  * @author Andrej Rypak <xrypak@gmail.com>
@@ -76,15 +77,26 @@ class Tree implements ITree, IteratorAggregate
 	 */
 	public function getIterator($recursion = TreeIterator::BREADTH_FIRST_RECURSION)
 	{
-		if ($this->root instanceof NodeBase) {
-			return $this->root->getIterator($recursion);
-		} elseif ($this->root instanceof IteratorAggregate) {
-			throw new LogicException(' nie som si isty, ci je toto mozne podporovat... ');
-			return $this->root->getIterator();
-		} elseif ($this->root instanceof Iterator) {
-			throw new LogicException(' nie som si isty, ci je toto mozne podporovat... ');
-			return $this->root;
+		$root = $this->getRoot();
+
+		if ($root instanceof NodeBase) {
+
+			// if the root is a NodeBase implementation, we can use it's built in iteration support
+			return $root->getIterator($recursion);
 		}
+
+		if ($root instanceof IteratorAggregate) {
+
+			//NOTE: I'm not completely sure this behaviour can be supported. Are we losing the $recursion parameter in the underlying implementation?
+			return $root->getIterator($recursion);
+		}
+
+		if ($root instanceof Iterator) {
+
+			//NOTE: I'm not completely sure this behaviour can be supported. We are losing the $recursion parameter.
+			return $root;
+		}
+
 		throw new RuntimeException('Cannot retrieve an iterator for the root node. To use this feature, the root node has to implement getIterator() method or be an iterator itself. This can be achieved by descending the node from NodeBase or implement IteratorAggregate or Iterator intefaces.');
 	}
 
@@ -92,7 +104,8 @@ class Tree implements ITree, IteratorAggregate
 	/**
 	 * Returns iterator with conditions to compare nodes against.
 	 *
-	 * $i = $tree->getFilterIterator(['id' => 5, 'position' => '002003001'], TreeFilterIterator::MODE_AND);
+	 * $i = $tree->getFilterIterator(['id' => 5, 'position' => '002003001'], TreeFilterIterator::MODE_AND, TreeFilterIterator::MODE_OR); // the default filtering modes
+	 * $i = $tree->getFilterIterator(['id' => [5, 6, 145], 'colour' => 'red']);
 	 *
 	 *
 	 * @param array $conditions
@@ -126,7 +139,7 @@ class Tree implements ITree, IteratorAggregate
 	 */
 	public function getCallbackFilterIterator(callable $filteringCallback, $recursion = TreeIterator::BREADTH_FIRST_RECURSION, ...$params)
 	{
-		return new TreeCallbackFilterIterator($this->root->getIterator($recursion), $filteringCallback, ...$params);
+		return new TreeCallbackFilterIterator($this->getIterator($recursion), $filteringCallback, ...$params);
 	}
 
 
@@ -141,7 +154,7 @@ class Tree implements ITree, IteratorAggregate
 	 */
 	public function find($key, $val, $recursion = TreeIterator::BREADTH_FIRST_RECURSION)
 	{
-		foreach (new TreeSimpleFilterIterator($this->root->getIterator($recursion), $key, $val) as $node) {
+		foreach (new TreeSimpleFilterIterator($this->getIterator($recursion), $key, $val) as $node) {
 			return $node;
 		}
 		return NULL;

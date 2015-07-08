@@ -1,5 +1,5 @@
-# php-tree-utils
-Simple utility for handling tree structures in PHP (Nette).
+# Oliva Tree Utils for PHP
+Simple utility for handling tree structures in PHP.
 
 Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on tree structures.
 
@@ -139,8 +139,11 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 
 ## TODO
 
-* finish Tree::getIterator() -> 0.3
 * materialized path tree (id variant) -> 0.4
 * allow users to create own classes when using tree's transform() method -> 0.5
 * write tests -> 0.6
 * finalize documentation -> release 1.0
+
+## Notes
+
+* this code *could* be rewritten to be used with PHP 5.3. But why bother? Let's force the newer stuff :)
