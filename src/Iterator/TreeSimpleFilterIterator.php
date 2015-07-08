@@ -3,8 +3,8 @@
 
 namespace Oliva\Utils\Tree\Iterator;
 
-use FilterIterator;
-use Nette\MemberAccessException;
+use Exception,
+	FilterIterator;
 
 
 /**
@@ -15,8 +15,8 @@ use Nette\MemberAccessException;
  */
 class TreeSimpleFilterIterator extends FilterIterator
 {
-	private $key;
-	private $value;
+	protected $key;
+	protected $value;
 
 
 	public function __construct(TreeIterator $iterator, $key, $value)
@@ -32,7 +32,7 @@ class TreeSimpleFilterIterator extends FilterIterator
 		$node = $this->getInnerIterator()->current();
 		try {
 			return $node->{$this->key} === $this->value;
-		} catch (MemberAccessException $e) {
+		} catch (Exception $e) {
 			return FALSE;
 		}
 	}

@@ -3,7 +3,6 @@
 
 namespace Oliva\Utils\Tree\Iterator;
 
-use Nette\Utils\Callback;
 use FilterIterator;
 
 
@@ -15,23 +14,23 @@ use FilterIterator;
  */
 class TreeCallbackFilterIterator extends FilterIterator
 {
-	private $filteringCallback = NULL;
-	private $params = NULL;
+	protected $filteringCallback = NULL;
+	protected $callbackParams = NULL;
 
 
 	public function __construct(TreeIterator $iterator, callable $filteringCallback, ...$params)
 	{
 		parent::__construct($iterator);
 		$this->filteringCallback = $filteringCallback;
-		$this->params = $params;
+		$this->callbackParams = $params;
 	}
 
 
 	public function accept()
 	{
-		return Callback::invokeArgs(
-						$this->filteringCallback, //
-						array_merge([$this->getInnerIterator()->current(), $this->getInnerIterator()->key()], !empty($this->params) ? $this->params : []) //
+		return call_user_func_array(
+				$this->filteringCallback, //
+				array_merge([$this->getInnerIterator()->current(), $this->getInnerIterator()->key()], !empty($this->callbackParams) ? $this->callbackParams : []) //
 		);
 	}
 

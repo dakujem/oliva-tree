@@ -3,8 +3,8 @@
 
 namespace Oliva\Utils\Tree\Iterator;
 
-use FilterIterator;
-use Nette\MemberAccessException;
+use Exception,
+	FilterIterator;
 
 
 /**
@@ -21,37 +21,50 @@ class TreeFilterIterator extends FilterIterator
 	const MODE_AND = 'and';
 	const MODE_OR = 'or';
 
-	private $filteringParams = NULL;
-	private $mode = self::MODE_AND;
+	protected $filteringConditions = NULL;
+	protected $outerConditionMode = self::MODE_AND;
+	protected $innerConditionMode = self::MODE_OR;
 
 
-	public function __construct(TreeIterator $iterator, array $filteringConditions, $mode)
+	public function __construct(TreeIterator $iterator, array $filteringConditions, $outerConditionMode = self::MODE_AND, $innerConditionMode = self::MODE_OR)
 	{
 		parent::__construct($iterator);
-		$this->filteringParams = $filteringConditions;
-		$this->mode = $mode === self::MODE_OR ? self::MODE_OR : self::MODE_AND;
+		$this->filteringConditions = $filteringConditions;
+		$this->outerConditionMode = $outerConditionMode === self::MODE_OR ? self::MODE_OR : self::MODE_AND;
+		$this->innerConditionMode = $innerConditionMode === self::MODE_AND ? self::MODE_AND : self::MODE_OR;
 	}
 
 
 	public function accept()
 	{
-		if (empty($this->filteringParams)) {
+		if (empty($this->filteringConditions)) {
 			return TRUE;
 		}
 		$node = $this->getInnerIterator()->current();
-		$accept = $this->mode === self::MODE_AND ? TRUE : FALSE;
-		foreach ($this->filteringParams as $param => $expectedValue) {
+		$accept = $this->outerConditionMode === self::MODE_AND ? TRUE : FALSE;
+
+
+		//TODO dorobit inner mode - moznost definovat viac hodnot pre jeden kluc
+		foreach ($this->filteringConditions as $param => $expectedValue) {
 			try {
 				$comparisonResult = $node->$param === $expectedValue;
-			} catch (MemberAccessException $e) {
+			} catch (Exception $e) {
 				$comparisonResult = FALSE;
 			}
-			$accept = $this->mode === self::MODE_AND ? $accept && $comparisonResult : $accept || $comparisonResult;
-			if ($this->mode === self::MODE_OR && $accept) {
+			$accept = $this->outerConditionMode === self::MODE_AND ? $accept && $comparisonResult : $accept || $comparisonResult;
+			if ($this->outerConditionMode === self::MODE_OR && $accept) {
 				break;
 			}
 		}
+
+
 		return $accept;
+	}
+
+
+	protected function walkConditions(array $conditions, $mode)
+	{
+
 	}
 
 }

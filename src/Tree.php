@@ -3,11 +3,11 @@
 
 namespace Oliva\Utils\Tree;
 
-use Exception,
+use LogicException,
+	RuntimeException,
 	Iterator,
 	IteratorAggregate,
 	Traversable;
-use Nette\InvalidStateException;
 use Oliva\Utils\Tree\Node\INode,
 	Oliva\Utils\Tree\Node\NodeBase,
 	Oliva\Utils\Tree\Iterator\TreeIterator,
@@ -79,13 +79,13 @@ class Tree implements ITree, IteratorAggregate
 		if ($this->root instanceof NodeBase) {
 			return $this->root->getIterator($recursion);
 		} elseif ($this->root instanceof IteratorAggregate) {
-			throw new Exception(' nie som si isty, ci je toto mozne podporovat... ');
+			throw new LogicException(' nie som si isty, ci je toto mozne podporovat... ');
 			return $this->root->getIterator();
 		} elseif ($this->root instanceof Iterator) {
-			throw new Exception(' nie som si isty, ci je toto mozne podporovat... ');
+			throw new LogicException(' nie som si isty, ci je toto mozne podporovat... ');
 			return $this->root;
 		}
-		throw new InvalidStateException('Cannot retrieve an iterator for the root node. To use this feature, the root node has to implement getIterator() method or be an iterator itself. This can be achieved by descending the node from NodeBase or implement IteratorAggregate or Iterator intefaces.');
+		throw new RuntimeException('Cannot retrieve an iterator for the root node. To use this feature, the root node has to implement getIterator() method or be an iterator itself. This can be achieved by descending the node from NodeBase or implement IteratorAggregate or Iterator intefaces.');
 	}
 
 
@@ -208,7 +208,7 @@ class Tree implements ITree, IteratorAggregate
 	}
 
 
-	private static function df(INode $node)
+	protected static function df(INode $node)
 	{
 		$list = array($node);
 		foreach ($node->getChildren() as $child) {
@@ -218,7 +218,7 @@ class Tree implements ITree, IteratorAggregate
 	}
 
 
-	private static function bf(INode $node)
+	protected static function bf(INode $node)
 	{
 		$list = $node->getChildren();
 		foreach ($list as $child) {

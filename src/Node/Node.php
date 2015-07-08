@@ -3,9 +3,9 @@
 
 namespace Oliva\Utils\Tree\Node;
 
-use ArrayAccess;
-use Nette\MemberAccessException,
-	Nette\Utils\ObjectMixin;
+use RuntimeException,
+	BadMethodCallException,
+	ArrayAccess;
 
 
 /**
@@ -22,8 +22,8 @@ use Nette\MemberAccessException,
  */
 class Node extends NodeBase implements ArrayAccess
 {
-	private $object = NULL;
-	private $isObject = TRUE;
+	protected $object = NULL;
+	protected $isObject = TRUE;
 
 
 	public function __construct($data_or_object = NULL)
@@ -84,9 +84,10 @@ class Node extends NodeBase implements ArrayAccess
 	{
 		if (is_object($this->object)) {
 			// delegate call
-			return ObjectMixin::call($this->object, $name, $args);
+			return call_user_func_array($this->object->$name, $args);
+//			return \Nette\Utils\ObjectMixin::call($this->object, $name, $args);
 		}
-		throw new MemberAccessException('Undefined method call: ' . get_class($this) . '::$' . $name . '. Method cannot be called on the node\'s object/array either.');
+		throw new BadMethodCallException('Undefined method call: ' . get_class($this) . '::$' . $name . '. Method cannot be called on the node\'s object/array either.');
 	}
 
 
@@ -107,7 +108,7 @@ class Node extends NodeBase implements ArrayAccess
 				return $this->object[$name];
 			}
 		}
-		throw new MemberAccessException('Cannot read an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
+		throw new RuntimeException('Cannot read an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
 	}
 
 
@@ -129,7 +130,7 @@ class Node extends NodeBase implements ArrayAccess
 				return $this->object[$name] = $value;
 			}
 		}
-		throw new MemberAccessException('Cannot write to an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
+		throw new RuntimeException('Cannot write to an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
 	}
 
 
@@ -170,7 +171,7 @@ class Node extends NodeBase implements ArrayAccess
 				unset($this->object[$name]);
 			}
 		}
-		throw new MemberAccessException('Cannot access an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
+		throw new RuntimeException('Cannot access an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
 	}
 
 

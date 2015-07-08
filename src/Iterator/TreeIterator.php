@@ -3,10 +3,10 @@
 
 namespace Oliva\Utils\Tree\Iterator;
 
-
-use Iterator;
-use Nette\InvalidStateException;
+use InvalidArgumentException,
+	Iterator;
 use Oliva\Utils\Tree\Node\INode;
+
 
 /**
  * TreeIterator.
@@ -33,24 +33,24 @@ class TreeIterator implements Iterator
 	 * The root node.
 	 * @var INode
 	 */
-	private $root;
+	protected $root;
 
 	/**
 	 * Recursion mode.
 	 */
-	private $recursion;
+	protected $recursion;
 
 	/**
 	 * Hybrid queue.
 	 * @var array
 	 */
-	private $queue = [];
+	protected $queue = [];
 
 	/**
 	 * Initialization flag.
 	 * @var bool
 	 */
-	private $ready = FALSE;
+	protected $ready = FALSE;
 
 
 	public function __construct(INode $root, $mode = self::BREADTH_FIRST_RECURSION)
@@ -123,6 +123,14 @@ class TreeIterator implements Iterator
 	}
 
 
+	/**
+	 * Set recursion mode.
+	 * 
+	 *
+	 * @param string|NULL $mode
+	 * @return TreeIterator fluent
+	 * @throws InvalidArgumentException
+	 */
 	protected function setRecursion($mode = self::BREADTH_FIRST_RECURSION)
 	{
 		if (
@@ -130,14 +138,14 @@ class TreeIterator implements Iterator
 				$mode !== self::DEPTH_FIRST_RECURSION &&
 				$mode !== self::BREADTH_FIRST_RECURSION
 		) {
-			throw new InvalidStateException('Invalid recursion mode.');
+			throw new InvalidArgumentException('Invalid recursion mode.');
 		}
 		$this->recursion = $mode;
 		return $this;
 	}
 
 
-	private function init()
+	protected function init()
 	{
 		if (!$this->ready) {
 			$this->enqueue($this->root->getChildren());
@@ -153,7 +161,7 @@ class TreeIterator implements Iterator
 	 *
 	 * @param array $nodes
 	 */
-	private function enqueue(array $nodes)
+	protected function enqueue(array $nodes)
 	{
 		if ($this->recursion !== self::DEPTH_FIRST_RECURSION || empty($this->queue)) {
 			foreach ($nodes as $index => $node) {

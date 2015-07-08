@@ -3,7 +3,7 @@
 
 namespace Oliva\Utils\Tree;
 
-use Nette\InvalidStateException;
+use RuntimeException;
 use Oliva\Utils\Tree\Node\Node;
 
 
@@ -99,7 +99,7 @@ class RecursiveTree extends Tree
 		} elseif (isset($nodes[NULL])) {
 			$root = $nodes[NULL];
 		} else {
-			throw new InvalidStateException('No root node present.');
+			throw new RuntimeException('No root node present.');
 		}
 		return $root;
 	}

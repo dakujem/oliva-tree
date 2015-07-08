@@ -138,6 +138,8 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 
 ## TODO
 
-* remove dependency on Nette Framework
-* materialized path tree (id variant)
-* allow users to create own classes when using tree's transform() method
+* finish inner conditions in TreeFilterIterator::accept(), finish Tree::getIterator() -> 0.3
+* materialized path tree (id variant) -> 0.4
+* allow users to create own classes when using tree's transform() method -> 0.5
+* write tests -> 0.6
+* finalize documentation -> release 1.0
