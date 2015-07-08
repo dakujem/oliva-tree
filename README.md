@@ -126,7 +126,7 @@ Create the tree.
 $tree = new PathTree($data, 'position', 3);
 ```
 
->> Note: if you have more than one root, the tree won't work. This example is only to demostrate the possibility of having multiple roots.
+> Note: if you have more than one root, the tree won't work. This example is only to demostrate the possibility of having multiple roots.
 
 ### Transformations
 Allows transformation to 1D arrays.
@@ -140,8 +140,9 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 ## TODO
 
 * materialized path tree (id variant) -> 0.4
-* allow users to create own classes when using tree's transform() method -> 0.5
-* write tests -> 0.6
+* in path tree (and recursive tree) allow users to choose which member is used as a node key (currently position is forced) -> 0.5
+* allow users to create own classes when using tree's transform() method -> 0.6
+* write tests
 * finalize documentation -> release 1.0
 
 ## Notes
