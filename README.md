@@ -66,14 +66,16 @@ foreach($it as $node) {...}
 $redNode = $tree->find('color', 'red');
 ```
 
-**Filter** specific nodes.
+**Filter** specific nodes. The key=>value pairs are implicitly treated as an AND operation. If an array is present as value for a given key, the values of the array are treated as an OR operation. The behaviour can be altered by parameters.
 ```php
-// filter all big ripe oranges
-$oranges = $orangeTree->getFilterIterator(['status' => 'ripe', 'size' => 'big'], TreeFilterIterator::MODE_AND);
+// filter all oranges that are big and ripe
+$oranges = $orangeTree->getFilterIterator(['status' => 'ripe', 'size' => 'big'], TreeFilterIterator::MODE_AND, TreeFilterIterator::MODE_OR); // the default mode
 
-// filter apples and pears
-$filtered = $fruitTree->getFilterIterator(['type' => 'apple', 'type' => 'pear'], TreeFilterIterator::MODE_OR);
-
+// filter apples, pears and all citruses
+$filtered = $fruitTree->getFilterIterator(['name' => ['apple', 'pear'], 'category' => 'citrus'], TreeFilterIterator::MODE_OR);
+```
+A **filtering callback** can be used for *advanced filtering options*.
+```php
 // filter very specific nodes
 $it = $tree->getFilteringCallbackIterator(function(\Oliva\Tree\NodeBase $node, $index) {
     try {
@@ -82,7 +84,6 @@ $it = $tree->getFilteringCallbackIterator(function(\Oliva\Tree\NodeBase $node, $
     	return FALSE;
     }
 });
-
 ```
 
 ### Recursive tree
@@ -138,7 +139,7 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 
 ## TODO
 
-* finish inner conditions in TreeFilterIterator::accept(), finish Tree::getIterator() -> 0.3
+* finish Tree::getIterator() -> 0.3
 * materialized path tree (id variant) -> 0.4
 * allow users to create own classes when using tree's transform() method -> 0.5
 * write tests -> 0.6

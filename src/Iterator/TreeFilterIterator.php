@@ -11,6 +11,7 @@ use Exception,
  * TreeFilterIterator.
  *
  * The $filteringConditions array contains key/value pairs each node is compared against to be accepted.
+ * If the value of the pair is an array, an inner iteration is applied using the values of the array.
  * Either AND or OR matching system can be used for condfitions.
  *
  * 
@@ -40,31 +41,58 @@ class TreeFilterIterator extends FilterIterator
 		if (empty($this->filteringConditions)) {
 			return TRUE;
 		}
-		$node = $this->getInnerIterator()->current();
-		$accept = $this->outerConditionMode === self::MODE_AND ? TRUE : FALSE;
+		return $this->outerConditionsWalk($this->getInnerIterator()->current());
+	}
 
 
-		//TODO dorobit inner mode - moznost definovat viac hodnot pre jeden kluc
-		foreach ($this->filteringConditions as $param => $expectedValue) {
+	protected function outerConditionsWalk($node)
+	{
+		$mode = $this->outerConditionMode;
+		$conditions = $this->filteringConditions;
+		$accept = $mode === self::MODE_AND ? TRUE : FALSE;
+
+		foreach ($conditions as $param => $expectedValue) {
+			try {
+				if (is_array($expectedValue)) {
+					// inner walk
+					$comparisonResult = $this->innerConditionsWalk($param, $expectedValue, $node);
+				} else {
+					$comparisonResult = $node->$param === $expectedValue;
+				}
+			} catch (Exception $e) {
+				$comparisonResult = FALSE;
+			}
+			$accept = $this->aggregateAccept($mode, $accept, $comparisonResult);
+			if ($mode === self::MODE_OR && $accept) {
+				break;
+			}
+		}
+		return $accept;
+	}
+
+
+	protected function innerConditionsWalk($param, array $conditions, $node)
+	{
+		$mode = $this->innerConditionMode;
+		$accept = $mode === self::MODE_AND ? TRUE : FALSE;
+		foreach ($conditions as $expectedValue) {
 			try {
 				$comparisonResult = $node->$param === $expectedValue;
 			} catch (Exception $e) {
 				$comparisonResult = FALSE;
 			}
-			$accept = $this->outerConditionMode === self::MODE_AND ? $accept && $comparisonResult : $accept || $comparisonResult;
-			if ($this->outerConditionMode === self::MODE_OR && $accept) {
+			$accept = $this->aggregateAccept($mode, $accept, $comparisonResult);
+			if ($mode === self::MODE_OR && $accept) {
 				break;
 			}
 		}
-
-
 		return $accept;
 	}
 
 
-	protected function walkConditions(array $conditions, $mode)
+	protected function aggregateAccept($mode, $accept, $comparisonResult)
 	{
-
+		return $mode === self::MODE_AND ? $accept && $comparisonResult : $accept || $comparisonResult;
 	}
 
 }
