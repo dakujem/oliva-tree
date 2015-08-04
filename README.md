@@ -139,9 +139,9 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 
 ## TODO
 
-* materialized path tree (id variant) -> 0.4
 * in path tree (and recursive tree) allow users to choose which member is used as a node key (currently position is forced) -> 0.5
-* allow users to create own classes when using tree's transform() method -> 0.6
+* allow users to register own node creation callbacks -> 0.6
+* materialized path tree (id variant) -> 0.7
 * write tests
 * finalize documentation -> release 1.0
 

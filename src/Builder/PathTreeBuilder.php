@@ -1,17 +1,17 @@
 <?php
 
 
-namespace Oliva\Utils\Tree;
-
-use Oliva\Utils\Tree\Node\Node;
+namespace Oliva\Utils\Tree\Builder;
 
 
 /**
- * PathTree.
+ * Materialized path tree builder.
+ * Builds data from a linear data structure.
+ * 
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
-class PathTree extends Tree
+class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 {
 	/**
 	 * The Node's member carrying the hierarchy information.
@@ -26,12 +26,10 @@ class PathTree extends Tree
 	public $charsPerLevel = 3;
 
 
-	public function __construct(array $data, $hierarchyMember = 'position', $charsPerLevel = 3)
+	public function __construct($hierarchyMember = 'position', $charsPerLevel = 3)
 	{
 		$this->hierarchyMember = $hierarchyMember;
 		$this->charsPerLevel = $charsPerLevel;
-		$root = self::transform($data, $this->hierarchyMember, $this->charsPerLevel);
-		parent::__construct($root);
 	}
 
 
@@ -45,23 +43,36 @@ class PathTree extends Tree
 	 * @param type $hierarchyMember
 	 * @param type $charsPerLevel
 	 */
-	public static function transform(array $data, $hierarchyMember = 'position', $charsPerLevel = 3, $usePositionAsIndex = TRUE)
+	public function build($data)
 	{
-		$root = new Node();
+		$this->checkData($data);
+
+		$hierarchyMember = $this->hierarchyMember;
+		$charsPerLevel = $this->charsPerLevel;
+		$usePositionAsIndex = TRUE;
+
+		$root = $this->createNode();
 		$nodes = array();
 		foreach ($data as $item) {
-			if (is_object($item) && property_exists($item, $hierarchyMember)) {
-				$itemPosition = $item->$hierarchyMember;
+//			if (is_object($item) && property_exists($item, $hierarchyMember)) {
+			//TODO overit, ci property_exists na dynamickych properties funguje (napr. lean mapper entity), overit ci $itm->non_existent_property hodi notice, ci sa to da odchytit
+			if (is_object($item)) {
+				try {
+					$itemPosition = $item->$hierarchyMember;
+				} catch (Exception $e) {
+					$this->dataError($item, $e);
+					continue;
+				}
 			} elseif (is_array($item) && key_exists($hierarchyMember, $item)) {
 				$itemPosition = $item[$hierarchyMember];
 			} else {
-				// data error - skip
+				$this->dataError($item);
 				continue;
 			}
 
 			if (!isset($nodes[$itemPosition])) {
 				// insert the node into the check table
-				$nodes[$itemPosition] = $node = new Node($item);
+				$nodes[$itemPosition] = $node = $this->createNode($item);
 			} else {
 				// the node has been inserted before - due to data failure or gap bridging
 				// write data and continue
@@ -79,7 +90,7 @@ class PathTree extends Tree
 				$childPosition = $itemPosition;
 				$childNode = $node;
 				while (strlen($pos) >= $charsPerLevel && !isset($nodes[$pos])) {
-					$nodes[$pos] = $newNode = new Node;
+					$nodes[$pos] = $newNode = $this->createNode();
 					$newNode->addChild($childNode, $usePositionAsIndex ? $childPosition : NULL);
 					$childNode = $newNode;
 					$childPosition = $pos;
@@ -96,9 +107,9 @@ class PathTree extends Tree
 	}
 
 
-	public static function hierarchyMemberTolevel($member, $charsPerLevel = 3)
+	protected function hierarchyMemberTolevel($member)
 	{
-		return strlen($member) / $charsPerLevel;
+		return strlen($member) / $this->charsPerLevel;
 	}
 
 }
