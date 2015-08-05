@@ -45,7 +45,7 @@ interface INode
 	 *
 	 *
 	 * @param INode $node
-	 * @return int|FALSE returns FALSE if the node is not a child of this node.
+	 * @return int|FALSE returns FALSE if the node is not a direct child of this node.
 	 */
 	public function getChildIndex(self $node);
 
