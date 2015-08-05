@@ -44,8 +44,10 @@ abstract class TreeBuilder
 	 * The first parameter of the callback is the data for the node.
 	 * More parameters can be specified as arguments passed to this method's call.
 	 *
+	 * It is required, that the callback returns an instance of INode.
+	 *
 	  $builder->setNodeCallback(function($data = NULL) {
-		return new Node($data);
+	  return new Node($data);
 	  });
 	 *
 	  $builder->setNodeCallback(function($data, $customParam1, $customParam2) use($builder) {  ...  }, $customParam1_value, $customParam2_value);

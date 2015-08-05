@@ -75,10 +75,7 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 			if ($itemPosition === NULL || strlen($itemPosition) < $this->charsPerLevel) {
 				// root node found
 				$newRoot = $this->createNode($item);
-				foreach ($root->getChildren() as $index => $child) {
-					/* @var $child INode */
-					$newRoot->addChild($child, $index);
-				}
+				$this->copyNodesRelationsAndReplace($root, $newRoot);
 				$root = $newRoot;
 				continue;
 			} elseif (!isset($nodes[$itemPosition])) {
@@ -86,15 +83,10 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 				$nodes[$itemPosition] = $node = $this->createNode($item);
 			} else {
 				// the node has been inserted before - due to data failure or gap bridging
-				// write data and continue
-
-
-				/**/
-				//TODO BUG FIXME this only works for Node class instances!! needs to work with INode
-				$node = $nodes[$itemPosition]->setObject($item);
-				/**/
-
-
+				// replace the node, copy node relations and continue
+				$oldNode = $nodes[$itemPosition];
+				$nodes[$itemPosition] = $this->createNode($item);
+				$this->copyNodesRelationsAndReplace($oldNode, $nodes[$itemPosition]);
 				continue;
 			}
 
@@ -122,6 +114,19 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 			}
 		}
 		return $root;
+	}
+
+
+	protected function copyNodesRelationsAndReplace(INode $source, INode $destination)
+	{
+		foreach ($source->getChildren() as $index => $child) {
+			/* @var $child INode */
+			$destination->addChild($child, $index);
+		}
+		$parent = $source->getParent();
+		if ($parent instanceof INode && $parent !== $source) {
+			$parent->addChild($destination, $parent->getChildIndex($source));
+		}
 	}
 
 
