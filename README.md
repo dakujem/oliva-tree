@@ -145,8 +145,7 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 
 ## TODO
 
-* in path tree (and recursive tree) allow users to choose which member is used as a node key (currently position is forced) -> 0.5
-* allow users to register own node creation callbacks -> 0.6
+* in path tree builder - and recursive tree - allow users to choose which member is used as a node key (currently position - and id - are forced)
 * json / array / object tree - build tree from data already in a tree structure (JSON/array/stdclass)
 * materialized path tree (id variant)
 * write tests
