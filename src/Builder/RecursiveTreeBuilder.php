@@ -54,7 +54,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * @param string $parentMember
 	 * @param string $idMember
 	 */
-	public function build(array $data)
+	public function build($data)
 	{
 		$this->checkData($data);
 		
@@ -85,6 +85,8 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 				$rootId = $id;
 				$rootFound = TRUE;
 			}
+
+			//TODO - what happens if root points to self?  $root->id == $root->parent
 
 			$node = $this->createNode($item);
 			if (isset($nodes[$id])) {

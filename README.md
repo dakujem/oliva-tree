@@ -86,8 +86,11 @@ $it = $tree->getFilteringCallbackIterator(function(\Oliva\Tree\NodeBase $node, $
 });
 ```
 
-### Recursive tree
-A trivial tree where each data-node has a pointer to its parent.
+### Building trees from linear data structures
+You can build trees from linear data structures, such as database results, using `DataTree` class and tree builders.
+
+#### Recursive tree
+A trivial data tree where each data-node has a pointer to its parent.
 
 | ID        | parent    | title|
 |:----------|:----------|:-------|
@@ -102,11 +105,12 @@ Get this structure from a database as an array.
 Tell the tree that "parent" is the member where the parent's "id" is found.
 Create the tree.
 ```php
-$tree = new RecursiveTree($data, 'parent', 'id');
+$tree = new DataTree($data, new RecursiveTreeBuilder('parent', 'id'));
 ```
+> Note: if you have more than one root, the builder's behaviour is undefined.
 
-### Path tree
-A tree where the position of a node in a tree is represented by a position (hierarchy) string. This allows ordering of leafs. Each level is represented by 3 (in this case) characters of the string representing the position of the node in the current sub-tree.
+#### Path tree
+A data tree where the position of a node in a tree is represented by a position (hierarchy) string. This allows ordering of leafs. Each level is represented by 3 (in this case) characters of the string representing the position of the node in the current sub-tree.
 
 Path trees are useful for storing menu hierarchy or similar structures where position of a node within a sub-tree matters.
 
@@ -123,10 +127,12 @@ Get this structure from a database as an array.
 Tell the tree that you are using 'position' as the hierarchy column and there are 3 characters for each level.
 Create the tree.
 ```php
-$tree = new PathTree($data, 'position', 3);
+$tree = new DataTree($data, new PathTreeBuilder('position', 3));
 ```
+Unless specified with NULL position (or position that is shorter than number of characters needed for each level),
+an empty root node will be created to wrap the data tree. You can provide a data item with NULL position to specify your own root.
 
-> Note: if you have more than one root, the tree won't work. This example is only to demostrate the possibility of having multiple roots.
+> Note: if you have more than one root, the later will override the previous one.
 
 ### Transformations
 Allows transformation to 1D arrays.
@@ -143,6 +149,7 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 * allow users to register own node creation callbacks -> 0.6
 * materialized path tree (id variant) -> 0.7
 * write tests
+* solve TODOs in code
 * finalize documentation -> release 1.0
 
 ## Notes

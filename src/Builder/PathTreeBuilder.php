@@ -3,11 +3,13 @@
 
 namespace Oliva\Utils\Tree\Builder;
 
+use Oliva\Utils\Tree\Node\INode;
+
 
 /**
  * Materialized path tree builder.
  * Builds data from a linear data structure.
- * 
+ *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
@@ -70,13 +72,29 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 				continue;
 			}
 
-			if (!isset($nodes[$itemPosition])) {
+			if ($itemPosition === NULL || strlen($itemPosition) < $this->charsPerLevel) {
+				// root node found
+				$newRoot = $this->createNode($item);
+				foreach ($root->getChildren() as $index => $child) {
+					/* @var $child INode */
+					$newRoot->addChild($child, $index);
+				}
+				$root = $newRoot;
+				continue;
+			} elseif (!isset($nodes[$itemPosition])) {
 				// insert the node into the check table
 				$nodes[$itemPosition] = $node = $this->createNode($item);
 			} else {
 				// the node has been inserted before - due to data failure or gap bridging
 				// write data and continue
+
+
+				/**/
+				//TODO BUG FIXME this only works for Node class instances!! needs to work with INode
 				$node = $nodes[$itemPosition]->setObject($item);
+				/**/
+
+
 				continue;
 			}
 
