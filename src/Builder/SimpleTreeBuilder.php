@@ -3,7 +3,8 @@
 
 namespace Oliva\Utils\Tree\Builder;
 
-use Traversable;
+use Traversable,
+	RuntimeException;
 use Oliva\Utils\Tree\Node\INode;
 
 

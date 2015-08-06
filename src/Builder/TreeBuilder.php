@@ -50,7 +50,7 @@ abstract class TreeBuilder
 	 */
 	protected function getMember($item, $member)
 	{
-		$message = 'Missing ' . ( is_array($item) ? 'member' : 'attribute') . ' of $item of type ' . $this->typeHint($item) . '.';
+		$message = 'Missing ' . ( is_array($item) ? 'member' : 'attribute') . ' "' . $member . '" of $item of type ' . $this->typeHint($item) . '.';
 
 		//TODO overit, ci property_exists na dynamickych properties funguje (napr. lean mapper entity), overit ci $itm->non_existent_property hodi notice, ci sa to da odchytit
 		//			if (is_object($item) && property_exists($item, $idMember) && property_exists($item, $parentMember)) {
