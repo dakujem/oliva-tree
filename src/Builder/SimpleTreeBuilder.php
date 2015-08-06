@@ -53,18 +53,31 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 	{
 		$this->checkData($nodeData);
 		$childrenMember = $this->childrenMember;
-		$childrenDataItems = NULL;
-		if (isset($nodeData->$childrenMember) && !empty($nodeData->$childrenMember)) {
-			$childrenDataItems = $nodeData->$childrenMember;
-			unset($nodeData->$childrenMember);
+
+		// get children data - if present
+		try {
+			$childrenDataItems = $this->getMember($nodeData, $childrenMember);
+			if (is_object($nodeData)) {
+				unset($nodeData->$childrenMember);
+			} elseif (is_array($nodeData)) {
+				unset($nodeData[$childrenMember]);
+			}
+		} catch (RuntimeException $e) {
+			$childrenDataItems = NULL;
 		}
+
+		// create the node
 		$node = $this->createNode($nodeData);
+
+		// if children data is present, process children and add them to the freshly created node
 		if (is_array($childrenDataItems) || $childrenDataItems instanceof Traversable) {
 			foreach ($childrenDataItems as $index => $childDataItem) {
 				$child = $this->build($childDataItem); // recursion
 				$node->addChild($child, $index);
 			}
 		}
+
+		// return the node
 		return $node;
 	}
 

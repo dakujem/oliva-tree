@@ -56,21 +56,7 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		$root = $this->createNode();
 		$nodes = array();
 		foreach ($data as $item) {
-//			if (is_object($item) && property_exists($item, $hierarchyMember)) {
-			//TODO overit, ci property_exists na dynamickych properties funguje (napr. lean mapper entity), overit ci $itm->non_existent_property hodi notice, ci sa to da odchytit
-			if (is_object($item)) {
-				try {
-					$itemPosition = $item->$hierarchyMember;
-				} catch (Exception $e) {
-					$this->dataError($item, $e);
-					continue;
-				}
-			} elseif (is_array($item) && key_exists($hierarchyMember, $item)) {
-				$itemPosition = $item[$hierarchyMember];
-			} else {
-				$this->dataError($item);
-				continue;
-			}
+			$itemPosition = $this->getMember($item, $hierarchyMember);
 
 			if ($itemPosition === NULL || strlen($itemPosition) < $this->charsPerLevel) {
 				// root node found

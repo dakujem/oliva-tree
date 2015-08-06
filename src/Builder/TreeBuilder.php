@@ -40,6 +40,37 @@ abstract class TreeBuilder
 
 
 	/**
+	 * Get the value of a member of the $item. The $item can be either array or object.
+	 *
+	 *
+	 * @param mixed $item
+	 * @param string $member
+	 * @return mixed the value of the member
+	 * @throws RuntimeException
+	 */
+	protected function getMember($item, $member)
+	{
+		$message = 'Missing ' . ( is_array($item) ? 'member' : 'attribute') . ' of $item of type ' . $this->typeHint($item) . '.';
+
+		//TODO overit, ci property_exists na dynamickych properties funguje (napr. lean mapper entity), overit ci $itm->non_existent_property hodi notice, ci sa to da odchytit
+		//			if (is_object($item) && property_exists($item, $idMember) && property_exists($item, $parentMember)) {
+
+		if (is_object($item)) {
+			try {
+				$value = $item->$member;
+			} catch (Exception $e) {
+				$this->dataError($item, new RuntimeException($message, 1, $e));
+			}
+		} elseif (is_array($item) && key_exists($member, $item)) {
+			$value = $item[$member];
+		} else {
+			$this->dataError($item, new RuntimeException($message, 1));
+		}
+		return $value;
+	}
+
+
+	/**
 	 * Register a callback for node creation.
 	 * The first parameter of the callback is the data for the node.
 	 * More parameters can be specified as arguments passed to this method's call.
@@ -47,7 +78,7 @@ abstract class TreeBuilder
 	 * It is required, that the callback returns an instance of INode.
 	 *
 	  $builder->setNodeCallback(function($data = NULL) {
-		return new Node($data);
+	  return new Node($data);
 	  });
 	 *
 	  $builder->setNodeCallback(function($data, $customParam1, $customParam2) use($builder) {  ...  }, $customParam1_value, $customParam2_value);
@@ -110,14 +141,18 @@ abstract class TreeBuilder
 	/**
 	 * You can throw an exception here or whatever...
 	 *
+	 * Don't forget - you can specify your own error-handling routine using setDataErrorCallback() method!
 	 *
-	 * @return void
+	 *
+	 * @return mixed
+	 * @throws RuntimeException
 	 */
-	protected function dataError($item, $exception = NULL)
+	protected function dataError($item, RuntimeException $exception)
 	{
 		if ($this->dataErrorCallback !== NULL) {
 			return call_user_func_array($this->dataErrorCallback[0], array_merge([$item, $exception], $this->dataErrorCallback[1]));
 		}
+		throw $exception;
 	}
 
 
@@ -133,6 +168,19 @@ abstract class TreeBuilder
 		if (!is_array($data) && !$data instanceof Traversable) {
 			throw new RuntimeException('The data provided must be an array or must be traversable, ' . (is_object($data) ? 'an instance of ' . get_class($data) . ' provided' : gettype($data) . '') . '.');
 		}
+	}
+
+
+	/**
+	 * Get name of the variable's type.
+	 * 
+	 * 
+	 * @param mixed $item
+	 * @return string
+	 */
+	protected function typeHint($item)
+	{
+		return is_object($item) ? get_class($item) : gettype($item);
 	}
 
 }

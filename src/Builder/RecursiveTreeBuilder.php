@@ -3,8 +3,7 @@
 
 namespace Oliva\Utils\Tree\Builder;
 
-use Exception,
-	RuntimeException;
+use RuntimeException;
 use Oliva\Utils\Tree\Node\INode;
 
 
@@ -66,23 +65,9 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 		$rootId = NULL;
 		$rootFound = FALSE;
 		foreach ($data as $item) {
-//			if (is_object($item) && property_exists($item, $idMember) && property_exists($item, $parentMember)) {
-			//TODO overit, ci property_exists na dynamickych properties funguje (napr. lean mapper entity), overit ci $itm->non_existent_property hodi notice, ci sa to da odchytit
-			if (is_object($item)) {
-				try {
-					$id = $item->$idMember;
-					$parent = $item->$parentMember;
-				} catch (Exception $e) {
-					$this->dataError($item, $e);
-					continue;
-				}
-			} elseif (is_array($item) && key_exists($idMember, $item) && key_exists($parentMember, $item)) {
-				$id = $item[$idMember];
-				$parent = $item[$parentMember];
-			} else {
-				$this->dataError($item);
-				continue;
-			}
+			$id = $this->getMember($item, $idMember);
+			$parent = $this->getMember($item, $parentMember);
+
 			if ($parent === NULL || $id === $parent) {
 				$rootId = $id;
 				$parent = NULL;
