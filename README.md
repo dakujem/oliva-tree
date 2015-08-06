@@ -97,9 +97,9 @@ A trivial data tree where each data-node has a pointer to its parent.
 |1          | NULL| the root|
 |2|1|first child of root
 |3|1|second child of root
-|4|2|third level
-|5|2|third level, second child
-|6|NULL| second root
+|4|6|fourth level - parent specified later - this will work
+|5|2|third level
+|6|2|third level, second child
 
 Get this structure from a database as an array.
 Tell the tree that "parent" is the member where the parent's "id" is found.
@@ -107,7 +107,7 @@ Create the tree.
 ```php
 $tree = new DataTree($data, new RecursiveTreeBuilder('parent', 'id'));
 ```
-> Note: if you have more than one root, the builder's behaviour is undefined.
+> Note: if you have more than one root, the builder's behaviour is undefined, the trees will overwrite one another.
 
 #### Path tree
 A data tree where the position of a node in a tree is represented by a position (hierarchy) string. This allows ordering of leafs. Each level is represented by 3 (in this case) characters of the string representing the position of the node in the current sub-tree.
@@ -116,12 +116,14 @@ Path trees are useful for storing menu hierarchy or similar structures where pos
 
 | ID        | position    | title|
 |:----------|:----------|:-------|
-|1          | 001| the root|
-|2|001001|first child of root
-|3|001002|second child of root
+|1          | 001| the first level|
+|2|001001|first child of 001
+|3|001002|second child of 001
 |4|001001001|third level
 |5|001001002|third level, second child
-|6|002|second root
+|6|002001|a child of a node not yet specified - this will work
+|7|002|second first-level item
+|100|NULL|the root - this needs not be specified, an empty root will be created automatically
 
 Get this structure from a database as an array.
 Tell the tree that you are using 'position' as the hierarchy column and there are 3 characters for each level.

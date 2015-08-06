@@ -36,7 +36,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * Implicit root IDs.
 	 * @var array
 	 */
-	protected $implicitRoots = [0, '0', '', NULL,];
+	protected $implicitRoots = [0, '0', '',];
 
 
 	public function __construct($parentMember = self::DEFAULT_PARENT_MEMBER, $idMember = self::DEFAULT_ID_MEMBER)
@@ -49,6 +49,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	/**
 	 * Build the tree from linear data.
 	 * The node with no (NULL) parent is considered to be the root. If node points to self, it is considered the root as well.
+	 * If no root is found, a node with ID in $implicitRoots will be sought and used as the root if found (default 0, "0", "").
 	 * Do not provide multiple trees and multiple roots, as the behaviour is not defined - the trees will overwrite one onother.
 	 *
 	 *
