@@ -11,7 +11,7 @@ use Oliva\Utils\Tree\Node\INode;
 /**
  * Recursive tree builder.
  * Builds data from a linear data structure.
- * 
+ *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
@@ -47,17 +47,18 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 
 	/**
-	 * Transforms linear data into a tree structure.
-	 * The root node contains no data.
+	 * Build the tree from linear data.
+	 * The node with no (NULL) parent is considered to be the root. If node points to self, it is considered the root as well.
+	 * Do not provide multiple trees and multiple roots, as the behaviour is not defined - the trees will overwrite one onother.
 	 *
-	 * @param array $data an array of objects
-	 * @param string $parentMember
-	 * @param string $idMember
+	 *
+	 * @param array|Traversable $data traversable data containing node data items
+	 * @return INode the root node
 	 */
 	public function build($data)
 	{
 		$this->checkData($data);
-		
+
 		$parentMember = $this->parentMember;
 		$idMember = $this->idMember;
 		$nodes = array();
@@ -81,12 +82,11 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 				$this->dataError($item);
 				continue;
 			}
-			if ($id === $parent) {
+			if ($parent === NULL || $id === $parent) {
 				$rootId = $id;
+				$parent = NULL;
 				$rootFound = TRUE;
 			}
-
-			//TODO - what happens if root points to self?  $root->id == $root->parent
 
 			$node = $this->createNode($item);
 			if (isset($nodes[$id])) {
@@ -101,18 +101,14 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 			// insert the node into the check table
 			$nodes[$id] = $node;
 
-			if (!isset($nodes[$parent])) {
-				// insert a stub node parent into the check table
-				$nodes[$parent] = $parentNode = $this->createNode();
-			} else {
-				// the node has been inserted before
-				$parentNode = $nodes[$parent];
-			}
-
-			if ($id === $parent) {
-				$rootId = $id;
-				$rootFound = TRUE;
-			} else {
+			if ($parent !== NULL) {
+				if (!isset($nodes[$parent])) {
+					// insert a stub node parent into the check table
+					$nodes[$parent] = $parentNode = $this->createNode();
+				} else {
+					// the node has been inserted before
+					$parentNode = $nodes[$parent];
+				}
 				$parentNode->addChild($node);
 			}
 		}

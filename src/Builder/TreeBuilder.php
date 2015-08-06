@@ -47,10 +47,11 @@ abstract class TreeBuilder
 	 * It is required, that the callback returns an instance of INode.
 	 *
 	  $builder->setNodeCallback(function($data = NULL) {
-	  return new Node($data);
+		return new Node($data);
 	  });
 	 *
 	  $builder->setNodeCallback(function($data, $customParam1, $customParam2) use($builder) {  ...  }, $customParam1_value, $customParam2_value);
+	 *
 	 *
 	 * @param callable $function
 	 * @return self fluent
@@ -75,6 +76,7 @@ abstract class TreeBuilder
 	  $builder->setDataErrorCallback(function($item, $exception) { ... });
 	 *
 	  $builder->setDataErrorCallback(function($item, $exception, ...$customParams) use($builder) {  ...  }, $customParam1_value, $customParam2_value);
+	 *
 	 *
 	 * @param callable $function
 	 * @return self fluent
@@ -107,6 +109,7 @@ abstract class TreeBuilder
 
 	/**
 	 * You can throw an exception here or whatever...
+	 *
 	 *
 	 * @return void
 	 */

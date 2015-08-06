@@ -36,14 +36,14 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 
 	/**
-	 * Transforms linear data into a tree structure.
-	 * The root node contains no data.
+	 * Build the tree from linear data.
+	 * The root node contains no data and is always created, unless data item with NULL position is provided.
 	 *
-	 * Note: duplicity in '$hierarchyMember' member of items is not detected and may result in unexpected behaviour.
+	 * Note: duplicity in position member of items is not detected and may result in unexpected behaviour.
 	 *
-	 * @param array $data an array of objects
-	 * @param type $hierarchyMember
-	 * @param type $charsPerLevel
+	 *
+	 * @param array|Traversable $data traversable data containing node data items
+	 * @return INode the root node
 	 */
 	public function build($data)
 	{
@@ -130,7 +130,7 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	}
 
 
-	protected function hierarchyMemberTolevel($member)
+	public function hierarchyMemberToLevel($member)
 	{
 		return strlen($member) / $this->charsPerLevel;
 	}
