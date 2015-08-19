@@ -16,22 +16,35 @@ use Oliva\Utils\Tree\Node\INode;
 class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 {
 	/**
+	 * The default number of characters per each level of the tree.
+	 * @var int
+	 */
+	public static $charsPerLevelDefault = 3;
+
+	/**
 	 * The Node's member carrying the hierarchy information.
 	 * @var string
 	 */
-	public $hierarchyMember = 'position';
+	public $hierarchyMember;
 
 	/**
-	 * The number of characters per each level of tree.
+	 * The number of characters per each level of the tree.
 	 * @var int
 	 */
-	public $charsPerLevel = 3;
+	public $charsPerLevel;
+
+	/**
+	 * Sort the nodes by hierarchy member automatically?
+	 * @var bool
+	 */
+	public $autoSort;
 
 
-	public function __construct($hierarchyMember = 'position', $charsPerLevel = 3)
+	public function __construct($hierarchyMember = 'position', $charsPerLevel = 3, $autoSort = TRUE)
 	{
 		$this->hierarchyMember = $hierarchyMember;
-		$this->charsPerLevel = $charsPerLevel;
+		$this->charsPerLevel = $charsPerLevel > 0 ? $charsPerLevel : self::$charsPerLevelDefault;
+		$this->autoSort = !!$autoSort;
 	}
 
 
@@ -99,7 +112,40 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 				}
 			}
 		}
+		$this->autoSort && $this->sortChildren($root);
 		return $root;
+	}
+
+
+	/**
+	 * Sorts INode's children by key.
+	 *
+	 *
+	 * @param INode $node the root node
+	 * @return void
+	 */
+	protected function sortChildren(INode $node)
+	{
+		$children = $node->getChildren();
+		$node->removeChildren();
+		foreach ($this->sortNodes($children) as $index => $child) {
+			$this->sortChildren($child); // recursion
+			$node->addChild($child, $index);
+		}
+	}
+
+
+	/**
+	 * Sorts nodes by key using ksort().
+	 *
+	 *
+	 * @param INode[] $nodes array of INode objects
+	 * @return INode[] sorted array of INode objects
+	 */
+	protected function sortNodes(array $nodes)
+	{
+		ksort($nodes);
+		return $nodes;
 	}
 
 
