@@ -9,39 +9,54 @@ use Oliva\Utils\Tree\Node\INode;
 
 /**
  * Recursive tree builder.
- * Builds data from a linear data structure.
+ * Builds data from a linear data structure, where each node holds an ID
+ * of its parent.
+ *
+ * Example:
+ * Node(id:1,parent:2) is a child of node(id:2,parent:3), which is a child
+ * of node(id:3,parent:NULL), which is the root node.
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 {
-	const DEFAULT_ID_MEMBER = 'id';
-	const DEFAULT_PARENT_MEMBER = 'parent';
+	/**
+	 * The default id member.
+	 * @var string
+	 */
+	public static $idMemberDefault = 'id';
+
+	/**
+	 * The default parent member.
+	 * @var string
+	 */
+	public static $parentMemberDefault = 'parent';
 
 	/**
 	 * The Node's member carrying its ID.
 	 * @var string
 	 */
-	protected $idMember = self::DEFAULT_ID_MEMBER;
+	public $idMember;
 
 	/**
 	 * The Node's member carrying parent's ID.
 	 * @var string
 	 */
-	protected $parentMember = self::DEFAULT_PARENT_MEMBER;
+	public $parentMember;
 
 	/**
 	 * Implicit root IDs.
+	 * NULL ID is always considered a root.
 	 * @var array
 	 */
-	protected $implicitRoots = [0, '0', '',];
+	public $implicitRoots = [0, '0', '',];
 
 
-	public function __construct($parentMember = self::DEFAULT_PARENT_MEMBER, $idMember = self::DEFAULT_ID_MEMBER)
+	public function __construct($parentMember = NULL, $idMember = NULL)
 	{
-		$this->parentMember = $parentMember;
-		$this->idMember = $idMember;
+		$this->parentMember = $parentMember != NULL ? $parentMember : self::$parentMemberDefault; // intentionally !=
+		$this->idMember = $idMember != NULL ? $idMember : self::$idMemberDefault; // intentionally !=
 	}
 
 

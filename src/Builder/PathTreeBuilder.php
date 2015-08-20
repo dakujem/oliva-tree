@@ -8,7 +8,15 @@ use Oliva\Utils\Tree\Node\INode;
 
 /**
  * Materialized path tree builder.
- * Builds data from a linear data structure.
+ * Builds data from a linear data structure, where each node holds its
+ * position within the tree in its hierarchy member.
+ * Fixed number of characters is used for each level.
+ * A node with NULL position (or position shorter than needed for first level)
+ * can be provided and will be set as the root.
+ *
+ * Example:
+ * With 3 characters per level, node with position "002001" is the first
+ * child of the second child of the root with position "002".
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
@@ -20,6 +28,12 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * @var int
 	 */
 	public static $charsPerLevelDefault = 3;
+
+	/**
+	 * The default hierarchy member.
+	 * @var string
+	 */
+	public static $hierarchyMemberDefault = 'position';
 
 	/**
 	 * The Node's member carrying the hierarchy information.
@@ -35,14 +49,15 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 	/**
 	 * Sort the nodes by hierarchy member automatically?
+	 * With this option set to FALSE the children nodes will be left in the original order within its parent.
 	 * @var bool
 	 */
 	public $autoSort;
 
 
-	public function __construct($hierarchyMember = 'position', $charsPerLevel = 3, $autoSort = TRUE)
+	public function __construct($hierarchyMember = NULL, $charsPerLevel = NULL, $autoSort = TRUE)
 	{
-		$this->hierarchyMember = $hierarchyMember;
+		$this->hierarchyMember = $hierarchyMember != NULL ? $hierarchyMember : self::$hierarchyMemberDefault; // intentionally !=
 		$this->charsPerLevel = $charsPerLevel > 0 ? $charsPerLevel : self::$charsPerLevelDefault;
 		$this->autoSort = !!$autoSort;
 	}

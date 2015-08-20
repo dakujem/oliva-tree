@@ -1,13 +1,13 @@
 # Oliva Tree Utils for PHP
 Simple utility for handling tree structures in PHP.
 
-Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on tree structures.
+Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on arbitrary tree structures.
 
 ## Usage
 Each tree has a root node. Each node allows getting/setting of children and parent, thus creating a tree structure.
 
 ### Node
-**NodeBase** is an abstract implementation of the **INode** interface. **Node** is a full-featured implementation allowing creation of trees with arbitrary data or objects.
+`NodeBase` is a basic abstract implementation of the `INode` interface. `Node` is a full-featured implementation allowing creation of trees with **arbitrary data** or objects.
 ```php
 $node = new Node();
 $node->title = 'item one';
@@ -34,11 +34,16 @@ $node = new Node($myObject);
 $node->aMethodOfTheobject(); // the call is forwarded to the object
 ```
 
-### Iterations, search, filtering
+### Tree
+Trees are implementations of `ITree` interface. Class `Tree` holds the root and provides convenient methods for creating iterators easily.
+
 Create a tree.
 ```php
 $tree = new Tree($rootNode);
 ```
+Iterators provide a way to **iterate through all the nodes**, **filter** them, **search** a specific node, **prune the tree** and so on.
+
+### Iterations, search, filtering
 
 Iterate through all the nodes, with nodes on the current level first (**breadth-first** iteration).
 ```php
@@ -66,7 +71,7 @@ foreach($it as $node) {...}
 $redNode = $tree->find('color', 'red');
 ```
 
-**Filter** specific nodes. The key=>value pairs are implicitly treated as an AND operation. If an array is present as value for a given key, the values of the array are treated as an OR operation. The behaviour can be altered by parameters.
+**Filter** specific nodes. Multiple `key => value` pairs are implicitly treated using `AND` operation. If an array is present as `value` for a given `key`, the values of the array are treated using `OR` operation. The behaviour can be altered by parameters.
 ```php
 // filter all oranges that are big and ripe
 $oranges = $orangeTree->getFilterIterator(['status' => 'ripe', 'size' => 'big'], TreeFilterIterator::MODE_AND, TreeFilterIterator::MODE_OR); // the default mode
@@ -87,7 +92,7 @@ $it = $tree->getFilteringCallbackIterator(function(\Oliva\Tree\NodeBase $node, $
 ```
 
 ### Building trees from linear data structures
-You can build trees from linear data structures, such as database results, using `DataTree` class and tree builders.
+You can build trees from linear data structures, such as database results, using `DataTree` class and tree builders. You can also build trees from data already in tree structure.
 
 #### Recursive tree
 A trivial data tree where each data-node has a pointer to its parent.
@@ -136,8 +141,23 @@ an empty root node will be created to wrap the data tree. You can provide a data
 
 > Note: if you have more than one root, the later will override the previous one.
 
+> Note: this builder uses by default an auto-sorting feature that ensures the children are always in the correct order assumed by the hierarchy member. This behaviour can be turned off.
+
+#### Simple tree
+This tree only converts data already in a tree structure using `Tree` and `Node` classes for further convenience.
+It does not matter whether the data is stored in **array matrix** or as **objects**. The children need to be held in a common attribute ("children" by default).
+```php
+$tree = new DataTree($data, new SimpleTreeBuilder('children'));
+```
+
+#### JSON tree
+Accepts string containing JSON, which is decoded upon construction.
+```php
+$tree = new DataTree($data, new JsonTreeBuilder($jsonEncodedString));
+```
+
 ### Transformations
-Allows transformation to 1D arrays.
+Allows transformation of trees to 1D arrays. This can be useful for printing the tree data in linear fasion, for example to display them in tables or grids.
 ```php
 $tree = new Tree($rootNode);
 $linear = $tree->getBreadthFirst();
@@ -145,15 +165,15 @@ $linearWithDeepestFirst = $root->getDepthFirst();
 ```
 
 
-## TODO
+## What's comming next
 
-* in path tree builder - and recursive tree - allow users to choose which member is used as a node key (currently position - and id - are forced)
-* json / array / object tree - build tree from data already in a tree structure (JSON/array/stdclass)
+* unit tests
 * materialized path tree (id variant)
-* write tests
-* solve TODOs in code
-* finalize documentation -> release 1.0
+* nested sets
+* improvement: in path tree builder - and recursive tree builder - allow users to choose which member is used as a node key (currently position - and id - are forced)
 
 ## Notes
 
-* this code *could* be rewritten to be used with PHP 5.3. But why bother? Let's force the newer stuff :)
+* great thank's to folks in **Via Aurea, s.r.o.** for providing valuable support, motivation and real-life testing
+
+> **Warning**: This library is privided **as-is** with absolutely **no warranty** nor any liability from its creators for anything it's usage, manipulation or distribution may cause

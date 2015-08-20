@@ -13,11 +13,6 @@ use Oliva\Utils\Tree\Node\Node,
  * Recursive tree builder.
  *
  *
- * @todo:
- * 	- callbacks for node creation and data errors
- *
- *
- *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 abstract class TreeBuilder
@@ -26,7 +21,7 @@ abstract class TreeBuilder
 	 * Node class. An instance will be created upon transformation for each node.
 	 * @var string
 	 */
-	protected $nodeClass = Node::CLASS;
+	public $nodeClass = Node::CLASS;
 
 	/**
 	 * @var array|NULL [callable, params]
@@ -51,10 +46,6 @@ abstract class TreeBuilder
 	protected function getMember($item, $member)
 	{
 		$message = 'Missing ' . ( is_array($item) ? 'member' : 'attribute') . ' "' . $member . '" of $item of type ' . $this->typeHint($item) . '.';
-
-		//TODO overit, ci property_exists na dynamickych properties funguje (napr. lean mapper entity), overit ci $itm->non_existent_property hodi notice, ci sa to da odchytit
-		//			if (is_object($item) && property_exists($item, $idMember) && property_exists($item, $parentMember)) {
-
 		if (is_object($item)) {
 			try {
 				$value = $item->$member;
@@ -139,6 +130,7 @@ abstract class TreeBuilder
 
 
 	/**
+	 * Handles data error.
 	 * You can throw an exception here or whatever...
 	 *
 	 * Don't forget - you can specify your own error-handling routine using setDataErrorCallback() method!

@@ -6,6 +6,7 @@ namespace Oliva\Utils\Tree\Node;
 use IteratorAggregate;
 use Oliva\Utils\Tree\Iterator\TreeIterator;
 
+
 /**
  * The base INode implementation for tree structures.
  * Includes all necessary tree nodes handling.
@@ -267,23 +268,6 @@ abstract class NodeBase implements INode, IteratorAggregate
 			$this->children[$index] = $node;
 		}
 		return $node;
-	}
-
-
-	/**
-	 * Replaces the original node or inserts as new child node.
-	 * This node becomes the direct parent of the inserted child node.
-	 *
-	 * @todo odstranit - zbytocna metoda
-	 *
-	 * @deprecated
-	 *
-	 * @param INode $node
-	 * @return NodeBase the input/inserted node
-	 */
-	public function setChild(INode $node, $index)
-	{
-		return $this->addChild($node, $index);
 	}
 
 

@@ -17,16 +17,22 @@ use Oliva\Utils\Tree\Node\INode;
 class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 {
 	/**
+	 * The default children member.
+	 * @var string
+	 */
+	public static $childrenMemberDefault = 'children';
+
+	/**
 	 * The Node's member containing children.
 	 *
 	 * @var string
 	 */
-	protected $childrenMember = 'children';
+	public $childrenMember;
 
 
-	public function __construct($childrenMember = 'children')
+	public function __construct($childrenMember = NULL)
 	{
-		$this->childrenMember = $childrenMember;
+		$this->childrenMember = $childrenMember != NULL ? $childrenMember : self::$childrenMemberDefault; // intentionally !=
 	}
 
 
