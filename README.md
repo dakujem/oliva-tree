@@ -161,13 +161,14 @@ Allows transformation of trees to 1D arrays. This can be useful for printing the
 ```php
 $tree = new Tree($rootNode);
 $linear = $tree->getBreadthFirst();
-$linearWithDeepestFirst = $root->getDepthFirst();
+$linearWithDeepestFirst = $tree->getDepthFirst();
 ```
 
 
 ## What's comming next
 
 * unit tests
+* tree writers - alter the nodes data to reflect current tree structure (prepare for storage)
 * materialized path tree (id variant)
 * nested sets
 * improvement: in path tree builder - and recursive tree builder - allow users to choose which member is used as a node key (currently position - and id - are forced)
