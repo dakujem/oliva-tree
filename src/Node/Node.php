@@ -16,14 +16,19 @@ use RuntimeException,
  * $node = new Node($any_data);
  * $node['foo']; // 'bar'
  * $node->foo;   // 'bar'
+ * $node->getObject(); // $any_data
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class Node extends NodeBase implements ArrayAccess
 {
+	const TYPE_OBJECT = 'object';
+	const TYPE_ARRAY = 'array';
+	const TYPE_SCALAR = 'scalar'; // NULL or scalar
+
 	protected $object = NULL;
-	protected $isObject = TRUE;
+	protected $type = self::TYPE_SCALAR;
 
 
 	public function __construct($data_or_object = NULL)
@@ -35,7 +40,7 @@ class Node extends NodeBase implements ArrayAccess
 	/**
 	 * True when the object data is NULL.
 	 *
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isNull()
@@ -53,28 +58,28 @@ class Node extends NodeBase implements ArrayAccess
 	 */
 	public function setObject($data)
 	{
+		$this->type = is_object($data) ? self::TYPE_OBJECT : (is_array($data) ? self::TYPE_ARRAY : self::TYPE_SCALAR);
 		$this->object = $data;
-		$this->isObject = is_object($this->object);
 		return $this;
 	}
 
 
 	/**
 	 * Returns the node's object data.
-	 * 
+	 *
 	 *
 	 * @return mixed
 	 */
 	public function getObject()
 	{
-		return $this->object;
+		return $this->type !== self::TYPE_ARRAY ? $this->object : (array) $this->object;
 	}
 
 
 	/**
 	 * Call to undefined method.
 	 *
-	 * 
+	 *
 	 * @param  string $name method name
 	 * @param  array  $args arguments
 	 * @return mixed
@@ -82,33 +87,31 @@ class Node extends NodeBase implements ArrayAccess
 	 */
 	public function __call($name, $args)
 	{
-		if (is_object($this->object)) {
+		if ($this->type === self::TYPE_OBJECT) {
 			// delegate call
-			return call_user_func_array($this->object->$name, $args);
-//			return \Nette\Utils\ObjectMixin::call($this->object, $name, $args);
+			return $this->object->$name(...$args);
 		}
-		throw new BadMethodCallException('Undefined method call: ' . get_class($this) . '::$' . $name . '. Method cannot be called on the node\'s object/array either.');
+		throw new BadMethodCallException('Undefined method call: ' . get_class($this) . '::$' . $name . '. Method cannot be called on the node\'s data either.');
 	}
 
 
 	/**
 	 * Returns property value. Do not call directly.
 	 *
-	 * 
+	 *
 	 * @param  string  $name property name
 	 * @return mixed   $value property value
 	 * @throws MemberAccessException if the property is not defined.
 	 */
-	public function &__get($name)
+	public function __get($name)
 	{
-		if ($this->object !== NULL && !is_scalar($this->object)) {
-			if (is_object($this->object)) {
+		switch ($this->type) {
+			case self::TYPE_OBJECT:
 				return $this->object->$name;
-			} elseif (is_array($this->object)) {
+			case self::TYPE_ARRAY:
 				return $this->object[$name];
-			}
 		}
-		throw new RuntimeException('Cannot read an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
+		throw new RuntimeException('Cannot read an undeclared property ' . get_class($this) . '::$' . $name . '. Furthermore, the node\'s data is scalar or NULL.');
 	}
 
 
@@ -123,32 +126,30 @@ class Node extends NodeBase implements ArrayAccess
 	 */
 	public function __set($name, $value)
 	{
-		if ($this->object !== NULL && !is_scalar($this->object)) {
-			if (is_object($this->object)) {
+		switch ($this->type) {
+			case self::TYPE_OBJECT:
 				return $this->object->$name = $value;
-			} elseif (is_array($this->object)) {
+			case self::TYPE_ARRAY:
 				return $this->object[$name] = $value;
-			}
 		}
-		throw new RuntimeException('Cannot write to an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
+		throw new RuntimeException('Cannot write to an undeclared property ' . get_class($this) . '::$' . $name . '. Furthermore, the node\'s data is scalar or NULL.');
 	}
 
 
 	/**
 	 * Is property defined?
 	 *
-	 * 
+	 *
 	 * @param  string  $name property name
 	 * @return bool
 	 */
 	public function __isset($name)
 	{
-		if ($this->object !== NULL && !is_scalar($this->object)) {
-			if (is_object($this->object)) {
+		switch ($this->type) {
+			case self::TYPE_OBJECT:
 				return isset($this->object->$name);
-			} elseif (is_array($this->object)) {
+			case self::TYPE_ARRAY:
 				return isset($this->object[$name]);
-			}
 		}
 		return FALSE;
 	}
@@ -164,14 +165,13 @@ class Node extends NodeBase implements ArrayAccess
 	 */
 	public function __unset($name)
 	{
-		if ($this->object !== NULL && !is_scalar($this->object)) {
-			if (is_object($this->object)) {
+		switch ($this->type) {
+			case self::TYPE_OBJECT:
 				unset($this->object->$name);
-			} elseif (is_array($this->object)) {
+			case self::TYPE_ARRAY:
 				unset($this->object[$name]);
-			}
 		}
-		throw new RuntimeException('Cannot access an undeclared property ' . get_class($this->object) . '::$' . $name . ', the node\'s object is scalar or NULL.');
+		throw new RuntimeException('Cannot unset an undeclared property ' . get_class($this) . '::$' . $name . '. Furthermore, the node\'s data is scalar or NULL.');
 	}
 
 
