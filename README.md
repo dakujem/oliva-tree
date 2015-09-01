@@ -173,8 +173,28 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 * nested sets
 * improvement: in path tree builder - and recursive tree builder - allow users to choose which member is used as a node key (currently position - and id - are forced)
 
+
+## Caveats
+The following will not work with `Node` implementation:
+```
+$data = (object) ['array' => []];
+$node = new Node($data);
+$node->array[4] = 'foobar'; // indirect modification of overloaded property
+```
+The assignment to `$node->array`'s element will trigger `E_NOTICE` and **will not have** the expected **effect**. To overcome this problem, use this approach:
+```
+$data = (object) ['array' => []];
+$node = new Node($data);
+$array = $node->array;
+$array[4] = 'foobar';
+$data->array = $array;
+```
+
+
 ## Notes
 
 * great thank's to folks in **Via Aurea, s.r.o.** for providing valuable support, motivation and real-life testing
+
+----
 
 > **Warning**: This library is privided **as-is** with absolutely **no warranty** nor any liability from its creators for anything it's usage, manipulation or distribution may cause
