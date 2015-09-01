@@ -197,4 +197,4 @@ $data->array = $array;
 
 ----
 
-> **Warning**: This library is privided **as-is** with absolutely **no warranty** nor any liability from its creators for anything it's usage, manipulation or distribution may cause
+> **Warning**: This library is provided **as-is** with absolutely **no warranty** nor any liability from its creators for anything it's usage, manipulation or distribution may cause.
