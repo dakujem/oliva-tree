@@ -31,9 +31,12 @@ class Node extends NodeBase implements ArrayAccess
 	protected $type = self::TYPE_SCALAR;
 
 
-	public function __construct($data_or_object = NULL)
+	/**
+	 * @param mixed $data any data - array, object or scalar
+	 */
+	public function __construct($data = NULL)
 	{
-		$this->setObject($data_or_object);
+		$this->setObject($data);
 	}
 
 
@@ -83,7 +86,7 @@ class Node extends NodeBase implements ArrayAccess
 	 * @param  string $name method name
 	 * @param  array  $args arguments
 	 * @return mixed
-	 * @throws MemberAccessException
+	 * @throws BadMethodCallException
 	 */
 	public function __call($name, $args)
 	{
@@ -101,7 +104,7 @@ class Node extends NodeBase implements ArrayAccess
 	 *
 	 * @param  string  $name property name
 	 * @return mixed   $value property value
-	 * @throws MemberAccessException if the property is not defined.
+	 * @throws RuntimeException if the property is not defined.
 	 */
 	public function __get($name)
 	{
@@ -122,7 +125,7 @@ class Node extends NodeBase implements ArrayAccess
 	 * @param  string  $name property name
 	 * @param  mixed   $value property value
 	 * @return void
-	 * @throws MemberAccessException if the property is not defined or is read-only
+	 * @throws RuntimeException if the property is not defined or is read-only
 	 */
 	public function __set($name, $value)
 	{
@@ -130,7 +133,11 @@ class Node extends NodeBase implements ArrayAccess
 			case self::TYPE_OBJECT:
 				return $this->object->$name = $value;
 			case self::TYPE_ARRAY:
-				return $this->object[$name] = $value;
+				if ($name !== NULL) {
+					return $this->object[$name] = $value;
+				} else {
+					return $this->object[] = $value;
+				}
 		}
 		throw new RuntimeException('Cannot write to an undeclared property ' . get_class($this) . '::$' . $name . '. Furthermore, the node\'s data is scalar or NULL.');
 	}
@@ -161,7 +168,7 @@ class Node extends NodeBase implements ArrayAccess
 	 *
 	 * @param  string  $name property name
 	 * @return void
-	 * @throws MemberAccessException
+	 * @throws RuntimeException
 	 */
 	public function __unset($name)
 	{

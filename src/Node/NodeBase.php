@@ -21,7 +21,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
-	 * TRUE when no parent has been set.
+	 * TRUE for a root node (when no parent has been set).
 	 *
 	 * 
 	 * @return type
@@ -29,6 +29,18 @@ abstract class NodeBase implements INode, IteratorAggregate
 	public function isRoot()
 	{
 		return !$this->getParent();
+	}
+
+
+	/**
+	 * TRUE for a leaf node (a node with no children).
+	 *
+	 *
+	 * @return boolean
+	 */
+	public function isLeaf()
+	{
+		return $this->getChildrenCount() === 0;
 	}
 
 
@@ -132,6 +144,18 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
+	 * Return all the parents from the root node to the direct parent of the node.
+	 *
+	 *
+	 * @return type
+	 */
+	public function getPath()
+	{
+		return array_reverse($this->getParents());
+	}
+
+
+	/**
 	 * Return the level of the node, e.g. the distance to the root.
 	 *
 	 *
@@ -166,12 +190,12 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * 
 	 * @param scalar $index
-	 * @return NodeBase|FALSE
+	 * @return INode|FALSE
 	 */
 	public function getChild($index)
 	{
 		if (!isset($this->children[$index])) {
-			return FALSE;
+			return FALSE; //TODO return FALSE or NULL ?
 		}
 		return $this->children[$index];
 	}
