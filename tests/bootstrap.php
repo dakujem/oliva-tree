@@ -1,79 +1,24 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once './DataWrapper.php';
+require_once './FooWrapper.php';
 
-class DataWrapper
+use Tracy\Debugger;
+
+// tester
+Tester\Environment::setup();
+
+// debugging
+Debugger::$strictMode = TRUE;
+Debugger::$logSeverity = E_NOTICE | E_WARNING;
+Debugger::enable();
+
+
+// dump shortcut
+function dump($var, $return = FALSE)
 {
-	public $id, $foo = 'bar', $title, $position, $parent;
-	private $attributes = [];
-
-
-	public function __construct($id = NULL, $title = NULL)
-	{
-		$this->id = $id;
-		$this->title = $title;
-	}
-
-
-	public function setParent($id)
-	{
-		$this->parent = $id;
-		return $this;
-	}
-
-
-	public function setPosition($position)
-	{
-		$this->position = $position;
-		return $this;
-	}
-
-
-	public function setAttribute($name, $val)
-	{
-		$this->attributes[$name] = $val;
-		return $this;
-	}
-
-
-	public function getAttribute($name, $default = NULL)
-	{
-		return isset($this->attributes[$name]) ? $this->attributes[$name] : $default;
-	}
-
-}
-
-
-class FooWrapper
-{
-	private $foo = ['get' => [], 'set' => [], 'call' => []];
-
-
-	public function getFoo()
-	{
-		return $this->foo;
-	}
-
-
-	public function __get($name)
-	{
-		$this->foo['get'][] = $name;
-		return 'foo attr ' . $name;
-	}
-
-
-	public function __set($name, $value)
-	{
-		$this->foo['set'][] = [$name, $value];
-		return $this;
-	}
-
-
-	public function __call(...$m)
-	{
-		$this->foo['call'][] = $m;
-		return $this;
-	}
-
+	return Debugger::dump($var, $return);
 }
 
 
@@ -184,10 +129,4 @@ function materializedTreeData()
 //		(new DataWrapper(2221, 'world\'s furthest leaf'))->setPosition('002002002001'),
 //		(new DataWrapper(3, 'a lonely foo'))->setPosition('003'),
 	];
-}
-
-
-function foo()
-{
-	
 }
