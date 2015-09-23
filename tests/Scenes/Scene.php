@@ -1,7 +1,10 @@
 <?php
 
 
-abstract class Scenario
+namespace Oliva\Test\Scene;
+
+
+abstract class Scene
 {
 
 

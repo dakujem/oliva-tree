@@ -1,6 +1,11 @@
 <?php
 
 
+namespace Oliva\Test;
+
+use RuntimeException;
+
+
 class DataWrapper
 {
 	public $id, $foo = 'bar', $title, $position, $parent;
@@ -63,7 +68,7 @@ class DataWrapper
 		$nl = strtolower($name);
 		$supported = ['scalar', 'array', 'object',];
 		if (in_array($nl, $supported)) {
-			if (call_user_func('is_' . $nl, $name)) {
+			if (call_user_func('is_' . $nl, $value)) {
 				$this->{'_overloaded' . ucfirst($nl)} = $value;
 				return $value;
 			}
@@ -75,7 +80,8 @@ class DataWrapper
 
 	public function __call($name, $arguments)
 	{
-		throw new RuntimeException('Invalid function call "' . $name . '" of "' . get_class($this) . '".');
+		return 'Calling "' . $name . '" on an instance of "' . get_class($this) . '" with ' . count($arguments) . ' arguments.';
+//		throw new RuntimeException('Invalid function call "' . $name . '" of "' . get_class($this) . '".');
 	}
 
 }
