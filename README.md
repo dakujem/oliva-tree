@@ -190,6 +190,27 @@ $array[4] = 'foobar';
 $data->array = $array;
 ```
 
+Furthermore, when using Node data of type `array`, using `NULL` index on `$node` does not produce the same results as indexing the array directly. These work just like an array would:
+```
+// data of type array
+$array = [1, 2, 3];
+$node = new Node($array);
+
+// these work just fine
+$node[] = 5;
+$node[100] = 'foo';
+$node[''] = 6;
+```
+However, the assignment to `NULL` index does not write to the `''` (empty string) index of the array, but appends an element as `$node[] = 7` would!
+```
+$array = [1, 2, 3];
+$node = new Node($array);
+
+// these fail
+$node[NULL] = 7;  // $node->getObject() === [1, 2, 3, 7]
+$array[NULL] = 7; // $array             === [1, 2, 3, '' => 7]
+```
+
 
 ## Notes
 
