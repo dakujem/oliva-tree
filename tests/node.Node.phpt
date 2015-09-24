@@ -71,6 +71,10 @@ class NodeTest extends Tester\TestCase
 		$clone[] = 5;
 		Assert::same($clone, $node->getObject());
 
+		$node[100] = 'foo';
+		$clone[100] = 'foo';
+		Assert::same($clone, $node->getObject());
+
 		$node[''] = 6;
 		$clone[''] = 6;
 		Assert::same($clone, $node->getObject());
@@ -79,7 +83,7 @@ class NodeTest extends Tester\TestCase
 		// cannot be solved without breaking the ability to add by calling $node[] = foo; (PHP 5.6)
 		$node[NULL] = 7;
 		$clone[NULL] = 7;
-		$buggy = [1, 2, 3, 5, '' => 6, 7];
+		$buggy = [1, 2, 3, 5, 100 => 'foo', '' => 6, 7];
 		Assert::notSame($clone, $node->getObject()); // Assert::same will fail - see below
 		Assert::same($buggy, $node->getObject()); // $clone !== $buggy
 	}
