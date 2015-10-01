@@ -73,6 +73,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	public function build($data)
 	{
 		$this->checkData($data);
+		$useIdAsIndex = TRUE;
 
 		$parentMember = $this->parentMember;
 		$idMember = $this->idMember;
@@ -110,7 +111,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 					// the node has been inserted before
 					$parentNode = $nodes[$parent];
 				}
-				$parentNode->addChild($node);
+				$parentNode->addChild($node, $useIdAsIndex ? $id : NULL);
 			}
 		}
 		if ($rootFound) {
