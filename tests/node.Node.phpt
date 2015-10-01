@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @author Andrej Rypak <xrypak@gmail.com>
+ */
 
 namespace Oliva\Test;
 

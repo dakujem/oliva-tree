@@ -13,7 +13,7 @@ class CollidingRootsScene extends Scene
 {
 
 
-	public function getRoot()
+	public function getData()
 	{
 		return[
 			(new DataWrapper(0, 'root'))->setPosition(NULL),

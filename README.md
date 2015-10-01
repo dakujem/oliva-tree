@@ -168,6 +168,8 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 ## What's comming next
 
 * unit tests
+* prunning (condition- and depth-based)
+* compare mechanisms for (sub-)trees
 * tree writers - alter the nodes data to reflect current tree structure (prepare for storage)
 * materialized path tree (id variant)
 * nested sets

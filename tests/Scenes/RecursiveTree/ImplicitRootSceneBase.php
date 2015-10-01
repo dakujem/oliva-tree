@@ -14,7 +14,7 @@ abstract class ImplicitRootSceneBase extends Scene
 	protected $implicitRoot;
 
 
-	public function getRoot()
+	public function getData()
 	{
 		return [
 			(new DataWrapper(0, 'root')),

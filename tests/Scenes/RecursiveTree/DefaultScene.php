@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * @author Andrej Rypak <xrypak@gmail.com>
+ */
+
 
 namespace Oliva\Test\Scene\RecursiveTree;
 
-use Oliva\Test\Scene\Scene;
+use Oliva\Test\Scene\Scene,
+	Oliva\Test\DataWrapper;
 
 
 /**
@@ -13,8 +18,34 @@ class DefaultScene extends Scene
 {
 
 
-	public function getRoot()
+	public function getData()
 	{
+		//		0   root
+		//		|
+		//		+--  1   hello
+		//		|    |
+		//		|    +--  11
+		//		|    |
+		//		|    +--  12
+		//		|
+		//		+--  2   world
+		//		|    |
+		//		|    +--  21
+		//		|    |
+		//		|    +--  22
+		//		|    |     |
+		//		|    |     +--  221
+		//		|    |     |
+		//		|    |     +--  222
+		//		|    |     |      |
+		//		|    |     |      +--  2221
+		//		|    |     |
+		//		|    |     +--  223
+		//		|    |
+		//		|    +--  23
+		//		|
+		//		+--  3
+
 		return [
 			(new DataWrapper(0, 'root')),
 			(new DataWrapper(1, 'hello'))->setParent(0),

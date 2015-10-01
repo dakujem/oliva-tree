@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @author Andrej Rypak <xrypak@gmail.com>
+ */
 
 namespace Oliva\Test;
 
@@ -209,9 +212,6 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same($grandchild, $leaf->getParent());
 		Assert::same([$grandchild, $child, $root->getChild(1), $root], $leaf->getParents());
 		Assert::same([$root, $root->getChild(1), $child, $grandchild], $leaf->getPath());
-
-		\Tracy\Debugger::$maxDepth = 10;
-		dump($root);
 	}
 
 

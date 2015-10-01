@@ -8,6 +8,6 @@ abstract class Scene
 {
 
 
-	abstract public function getRoot();
+	abstract public function getData();
 
 }

@@ -3,15 +3,16 @@
 
 namespace Oliva\Test;
 
+define('ROOT', __DIR__);
+define('SCENES', ROOT . '/Scenes');
+
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once SCENES . '/Scene.php';
 require_once './DataWrappers/DataWrapper.php';
 require_once './DataWrappers/LogWrapper.php';
 
 use Tracy\Debugger,
 	Tester\Environment;
-
-define('ROOT', __DIR__);
-define('SCENES', ROOT . '/Scenes');
 
 // tester
 Environment::setup();
@@ -19,6 +20,8 @@ Environment::setup();
 // debugging
 Debugger::$strictMode = TRUE;
 Debugger::enable();
+Debugger::$maxDepth = 10;
+Debugger::$maxLen = 500;
 
 
 // dump shortcut

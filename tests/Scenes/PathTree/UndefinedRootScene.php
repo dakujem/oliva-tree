@@ -13,7 +13,7 @@ class UndefinedRootScene extends Scene
 {
 
 
-	public function getRoot()
+	public function getData()
 	{
 		return [
 			(new DataWrapper(1, 'hello'))->setPosition('001'),

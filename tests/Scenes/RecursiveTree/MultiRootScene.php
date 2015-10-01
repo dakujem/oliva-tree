@@ -13,7 +13,7 @@ class MultiRootScene extends Scene
 {
 
 
-	public function getRoot()
+	public function getData()
 	{
 		return [
 			(new DataWrapper(1, 'root1')),
