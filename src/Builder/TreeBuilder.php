@@ -62,6 +62,23 @@ abstract class TreeBuilder
 
 
 	/**
+	 * Set the class name of newly created nodes.
+	 * The constructor of the class used should take arbitrary data as the first argument to its constructor.
+	 * 
+	 * Note: if you set a node callback using setNodeCallback(), it has a precedence ovet the set class name.
+	 * 
+	 * 
+	 * @param string $className
+	 * @return self fluent
+	 */
+	public function setNodeClass($className)
+	{
+		$this->nodeClass = $className;
+		return $this;
+	}
+
+
+	/**
 	 * Register a callback for node creation.
 	 * The first parameter of the callback is the data for the node.
 	 * More parameters can be specified as arguments passed to this method's call.
