@@ -163,6 +163,7 @@ class Tree implements ITree, IteratorAggregate
 
 	/**
 	 * Alias for getDepthFirst().
+	 * Does not preserve node children indices.
 	 *
 	 *
 	 * @return array
@@ -175,8 +176,11 @@ class Tree implements ITree, IteratorAggregate
 
 	/**
 	 * Returns an array of nodes in depth-first manner. Useful for grids, lists etc.
+	 * Does not preserve node children indices.
 	 *
+	 * Note: array_merge([$tree->getRoot()], iterator_to_array($tree->getIterator(TreeIterator::BREADTH_FIRST_RECURSION))) === $tree->getBreadthFirst()
 	 *
+	 * 
 	 * @return array
 	 */
 	public function getDepthFirst()
@@ -187,6 +191,7 @@ class Tree implements ITree, IteratorAggregate
 
 	/**
 	 * Returns an array of nodes in bredth-first manner.
+	 * Does not preserve node children indices.
 	 *
 	 *
 	 * @return array
@@ -199,6 +204,7 @@ class Tree implements ITree, IteratorAggregate
 
 	/**
 	 * Returns an array of nodes in depth-first manner. Useful for grids, lists etc.
+	 * Does not preserve node children indices.
 	 *
 	 *
 	 * @return array
@@ -211,6 +217,7 @@ class Tree implements ITree, IteratorAggregate
 
 	/**
 	 * Returns an array of nodes in bredth-first manner.
+	 * Does not preserve node children indices.
 	 *
 	 * 
 	 * @return array

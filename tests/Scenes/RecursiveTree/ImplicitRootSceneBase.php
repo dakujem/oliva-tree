@@ -4,6 +4,7 @@
 namespace Oliva\Test\Scene\RecursiveTree;
 
 use Oliva\Test\Scene\Scene;
+use Oliva\Test\DataWrapper;
 
 
 /**
@@ -11,15 +12,15 @@ use Oliva\Test\Scene\Scene;
  */
 abstract class ImplicitRootSceneBase extends Scene
 {
-	protected $implicitRoot;
+	public $implicitRoot;
 
 
 	public function getData()
 	{
 		return [
-			(new DataWrapper(0, 'root')),
-			(new DataWrapper(2, 'node'))->setParent($this->implitictRoot),
-			(new DataWrapper(3, 'leaf'))->setParent(2),
+			(new DataWrapper($this->implicitRoot, 'implicitRoot'))->setParent('foo'),
+			(new DataWrapper(100, 'node'))->setParent($this->implicitRoot),
+			(new DataWrapper(123, 'leaf'))->setParent(100),
 		];
 	}
 

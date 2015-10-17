@@ -4,7 +4,8 @@
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 
-namespace Oliva\Test;
+
+namespace Oliva\Test\NodeBase;
 
 require_once __DIR__ . '/bootstrap.php';
 
@@ -36,6 +37,14 @@ class NodeBaseTest extends Tester\TestCase
 		}
 		Assert::same(3, $root->getChildrenCount());
 		Assert::same($children, $root->getChildren());
+
+		$impostor = (new SimpleNode(10));
+		$getChildIndexFalsy = FALSE; // if getChildIndex return on failure is changed to NULL, change here as well
+		Assert::same($getChildIndexFalsy, $root->getChildIndex($impostor, FALSE));
+		$impostor->setParent($root);
+		Assert::same(0, $root->getChildIndex($impostor, FALSE));
+		Assert::same($getChildIndexFalsy, $root->getChildIndex($impostor, TRUE));
+		Assert::same($getChildIndexFalsy, $root->getChildIndex($impostor));
 
 		$childrenIndices = array_keys($children);
 		foreach ($childrenIndices as $index) {

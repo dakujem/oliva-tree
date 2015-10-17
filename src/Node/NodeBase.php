@@ -16,7 +16,7 @@ use Oliva\Utils\Tree\Iterator\TreeIterator;
  */
 abstract class NodeBase implements INode, IteratorAggregate
 {
-	protected $children = array();
+	protected $children = [];
 	protected $parent = NULL;
 
 
@@ -136,9 +136,9 @@ abstract class NodeBase implements INode, IteratorAggregate
 	{
 		$parent = $this->getParent();
 		if ($parent !== NULL) {
-			return array_merge(array($parent), $parent->getParents());
+			return array_merge([$parent], $parent->getParents());
 		} else {
-			return array();
+			return [];
 		}
 	}
 
@@ -190,12 +190,12 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * 
 	 * @param scalar $index
-	 * @return INode|FALSE
+	 * @return INode|FALSE returns FALSE when there is no child node under the index
 	 */
 	public function getChild($index)
 	{
 		if (!isset($this->children[$index])) {
-			return FALSE; //TODO return FALSE or NULL ?
+			return FALSE;
 		}
 		return $this->children[$index];
 	}
@@ -208,9 +208,9 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * @param INode $node
 	 * @return int|FALSE returns FALSE if the node is not a child of this node.
 	 */
-	public function getChildIndex(INode $node)
+	public function getChildIndex(INode $node, $strict = TRUE)
 	{
-		return array_search($node, $this->children);
+		return array_search($node, $this->children, $strict);
 	}
 
 
@@ -275,6 +275,8 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * This node becomes the direct parent of the inserted child node.
 	 *
+	 * Note: adding to NULL index is only possible by adding to '' (empty string) index.
+	 *
 	 *
 	 * @param INode $node
 	 * @param scalar $index = NULL index
@@ -319,7 +321,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 */
 	public function removeChildren()
 	{
-		$this->children = array();
+		$this->children = [];
 		return $this;
 	}
 

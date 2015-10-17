@@ -61,6 +61,18 @@ class TreeIterator implements Iterator
 
 
 	/**
+	 * Return the recursion mode.
+	 * 
+	 * 
+	 * @return mixed TreeIterator constants
+	 */
+	public function getRecursion()
+	{
+		return $this->recursion;
+	}
+
+
+	/**
 	 * @return INode
 	 */
 	public function current()
@@ -69,7 +81,7 @@ class TreeIterator implements Iterator
 		if (empty($this->queue)) {
 			return NULL;
 		}
-		list($index, $node) = reset($this->queue);
+		list(, $node) = reset($this->queue);
 		return $node;
 	}
 
@@ -78,8 +90,8 @@ class TreeIterator implements Iterator
 	{
 		$this->init();
 		if (!empty($this->queue)) {
-			list($index, $node) = array_shift($this->queue);
-			if ($this->recursion !== self::NON_RECURSIVE) {
+			list(, $node) = array_shift($this->queue);
+			if ($this->getRecursion() !== self::NON_RECURSIVE) {
 				// adds children to queue according to recursion mode - to the front for DF, at the end for BF
 				$this->enqueue($node->getChildren());
 			}
@@ -93,7 +105,7 @@ class TreeIterator implements Iterator
 		if (empty($this->queue)) {
 			return NULL;
 		}
-		list($index, $node) = reset($this->queue);
+		list($index, ) = reset($this->queue);
 		return $index;
 	}
 
@@ -149,6 +161,7 @@ class TreeIterator implements Iterator
 	{
 		if (!$this->ready) {
 			$this->enqueue($this->root->getChildren());
+//			$this->enqueue([$this->root]); //TODO tu je zrejme chyba - otazne - mal by iterator iterovat aj cez root?
 			$this->ready = TRUE;
 		}
 	}
@@ -163,7 +176,7 @@ class TreeIterator implements Iterator
 	 */
 	protected function enqueue(array $nodes)
 	{
-		if ($this->recursion !== self::DEPTH_FIRST_RECURSION || empty($this->queue)) {
+		if ($this->getRecursion() !== self::DEPTH_FIRST_RECURSION || empty($this->queue)) {
 			foreach ($nodes as $index => $node) {
 				$this->queue[] = [$index, $node];
 			}

@@ -32,7 +32,7 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 	public function __construct($childrenMember = NULL)
 	{
-		$this->childrenMember = $childrenMember != NULL ? $childrenMember : self::$childrenMemberDefault; // intentionally !=
+		$this->childrenMember = $childrenMember !== NULL ? $childrenMember : self::$childrenMemberDefault;
 	}
 
 
@@ -45,6 +45,9 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	public function build($rootNodeData)
 	{
+		if (is_scalar($rootNodeData)) {
+			throw new RuntimeException('The data must be an array or an object containing the root data and children data (if any), ' . gettype($rootNodeData) . ' provided.', 2);
+		}
 		return $this->buildNode($rootNodeData);
 	}
 
@@ -79,7 +82,7 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 		// if children data is present, process children and add them to the freshly created node
 		if (is_array($childrenDataItems) || $childrenDataItems instanceof Traversable) {
 			foreach ($childrenDataItems as $index => $childDataItem) {
-				$child = $this->build($childDataItem); // recursion
+				$child = $this->buildNode($childDataItem); // recursion
 				$node->addChild($child, $index);
 			}
 		}
@@ -93,14 +96,14 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * Check the input data for correct type.
 	 *
 	 *
-	 * @param array|object $root
+	 * @param array|object $data
 	 * @throws RuntimeException
 	 */
-	protected function checkData($root)
+	protected function checkData($data)
 	{
-		if (is_scalar($root)) {
-			throw new RuntimeException('The data must be an array or an object containing the root data and children data (if any), ' . gettype($root) . ' provided.');
-		}
+//		if ($data !== NULL && !is_scalar($data) && !is_array($data) && !$data instanceof Traversable) {
+//			throw new RuntimeException('The data provided must be an array or must be traversable, ' . (is_object($data) ? 'an instance of ' . get_class($data) : gettype($data) . '') . ' provided.', 2);
+//		}
 	}
 
 }

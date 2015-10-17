@@ -8,10 +8,13 @@ namespace Oliva\Utils\Tree\Node;
  * SimpleNode.
  *
  *
+ * @property mixed $value
+ *
+ *
  * @author Andrej Rypak <andrej.rypak@viaaurea.cz>
  * @copyright Via Aurea, s.r.o.
  */
-class SimpleNode extends NodeBase
+class SimpleNode extends NodeBase implements IDataNode
 {
 	public $value = NULL;
 
@@ -22,6 +25,25 @@ class SimpleNode extends NodeBase
 	}
 
 
+	/**
+	 * Get the node's value.
+	 *
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return $this->value;
+	}
+
+
+	/**
+	 * Set the node's value.
+	 *
+	 *
+	 * @param mixed $value
+	 * @return self fluent
+	 */
 	public function setValue($value)
 	{
 		$this->value = $value;
@@ -29,9 +51,28 @@ class SimpleNode extends NodeBase
 	}
 
 
-	public function getValue()
+	/**
+	 * Alias for getValue().
+	 *
+	 *
+	 * @return mixed the value of the node
+	 */
+	public function getContents()
 	{
-		return $this->value;
+		return $this->getValue();
+	}
+
+
+	/**
+	 * Alias for setValue().
+	 *
+	 *
+	 * @param mixed $value
+	 * @return self fluent
+	 */
+	public function setContents($value)
+	{
+		return $this->setValue($value);
 	}
 
 }

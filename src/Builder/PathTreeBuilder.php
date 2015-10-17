@@ -82,7 +82,7 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		$usePositionAsIndex = TRUE;
 
 		$root = $this->createNode();
-		$nodes = array();
+		$nodes = [];
 		foreach ($data as $item) {
 			$itemPosition = $this->getMember($item, $hierarchyMember);
 

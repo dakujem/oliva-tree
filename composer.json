@@ -1,5 +1,10 @@
 {
 	"name": "oliva/utils-tree",
+
+	"description": "Tree utility for handling data stored in flat data structures like databases and more.",
+    "keywords": ["tree","utilities","utility","data structures"],
+    "license": "GNU GPL v3",
+
 	"type": "library",
 	"authors": [
 		{

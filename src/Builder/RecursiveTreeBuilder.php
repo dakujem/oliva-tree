@@ -52,6 +52,12 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	public $implicitRoots = [0, '0', '',];
 
+	/**
+	 * Throw an exception when multiple roots are found?
+	 * @var bool
+	 */
+	public $throwOnMultipleRoots = FALSE;
+
 
 	public function __construct($parentMember = NULL, $idMember = NULL)
 	{
@@ -65,6 +71,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * The node with no (NULL) parent is considered to be the root. If node points to self, it is considered the root as well.
 	 * If no root is found, a node with ID in $implicitRoots will be sought and used as the root if found (default 0, "0", "").
 	 * Do not provide multiple trees and multiple roots, as the behaviour is not defined - the trees will overwrite one onother.
+	 * You can also set $throwOnMultipleRoots member to TRUE to throw exception on multiple roots (this will be the default setting soon).
 	 *
 	 *
 	 * @param array|Traversable $data traversable data containing node data items
@@ -77,7 +84,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 		$parentMember = $this->parentMember;
 		$idMember = $this->idMember;
-		$nodes = array();
+		$nodes = []; // node cache, processed nodes
 		$rootId = NULL;
 		$rootFound = FALSE;
 		foreach ($data as $item) {
@@ -85,6 +92,10 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 			$parent = $this->getMember($item, $parentMember);
 
 			if ($parent === NULL || $id === $parent) {
+				if ($this->throwOnMultipleRoots && $rootFound) {
+					throw new RuntimeException('Multiple roots occurring in the data.', 200);
+				}
+				// the root has been found
 				$rootId = $id;
 				$parent = NULL;
 				$rootFound = TRUE;
@@ -92,7 +103,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 			$node = $this->createNode($item);
 			if (isset($nodes[$id])) {
-				// a stub node has been inserted before - need to replace it
+				// a stub node has been inserted into node cache before - need to replace it
 				/* @var $stub INode */
 				$stub = $nodes[$id];
 				foreach ($stub->getChildren() as $index => $child) {
@@ -100,20 +111,22 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 				}
 				$node->setParent($stub->getParent());
 			}
-			// insert the node into the check table
+			// insert the node into the node cache table
 			$nodes[$id] = $node;
 
 			if ($parent !== NULL) {
 				if (!isset($nodes[$parent])) {
-					// insert a stub node parent into the check table
+					// insert a stub of the parent node into the node cache
 					$nodes[$parent] = $parentNode = $this->createNode();
 				} else {
-					// the node has been inserted before
+					// the parent node has been processed before
 					$parentNode = $nodes[$parent];
 				}
 				$parentNode->addChild($node, $useIdAsIndex ? $id : NULL);
 			}
 		}
+
+		// all nodes processed, root found?
 		if ($rootFound) {
 			$root = $nodes[$rootId];
 		} else {
@@ -128,7 +141,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 		if ($root !== NULL) {
 			return $root;
 		}
-		throw new RuntimeException('No root node present.');
+		throw new RuntimeException('No root node present.', 100);
 	}
 
 }

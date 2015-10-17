@@ -5,16 +5,19 @@
  */
 
 
-namespace Oliva\Test;
+namespace Oliva\Test\DataTree;
 
 require_once __DIR__ . '/bootstrap.php';
 
-require_once SCENES . '/RecursiveTree/DefaultScene.php';
+require_once SCENES . '/DefaultScene.php';
 
 use Tester\Assert;
 use Oliva\Utils\Tree\DataTree,
 	Oliva\Utils\Tree\Builder\RecursiveTreeBuilder,
-	Oliva\Test\Scene\RecursiveTree\DefaultScene;
+	Oliva\Test\Scene\DefaultScene,
+	Oliva\Utils\Tree\Comparator\NodeComparator;
+
+$comparator = new NodeComparator();
 
 $data = (new DefaultScene())->getData();
 $builder = new RecursiveTreeBuilder();
@@ -22,20 +25,8 @@ $node = $builder->build($data);
 
 $tree = new DataTree($data, $builder);
 $root = $tree->getRoot();
-
-//TODO: compare subtrees !
-Assert::same($node->title, $root->title);
-$children = $root->getChildren();
-foreach ($node->getChildren() as $index => $child) {
-	Assert::same($child->id, $children[$index]->id);
-}
+Assert::same(TRUE, $comparator->compare($node, $root));
 
 $tree->rebuild($data);
 $rootNew = $tree->getRoot();
-
-//TODO: compare subtrees !
-Assert::same($node->title, $rootNew->title);
-$childrenNew = $rootNew->getChildren();
-foreach ($node->getChildren() as $index => $child) {
-	Assert::same($child->id, $childrenNew[$index]->id);
-}
+Assert::same(TRUE, $comparator->compare($node, $rootNew));

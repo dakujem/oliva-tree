@@ -4,7 +4,7 @@
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 
-namespace Oliva\Test;
+namespace Oliva\Test\SimpleNode;
 
 require_once __DIR__ . '/bootstrap.php';
 

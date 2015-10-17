@@ -45,17 +45,16 @@ abstract class TreeBuilder
 	 */
 	protected function getMember($item, $member)
 	{
-		$message = 'Missing ' . ( is_array($item) ? 'member' : 'attribute') . ' "' . $member . '" of $item of type ' . $this->typeHint($item) . '.';
 		if (is_object($item)) {
 			try {
 				$value = $item->$member;
 			} catch (Exception $e) {
-				$this->dataError($item, new RuntimeException($message, 1, $e));
+				$value = $this->dataError($item, $member, new RuntimeException($this->formatMissingMemberMessage($item, $member), 1, $e));
 			}
 		} elseif (is_array($item) && key_exists($member, $item)) {
 			$value = $item[$member];
 		} else {
-			$this->dataError($item, new RuntimeException($message, 1));
+			$value = $this->dataError($item, $member, new RuntimeException($this->formatMissingMemberMessage($item, $member), 1));
 		}
 		return $value;
 	}
@@ -109,12 +108,13 @@ abstract class TreeBuilder
 	/**
 	 * Register a callback to handle data errors while building the tree.
 	 * The first parameter of the callback is the data item for the node.
-	 * The second parameter is the exception causing the tree building error.
+	 * The second parameter is the member that is being accessed.
+	 * The third parameter is the exception causing the tree building error.
 	 * More parameters can be specified as arguments passed to this method's call.
 	 *
-	  $builder->setDataErrorCallback(function($item, $exception) { ... });
+	  $builder->setDataErrorCallback(function($item, $member, $exception) { ... });
 	 *
-	  $builder->setDataErrorCallback(function($item, $exception, ...$customParams) use($builder) {  ...  }, $customParam1_value, $customParam2_value);
+	  $builder->setDataErrorCallback(function($item, $member, $exception, ...$customParams) use($builder) {  ...  }, $customParam1_value, $customParam2_value);
 	 *
 	 *
 	 * @param callable $function
@@ -132,7 +132,7 @@ abstract class TreeBuilder
 
 
 	/**
-	 * Creates a node. If arguments are provided, they are passed to the constructor.
+	 * Creates a node. If arguments are provided, they are passed to the constructor and callback (if provided).
 	 *
 	 *
 	 * @return INode
@@ -148,18 +148,20 @@ abstract class TreeBuilder
 
 	/**
 	 * Handles data error.
-	 * You can throw an exception here or whatever...
+	 * An exception can be thrown here or data can be repaired or whatever...
 	 *
-	 * Don't forget - you can specify your own error-handling routine using setDataErrorCallback() method!
+	 * Note: If the callback/method does not throw, the return value is used for node creation.
+	 *
+	 * Don't forget: user can specify his own error-handling routine using setDataErrorCallback() method!
 	 *
 	 *
 	 * @return mixed
 	 * @throws RuntimeException
 	 */
-	protected function dataError($item, RuntimeException $exception)
+	protected function dataError($item, $member, RuntimeException $exception)
 	{
 		if ($this->dataErrorCallback !== NULL) {
-			return call_user_func_array($this->dataErrorCallback[0], array_merge([$item, $exception], $this->dataErrorCallback[1]));
+			return call_user_func_array($this->dataErrorCallback[0], array_merge([$item, $member, $exception], $this->dataErrorCallback[1]));
 		}
 		throw $exception;
 	}
@@ -175,7 +177,7 @@ abstract class TreeBuilder
 	protected function checkData($data)
 	{
 		if (!is_array($data) && !$data instanceof Traversable) {
-			throw new RuntimeException('The data provided must be an array or must be traversable, ' . (is_object($data) ? 'an instance of ' . get_class($data) . ' provided' : gettype($data) . '') . '.');
+			throw new RuntimeException('The data provided must be an array or must be traversable, ' . (is_object($data) ? 'an instance of ' . get_class($data) : gettype($data) . '') . ' provided.', 2);
 		}
 	}
 
@@ -190,6 +192,12 @@ abstract class TreeBuilder
 	protected function typeHint($item)
 	{
 		return is_object($item) ? get_class($item) : gettype($item);
+	}
+
+
+	protected function formatMissingMemberMessage($item, $member)
+	{
+		return sprintf('Missing %s "%s" of $item of type %s.', is_array($item) ? 'member' : 'attribute', $member, $this->typeHint($item));
 	}
 
 }

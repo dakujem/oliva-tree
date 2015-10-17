@@ -14,16 +14,16 @@ use Oliva\Test\Scene\Scene,
 /**
  * Scene: recursive tree with multiple roots
  */
-class MultiRootScene extends Scene
+class NoRootScene extends Scene
 {
 
 
 	public function getData()
 	{
 		return [
-			(new DataWrapper(1, 'root1')),
-			(new DataWrapper(2, 'root2')),
-			(new DataWrapper(3, 'foobar'))->setParent(1),
+			(new DataWrapper(1, 'node1'))->setParent(3),
+			(new DataWrapper(2, 'node2'))->setParent(1),
+			(new DataWrapper(3, 'node3'))->setParent(2),
 		];
 	}
 
