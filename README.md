@@ -1,7 +1,27 @@
-# Oliva Tree Utils for PHP
+# Oliva Tree Utilities for PHP
 Simple utility for handling tree structures in PHP.
 
 Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on arbitrary tree structures.
+
+
+## Why use Oliva Tree?
+It has been build for real-life usage and it is tested that way.
+
+It provides many utilities for data manipulation, it will make building components like **menus**, **tree views**, **grids**, **data lists** and other a fun thing to do.
+
+### What can Oliva Tree do?
+* **build** tree structures **from arbitrary flat data** with support for
+    *  materialized paths (position path variant)
+    *  recursive trees (parent - id)
+* enhance functionality of data already in tree structures
+* build trees **from JSON** strings
+* **find nodes**, breadth-first or depth-first
+* **filter nodes** by any condition
+* **compare trees**, nodes, sub-trees
+* provide means for **easy** tree structure **manipulation**
+* **transform** tree structures to flat data, in breadth-first or depth-first manner
+
+
 
 ## Usage
 Each tree has a root node. Each node allows getting/setting of children and parent, thus creating a tree structure.
@@ -167,9 +187,9 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 
 ## What's comming next
 
-* (more) unit tests
+* extended documentation
 * prunning (condition- and depth-based)
-* compare mechanisms for (sub-)trees
+* node moving
 * tree writers - alter the nodes data to reflect current tree structure (prepare for storage)
 * materialized path tree (id variant)
 * nested sets
