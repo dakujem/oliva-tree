@@ -154,10 +154,10 @@ class Tree implements ITree, IteratorAggregate
 	 */
 	public function find($key, $val, $recursion = TreeIterator::BREADTH_FIRST_RECURSION)
 	{
-		foreach (new TreeSimpleFilterIterator($this->getIterator($recursion), $key, $val) as $node) {
-			return $node;
-		}
-		return NULL;
+		$it = new TreeSimpleFilterIterator($this->getIterator($recursion), $key, $val);
+		$it->rewind();
+		$node = $it->current(); // the first element, FALSE if empty
+		return $node instanceof INode ? $node : NULL;
 	}
 
 

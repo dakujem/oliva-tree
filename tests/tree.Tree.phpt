@@ -64,6 +64,7 @@ function subroutine2()
 
 	// find
 	Assert::same($tree->getRoot()->getChild(2)->getChild(22)->getChild(221), $tree->find('id', 221));
+	Assert::same(NULL, $tree->find('id', 'nonexistent'));
 }
 
 
