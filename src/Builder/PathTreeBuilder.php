@@ -3,6 +3,7 @@
 
 namespace Oliva\Utils\Tree\Builder;
 
+use RuntimeException;
 use Oliva\Utils\Tree\Node\INode;
 
 
@@ -54,12 +55,21 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	public $autoSort;
 
+	/**
+	 * This string will stop gap-bridging when it reaches the cut-off value.
+	 * It is useful when building sub-trees not starting from the root.
+	 * When not empty, it has to be the prefix of all nodes' hierarchy members.
+	 * @var string
+	 */
+	public $hierarchyCutoff;
 
-	public function __construct($hierarchyMember = NULL, $charsPerLevel = NULL, $autoSort = TRUE)
+
+	public function __construct($hierarchyMember = NULL, $charsPerLevel = NULL, $autoSort = TRUE, $hierarchyCutoff = '')
 	{
-		$this->hierarchyMember = $hierarchyMember != NULL ? $hierarchyMember : self::$hierarchyMemberDefault; // intentionally !=
+		$this->hierarchyMember = $hierarchyMember !== NULL ? $hierarchyMember : self::$hierarchyMemberDefault;
 		$this->charsPerLevel = $charsPerLevel > 0 ? $charsPerLevel : self::$charsPerLevelDefault;
 		$this->autoSort = !!$autoSort;
+		$this->hierarchyCutoff = (string) $hierarchyCutoff;
 	}
 
 
@@ -84,7 +94,12 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		$root = $this->createNode();
 		$nodes = [];
 		foreach ($data as $item) {
-			$itemPosition = $this->getMember($item, $hierarchyMember);
+			$rawPosition = $this->getMember($item, $hierarchyMember);
+			$cutoff = substr($rawPosition, 0, strlen($this->hierarchyCutoff));
+			if (!empty($this->hierarchyCutoff) && $cutoff !== $this->hierarchyCutoff) {
+				throw new RuntimeException(sprintf('Item hierarchy member "%s" does not start with the set hierarchy cut-off string "%s".', $rawPosition, $this->hierarchyCutoff), 3);
+			}
+			$itemPosition = substr($rawPosition, strlen($this->hierarchyCutoff));
 
 			if ($itemPosition === NULL || strlen($itemPosition) < $this->charsPerLevel) {
 				// root node found
@@ -107,23 +122,23 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 			$parentPos = substr($itemPosition, 0, -$charsPerLevel);
 			if (isset($nodes[$parentPos])) {
 				// parent has already been processed, link the child
-				$nodes[$parentPos]->addChild($node, $usePositionAsIndex ? $itemPosition : NULL);
+				$nodes[$parentPos]->addChild($node, $usePositionAsIndex ? $cutoff . $itemPosition : NULL);
 			} else {
 				// bridge the gap between the current node and the nearest parent
 				$pos = $parentPos;
 				$childPosition = $itemPosition;
 				$childNode = $node;
-				while (strlen($pos) >= $charsPerLevel && !isset($nodes[$pos])) {
+				while (strlen($pos) >= $charsPerLevel && strlen($pos) >= strlen($cutoff) && !isset($nodes[$pos])) {
 					$nodes[$pos] = $newNode = $this->createNode();
-					$newNode->addChild($childNode, $usePositionAsIndex ? $childPosition : NULL);
+					$newNode->addChild($childNode, $usePositionAsIndex ? $cutoff . $childPosition : NULL);
 					$childNode = $newNode;
 					$childPosition = $pos;
 					$pos = substr($pos, 0, -$charsPerLevel);
 				}
 				if (!isset($nodes[$pos])) {
-					$root->addChild($childNode, $usePositionAsIndex ? $childPosition : NULL);
+					$root->addChild($childNode, $usePositionAsIndex ? $cutoff . $childPosition : NULL);
 				} else {
-					$nodes[$pos]->addChild($childNode, $usePositionAsIndex ? $childPosition : NULL);
+					$nodes[$pos]->addChild($childNode, $usePositionAsIndex ? $cutoff . $childPosition : NULL);
 				}
 			}
 		}

@@ -156,12 +156,25 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
-	 * Return the level of the node, e.g. the distance to the root.
+	 * Return the level of the node, e.g. the distance to the root, the depth.
+	 * Alias of getDepth().
 	 *
 	 *
-	 * @return type
+	 * @return int
 	 */
 	public function getLevel()
+	{
+		return $this->getDepth();
+	}
+
+
+	/**
+	 * Return the depth of the node, e.g. the distance to the root.
+	 *
+	 *
+	 * @return int
+	 */
+	public function getDepth()
 	{
 		return count($this->getParents());
 	}
