@@ -22,6 +22,17 @@ It provides many utilities for data manipulation, it will make building componen
 * **transform** tree structures to flat data, in breadth-first or depth-first manner
 
 
+## Installation
+The easiest way to install is to use composer. Just add `"oliva/tree"` to the "require" section in your `composer.json` file.
+```json
+{
+	"require": {
+		"php": ">=5.6.0",
+		"oliva/tree"
+	}
+}
+```
+
 
 ## Usage
 Each tree has a root node. Each node allows getting/setting of children and parent, thus creating a tree structure.
@@ -53,6 +64,37 @@ $myObject = new MyObject();
 $node = new Node($myObject);
 $node->aMethodOfTheobject(); // the call is forwarded to the object
 ```
+
+
+### Comparing nodes
+
+To compare the data of nodes, use the `NodeComparator` class.
+```php
+// the comparator
+$comparator = new NodeComparator();
+
+// simple nodes
+$node1 = new SimpleNode(1);
+$node2 = new SimpleNode(1);
+$node3 = new SimpleNode(2);
+
+// basic comparison
+$comparator->compare($node1, $node2); // TRUE
+$comparator->compare($node1, $node3); // FALSE
+```
+`NodeComparator` can be configured to compare with various strictness (can be set up to compare to equality `==` or identity `===` for different data types), not to compare recursively, to compare child indices and much more.
+
+A **custom comparison function** can also be provided:
+```php
+$comparator->callbackCompare($node1, $node3, function($nodeData1, $nodeData2) {
+            if($nodeData1 > 10){
+                return $nodeData1 > $nodeData2;
+            }
+			return $nodeData1 === $nodeData2;
+		}); // FALSE
+```
+> **Note**: this is just a basic example, `NodeComparator` can of course compare whole branches with all their nodes  **recursively**.
+
 
 ### Tree
 Trees are implementations of `ITree` interface. Class `Tree` holds the root and provides convenient methods for creating iterators easily.
