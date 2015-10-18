@@ -1,5 +1,5 @@
 {
-	"name": "oliva/utils-tree",
+	"name": "oliva/tree",
 
 	"description": "Tree utility for handling data stored in flat data structures like databases and more.",
     "keywords": ["tree","utilities","utility","data structures"],
@@ -15,7 +15,7 @@
 	"repositories": [
 		{
 			"type": "vcs",
-			"url": "https://github.com/dakujem/oliva-utils-tree"
+			"url": "https://github.com/dakujem/oliva-tree"
 		}
 	],
 	"require": {
