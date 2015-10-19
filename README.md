@@ -157,7 +157,7 @@ $it = $tree->getFilteringCallbackIterator(function(\Oliva\Tree\NodeBase $node, $
 You can build trees from linear data structures, such as database results, using `DataTree` class and tree builders. You can also build trees from data already in tree structure.
 
 #### Recursive tree
-A trivial data tree where each data-node has a pointer to its parent.
+A trivial data tree where each data-node has a pointer to its parent. This data model is called the Adjacency List Model and when stored in a database, it is often referred to as the self-joined table design, self-referencing or self-referenced tables and so on.
 
 | ID        | parent    | title|
 |:----------|:----------|:-------|
@@ -179,7 +179,9 @@ $tree = new DataTree($data, new RecursiveTreeBuilder('parent', 'id'));
 #### Path tree
 A data tree where the position of a node in a tree is represented by a position (hierarchy) string. This allows ordering of leafs. Each level is represented by 3 (in this case) characters of the string representing the position of the node in the current sub-tree.
 
-Path trees are useful for storing menu hierarchy or similar structures where position of a node within a sub-tree matters.
+Path trees are useful for storing menu hierarchy or similar structures where position of a node within a sub-tree matters. In large data sets with big IDs this approach may also reduce data size.
+
+> **Note**: this is a special case of Materialized Path data model, where fixed number of characters are used for each level and no encoding of position is used.
 
 | ID        | position    | title|
 |:----------|:----------|:-------|

@@ -10,7 +10,7 @@ use Oliva\Utils\Tree\Node\INode;
 /**
  * Recursive tree builder.
  * Builds data from a linear data structure, where each node holds an ID
- * of its parent.
+ * of its parent, e.g. data following the Adjacency List Model.
  *
  * Example:
  * Node(id:1,parent:2) is a child of node(id:2,parent:3), which is a child
