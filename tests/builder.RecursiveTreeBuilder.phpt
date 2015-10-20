@@ -71,19 +71,9 @@ $builder->throwOnMultipleRoots = TRUE; // this will be the default setting later
 $data = (new DefaultScene)->getData();
 $root = $builder->build($data);
 
+// core test
 testRoot($root);
 
-
-function testRoot(Node $root)
-{
-	Assert::equal(FALSE, $root->getChild(NULL));
-	Assert::same('hello', $root->getChild(1)->title);
-	Assert::same('world', $root->getChild(2)->title);
-	Assert::same('world second child', $root->getChild(2)->getChild(22)->title);
-	Assert::same('world\'s furthest leaf', $root->getChild(2)->getChild(22)->getChild(222)->getChild(2221)->title);
-	Assert::same('a lonely foo', $root->getChild(3)->title);
-	Assert::same(3, count($root->getChild(2)->getChild(22)->getChildren()));
-}
 
 // implicit roots
 implicitRootSubroutine($builder, new ImplicitRootScene2());
@@ -95,14 +85,6 @@ $nullRoot = $builder->build((new ImplicitRootScene1())->getData());
 Assert::same(100, $nullRoot->id);
 Assert::same(123, $nullRoot->getChild(123)->id);
 
-
-function implicitRootSubroutine(RecursiveTreeBuilder $builder, ImplicitRootSceneBase $scene)
-{
-	$root = $builder->build($scene->getData());
-	Assert::same($scene->implicitRoot, $root->id);
-	Assert::same(100, $root->getChild(100)->id);
-	Assert::same(123, $root->getChild(100)->getChild(123)->id);
-}
 
 // no root exception
 Assert::exception(function() use ($builder) {
@@ -127,6 +109,30 @@ Assert::exception(function() use ($builder) {
 // test missing reference behaviour
 missingRefSubroutine($builder);
 bridgingSubroutine($builder, $root);
+
+// test altering indices
+testIndexAltering($builder, $data);
+
+
+function testRoot(Node $root)
+{
+	Assert::equal(FALSE, $root->getChild(NULL));
+	Assert::same('hello', $root->getChild(1)->title);
+	Assert::same('world', $root->getChild(2)->title);
+	Assert::same('world second child', $root->getChild(2)->getChild(22)->title);
+	Assert::same('world\'s furthest leaf', $root->getChild(2)->getChild(22)->getChild(222)->getChild(2221)->title);
+	Assert::same('a lonely foo', $root->getChild(3)->title);
+	Assert::same(3, count($root->getChild(2)->getChild(22)->getChildren()));
+}
+
+
+function implicitRootSubroutine(RecursiveTreeBuilder $builder, ImplicitRootSceneBase $scene)
+{
+	$root = $builder->build($scene->getData());
+	Assert::same($scene->implicitRoot, $root->id);
+	Assert::same(100, $root->getChild(100)->id);
+	Assert::same(123, $root->getChild(100)->getChild(123)->id);
+}
 
 
 function missingRefSubroutine(RecursiveTreeBuilder $builder)
@@ -159,4 +165,22 @@ function bridgingSubroutine(RecursiveTreeBuilder $builder, Node $expectedOutput)
 	//NOTE: no comparison can be done (yet), as the children are in different order (no comparator for that complexity yet)
 	$comparator = new NodeComparator(TRUE, NodeComparator::STRICT_SCALARS, TRUE);
 	Assert::equal(FALSE, $comparator->compare($root, $expectedOutput)); // maybe a to-do task
+}
+
+
+function testIndexAltering(RecursiveTreeBuilder $builder, $data)
+{
+	// modify data: multiply ids and parents by 100
+	foreach ($data as $item) {
+		$item->setParent($item->parent * 100);
+		$item->id = $item->id * 100;
+	}
+	$builderClone = clone $builder;
+	$builderClone->setIndex(function($id) {
+		return $id / 100; // divide ID by 100
+	});
+
+	$root = $builderClone->build($data);
+
+	testRoot($root);
 }

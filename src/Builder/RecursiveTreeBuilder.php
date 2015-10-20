@@ -58,6 +58,12 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	public $throwOnMultipleRoots = FALSE;
 
+	/**
+	 * The index processor - will produce indices for nodes.
+	 * @var callable
+	 */
+	protected $indexProcessor;
+
 
 	public function __construct($parentMember = NULL, $idMember = NULL)
 	{
@@ -80,10 +86,9 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	public function build($data)
 	{
 		$this->checkData($data);
-		$useIdAsIndex = TRUE;
 
-		$parentMember = $this->parentMember;
-		$idMember = $this->idMember;
+		$parentMember = $this->getParentMember();
+		$idMember = $this->getIdMember();
 		$nodes = []; // node cache, processed nodes
 		$rootId = NULL;
 		$rootFound = FALSE;
@@ -122,7 +127,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 					// the parent node has been processed before
 					$parentNode = $nodes[$parent];
 				}
-				$parentNode->addChild($node, $useIdAsIndex ? $id : NULL);
+				$parentNode->addChild($node, $this->getChildIndex($id, $node));
 			}
 		}
 
@@ -142,6 +147,65 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 			return $root;
 		}
 		throw new RuntimeException('No root node present.', 100);
+	}
+
+
+	/**
+	 * Calculate the index for the node. Either use node's data or the id used in the algorithm.
+	 *
+	 *
+	 * @param string|int $nodeId
+	 * @param INode $node is NULL for stub nodes
+	 * @return int|string index for node
+	 */
+	protected function getChildIndex($nodeId, INode $node = NULL)
+	{
+		if (is_callable($this->indexProcessor)) {
+			return call_user_func($this->indexProcessor, $nodeId, $node);
+		} elseif ($node !== NULL && is_string($this->indexProcessor)) {
+			return $this->getMember($node, $this->indexProcessor[0] === '@' ? substr($this->indexProcessor, 1) : $this->indexProcessor);
+		}
+		return $nodeId;
+	}
+
+
+	public function getIdMember()
+	{
+		return $this->idMember;
+	}
+
+
+	public function getParentMember()
+	{
+		return $this->parentMember;
+	}
+
+
+	/**
+	 * Set how to calculate indices.
+	 * The accepted value types are:
+	 * 		- NULL: do not use any processor, use the id from algorithm as index
+	 * 		- string: node's member, to avoid collisions with callable functions, use "@" prefix
+	 * 		- callable: any callable
+	 *
+	 * The callable receives arguments:
+	 * 		- 1. string|int id of the node
+	 * 		- 2. INode the node
+	 * The callable must return a unique index or NULL that will be used as argument to INode::addChild() call.
+	 * When returning NULL, standard array indexing is used.
+	 *
+	 *
+	 * @param string|callable $processor
+	 * @return self fluent
+	 * @throws RuntimeException
+	 */
+	public function setIndex($processor = NULL)
+	{
+		if ($processor !== NULL && !is_callable($processor) && !is_string($processor)) {
+			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($processor) ? get_class($processor) : gettype($processor)), 4);
+		}
+		$this->indexProcessor = $processor;
+		return $this;
 	}
 
 }

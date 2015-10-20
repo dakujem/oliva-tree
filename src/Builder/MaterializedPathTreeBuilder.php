@@ -222,13 +222,15 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	/**
 	 * Set how to calculate indices.
 	 * The accepted value types are:
+	 * 		- NULL: do not use any processor, use the hierarchy as index
 	 * 		- string: node's member, to avoid collisions with callable functions, use "@" prefix
 	 * 		- callable: any callable
 	 *
 	 * The callable receives arguments:
 	 * 		- 1. string hierarchy
-	 * 		- 2. INode node
-	 * The callable must return a unique index that will be used as argument to INode::addChild() call.
+	 * 		- 2. INode the node
+	 * The callable must return a unique index or NULL that will be used as argument to INode::addChild() call.
+	 * When returning NULL, standard array indexing is used.
 	 *
 	 *
 	 * @param string|callable $processor
