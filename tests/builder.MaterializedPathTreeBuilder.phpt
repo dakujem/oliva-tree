@@ -33,85 +33,107 @@ use Oliva\Utils\Tree\Node\Node,
 	Oliva\Utils\Tree\Iterator\TreeIterator,
 	Oliva\Utils\Tree\Iterator\TreeSimpleFilterIterator;
 
-$hierarchyMember = 'position';
-
-$builder = new MaterializedPathTreeBuilder(function($data) {
-	return $data->position;
-}, '.', '@id');
-$builder2 = new MaterializedPathTreeBuilder($hierarchyMember, 3);
-
-//		0   root
-//		|
-//		+--  1   hello
-//		|    |
-//		|    +--  11
-//		|    |
-//		|    +--  12
-//		|
-//		+--  2   world
-//		|    |
-//		|    +--  21
-//		|    |
-//		|    +--  22
-//		|    |     |
-//		|    |     +--  221
-//		|    |     |
-//		|    |     +--  222
-//		|    |     |      |
-//		|    |     |      +--  2221
-//		|    |     |
-//		|    |     +--  223
-//		|    |
-//		|    +--  23
-//		|
-//		+--  3
-
-$data = (new DelimitedScene)->getData();
-//$data = (new DefaultScene)->getData();
-$root = $builder->build($data);
-
-dump($root);
-
-// basic test
-testRoot($root, 'e3');
+coreTest();
+testBuilderWithEncoder(new MaterializedPathTreeBuilder('position', 3), 'e1');
 
 
-$data2 = (new DefaultScene)->getData();
-$root2 = $builder2->build($data2);
-
-dump($root2);
-testRoot($root2, 'e1');
-
-//TODO: test the materialized tree capabilities - callbacks, diffeerent data types, etc.
-die;
-
-
-/**/
-
-
-
-// multiple root problem - colliding roots
-// - the behaviour is the same as any other duplicit hierarchy node - tha data is overwritten
-// - do not rely on this behaviour as it may change without notice
-//collidingRootsSubroutine($builder, new CollidingRootsScene());
-// no root - no problem
-noRootSubroutine($builder);
-
-// test missing reference behaviour
-missingRefSubroutine($builder);
-
-// bridging
-bridgingSubroutine($builder, $root);
-
-
-// hierarchy cutoff
-//cutoffSubroutine0($builder);
-//cutoffSubroutine1($builder);
-//cutoffSubroutine2($builder);
-
-
-function testRoot(Node $root, $encoder)
+function coreTest()
 {
+	$hierarchyMember = 'position';
+
+	//		0   root
+	//		|
+	//		+--  1   hello
+	//		|    |
+	//		|    +--  11
+	//		|    |
+	//		|    +--  12
+	//		|
+	//		+--  2   world
+	//		|    |
+	//		|    +--  21
+	//		|    |
+	//		|    +--  22
+	//		|    |     |
+	//		|    |     +--  221
+	//		|    |     |
+	//		|    |     +--  222
+	//		|    |     |      |
+	//		|    |     |      +--  2221
+	//		|    |     |
+	//		|    |     +--  223
+	//		|    |
+	//		|    +--  23
+	//		|
+	//		+--  3
+
+
+	$delimitedData = (new DelimitedScene)->getData();
+	$defaultData = (new DefaultScene)->getData();
+
+	// --------------------------------------------
+	// test various builds and scenes
+	// --------------------------------------------
+	/**/
+
+	// basic fixed-length scene
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, 3), $defaultData, 'e1');
+
+	// basic delimited scene
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, '.'), $delimitedData, 'e2');
+
+	// custom indices
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, '.', '@id'), $delimitedData, 'e3');
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, 3, function($hierarchy, $node) {
+		return $node->id;
+	}), $defaultData, 'e3');
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, 3, function($hierarchy) {
+		return $hierarchy . 'foobar';
+	}), $defaultData, 'e1_foo');
+
+	// custom hierarchy callback
+	testRoutine(new MaterializedPathTreeBuilder(function($data) use ($hierarchyMember) {
+		return $data->$hierarchyMember;
+	}, '.'), $delimitedData, 'e2');
+
+	// custom delimiter processor
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, function($hierarchy) {
+		return substr($hierarchy, 0, -3) !== FALSE ? substr($hierarchy, 0, -3) : NULL;
+	}), $defaultData, 'e1');
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, function($hierarchy) {
+		return substr($hierarchy, 0, strrpos($hierarchy, '.')) !== FALSE ? substr($hierarchy, 0, strrpos($hierarchy, '.')) : NULL;
+	}), $delimitedData, 'e2');
+}
+
+
+function testBuilderWithEncoder(MaterializedPathTreeBuilder $builder, $encoder)
+{
+
+	// multiple root problem - colliding roots
+	// - the behaviour is the same as any other duplicit hierarchy node - tha data is overwritten
+	// - do not rely on this behaviour as it may change without notice
+	collidingRootsSubroutine($builder, new CollidingRootsScene(), $encoder);
+	// no root - no problem
+	noRootSubroutine($builder, $encoder);
+
+	// test missing reference behaviour
+	missingRefSubroutine($builder, $encoder);
+
+	// bridging
+	bridgingSubroutine($builder, $encoder);
+
+
+	// hierarchy cutoff
+	cutoffSubroutine0($builder, $encoder);
+	cutoffSubroutine1($builder, $encoder);
+	cutoffSubroutine2($builder, $encoder);
+}
+
+
+function testRoutine(MaterializedPathTreeBuilder $builder, $data, $encoder)
+{
+	$root = $builder->build($data);
+
 	Assert::equal(FALSE, $root->getChild(NULL));
 	$encoder = __NAMESPACE__ . '\\' . $encoder;
 	Assert::same('hello', $root->getChild($encoder('001'))->title);
@@ -127,6 +149,13 @@ function testRoot(Node $root, $encoder)
 function e1($position)
 {
 	return $position;
+}
+
+
+// return position string as is
+function e1_foo($position)
+{
+	return $position . 'foobar';
 }
 
 
@@ -156,9 +185,10 @@ function e3($position)
 }
 
 
-function collidingRootsSubroutine(MaterializedPathTreeBuilder $builder, CollidingRootsScene $scene)
+function collidingRootsSubroutine(MaterializedPathTreeBuilder $builder, CollidingRootsScene $scene, $encoder)
 {
 	$root = $builder->build($scene->getData());
+	$encoder = __NAMESPACE__ . '\\' . $encoder;
 	Assert::same('root2', $root->title);
 	Assert::same(2, count($root->getChildren()));
 	Assert::same('hello', $root->getChild($encoder('001'))->title);
@@ -168,9 +198,10 @@ function collidingRootsSubroutine(MaterializedPathTreeBuilder $builder, Collidin
 }
 
 
-function noRootSubroutine(MaterializedPathTreeBuilder $builder)
+function noRootSubroutine(MaterializedPathTreeBuilder $builder, $encoder)
 {
 	$root = $builder->build((new UndefinedRootScene())->getData());
+	$encoder = __NAMESPACE__ . '\\' . $encoder;
 	Assert::same(NULL, $root->getContents());
 	Assert::same(2, count($root->getChildren()));
 	Assert::same('hello', $root->getChild($encoder('001'))->title);
@@ -178,12 +209,13 @@ function noRootSubroutine(MaterializedPathTreeBuilder $builder)
 }
 
 
-function missingRefSubroutine(MaterializedPathTreeBuilder $builder)
+function missingRefSubroutine(MaterializedPathTreeBuilder $builder, $encoder)
 {
 	// when any part is missing, the path to the root is bridged with empty stub nodes
 	$data = (new MissingRefScene())->getData();
 
 	$root = $builder->build($data);
+	$encoder = __NAMESPACE__ . '\\' . $encoder;
 
 	Assert::same(3, count($root->getChildren()));
 	Assert::same('hello', $root->getChild($encoder('001'))->title);
@@ -201,24 +233,30 @@ function missingRefSubroutine(MaterializedPathTreeBuilder $builder)
 }
 
 
-function bridgingSubroutine(MaterializedPathTreeBuilder $builder)
+function bridgingSubroutine(MaterializedPathTreeBuilder $builder, $encoder)
 {
 	// when reference to parent is missing, the whole branch is lost
 	$data = (new BridgingScene())->getData();
-	$root = $builder->build($data);
 
 	// same testing routine as for the DefaultScene
-	testRoot($root);
+	testRoutine($builder, $data, $encoder);
 }
 
 
-function cutoffSubroutine0(MaterializedPathTreeBuilder $builder)
+function cutoffSubroutine0(MaterializedPathTreeBuilder $builder, $encoder)
 {
 	$builderWithCutoff = clone $builder;
-	$builderWithCutoff->hierarchyCutoff = '007';
+	$builderWithCutoff->setHierarchy(function($data) use ($builderWithCutoff) {
+		$position = $builderWithCutoff->getMember($data, 'position');
+		if (substr($position, 0, 3) === '007') {
+			return substr($position, 3);
+		}
+		throw new \RuntimeException('FOO!');
+	});
+	$encoder = __NAMESPACE__ . '\\' . $encoder;
 
 	$data = (new CutoffScene())->getData();
-	$data[] = ['id' => 3, $builderWithCutoff->hierarchyMember => '003', 'title' => 'stray dog'];
+	$data[] = ['id' => 3, 'position' => '003', 'title' => 'stray dog'];
 
 	// must throw exception - prefix 007 not present in "stray dog" node
 	Assert::error(function()use($builderWithCutoff, $data) {
@@ -227,8 +265,9 @@ function cutoffSubroutine0(MaterializedPathTreeBuilder $builder)
 }
 
 
-function cutoffSubroutine1(MaterializedPathTreeBuilder $builder)
+function cutoffSubroutine1(MaterializedPathTreeBuilder $builder, $encoder)
 {
+	$encoder = __NAMESPACE__ . '\\' . $encoder;
 	/* @var $root Node */
 	/* @var $rootCut Node */
 	/* @var $node Node */
@@ -248,8 +287,9 @@ function cutoffSubroutine1(MaterializedPathTreeBuilder $builder)
 }
 
 
-function cutoffSubroutine2(MaterializedPathTreeBuilder $builder)
+function cutoffSubroutine2(MaterializedPathTreeBuilder $builder, $encoder)
 {
+	$encoder = __NAMESPACE__ . '\\' . $encoder;
 	/* @var $root Node */
 	/* @var $rootCut Node */
 	/* @var $node Node */
@@ -274,17 +314,22 @@ function cutoffDataSubroutine(MaterializedPathTreeBuilder $builder, Scene $scene
 	$data = $scene->getData();
 	$root = $builder->build($data);
 
-	$it = new TreeSimpleFilterIterator(new TreeIterator($root), $builder->hierarchyMember, '007002002001');
+	$it = new TreeSimpleFilterIterator(new TreeIterator($root), 'position', '007002002001');
 	$it->rewind();
 	/* @var $node Node */
 	$node = $it->current();
 
 	$builderWithCutoff = clone $builder;
-	$builderWithCutoff->hierarchyCutoff = '007';
-
+	$builderWithCutoff->setHierarchy(function($data) use ($builderWithCutoff) {
+		$position = $builderWithCutoff->getMember($data, 'position');
+		if (substr($position, 0, 3) === '007') {
+			return substr($position, 3);
+		}
+		throw new \RuntimeException('FOO!');
+	});
 	$rootCut = $builderWithCutoff->build($data);
 
-	$it2 = new TreeSimpleFilterIterator(new TreeIterator($rootCut), $builder->hierarchyMember, '007002002001');
+	$it2 = new TreeSimpleFilterIterator(new TreeIterator($rootCut), 'position', '007002002001');
 	$it2->rewind();
 	/* @var $nodeCut Node */
 	$nodeCut = $it2->current();
