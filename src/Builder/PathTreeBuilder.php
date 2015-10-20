@@ -9,6 +9,11 @@ use Oliva\Utils\Tree\Node\INode;
 
 /**
  * Path tree builder.
+ *
+ * @deprecated use directly MaterializedPathTreeBuilder instead. This class is only provided for backward compatibility.
+ *
+ *
+ *
  * Builds data from a linear data structure, where each node holds its
  * position within the tree in its hierarchy member.
  * Fixed number of characters is used for each level.
