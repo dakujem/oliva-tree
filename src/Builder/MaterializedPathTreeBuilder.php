@@ -17,7 +17,10 @@ use Oliva\Utils\Tree\Node\INode;
  * 			a delimiter must be present at the end of the string,
  * 			otherwise the direct parent will always be cut out.
  *
- * NOTE:	A custom hierarchy getter can be used to cut a certain portion of the string for building sub-trees
+ * NOTE:	When a connection to the root node or to any ancestor is missing,
+ * 			the builder will automatically create empty stub nodes and bridge the gap - connect the node through
+ * 			these stub nodes all the way to the root node or other nearest ancestor.
+ * 			A custom hierarchy getter can be used to cut a certain portion of the string for building sub-trees
  * 			that need not be bridged all the way to the root.
  *
  *
@@ -44,8 +47,8 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	public static $indexDefault = NULL;
 
 	/**
-	 * The Node's member carrying the hierarchy information.
-	 * @var string
+	 * The Node's hierarchy value getter.
+	 * @var array[$callable, $parameter]
 	 */
 	protected $hierarchy;
 
@@ -62,7 +65,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	protected $indexProcessor;
 
 	/**
-	 *
+	 * The sorting subroutine used for children nodes sorting.
 	 * @var callable|NULL
 	 */
 	protected $sorting;
@@ -154,6 +157,53 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	}
 
 
+	/**
+	 * Set how to get the hierarchy value.
+	 * The accepted value types are:
+	 * 		- string: node's member, to avoid collisions with callable functions, use "@" prefix
+	 * 		- callable: any callable
+	 *
+	 * The callable receives arguments:
+	 * 		- 1. mixed node data
+	 * The callable must return the hierarchy (member) value.
+	 *
+	 *
+	 * @param string|callable $hierarchy
+	 * @return self fluent
+	 * @throws RuntimeException
+	 */
+	public function setHierarchy($hierarchy)
+	{
+		if (is_callable($hierarchy)) {
+			$this->hierarchy = [$hierarchy, NULL];
+		} elseif (is_string($hierarchy)) {
+			$this->hierarchy = [[$this, 'getMember'], $hierarchy[0] === '@' ? substr($hierarchy, 1) : $hierarchy];
+		} else {
+			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)));
+		}
+		return $this;
+	}
+
+
+	/**
+	 * Set the subroutine for parsing the hierarchy string - delimiting processor.
+	 * The accepted value types are:
+	 * 		- string:	a character delimiter, usually one of: .,|/-
+	 * 					--> use for character delimiting
+	 * 		- int:		a number och characters for each level
+	 * 					--> use for fixed-length hierarchy delimiting
+	 * 		- callable:	any callable
+	 * 					--> use for custom delimiting
+	 *
+	 * The callable receives arguments:
+	 * 		- 1. string current node's hierarchy value
+	 * The callable must return the hierarchy value of the parent node for given current node's hierarchy.
+	 *
+	 *
+	 * @param string|callable $delimiter
+	 * @return self fluent
+	 * @throws RuntimeException
+	 */
 	public function setDelimiter($delimiter)
 	{
 		if (is_numeric($delimiter)) {
@@ -169,19 +219,22 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	}
 
 
-	public function setHierarchy($hierarchy)
-	{
-		if (is_callable($hierarchy)) {
-			$this->hierarchy = [$hierarchy, NULL];
-		} elseif (is_string($hierarchy)) {
-			$this->hierarchy = [[$this, 'getMember'], $hierarchy[0] === '@' ? substr($hierarchy, 1) : $hierarchy];
-		} else {
-			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)));
-		}
-		return $this;
-	}
-
-
+	/**
+	 * Set how to calculate indices.
+	 * The accepted value types are:
+	 * 		- string: node's member, to avoid collisions with callable functions, use "@" prefix
+	 * 		- callable: any callable
+	 *
+	 * The callable receives arguments:
+	 * 		- 1. string hierarchy
+	 * 		- 2. INode node
+	 * The callable must return a unique index that will be used as argument to INode::addChild() call.
+	 *
+	 *
+	 * @param string|callable $processor
+	 * @return self fluent
+	 * @throws RuntimeException
+	 */
 	public function setIndex($processor = NULL)
 	{
 		if ($processor !== NULL && !is_callable($processor) && !is_string($processor)) {
@@ -192,6 +245,20 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	}
 
 
+	/**
+	 * Set the sorting subroutine used for sorting of child nodes.
+	 * This is the only post processing subroutine and is only provided for convenience,
+	 * as sorting is often required.
+	 *
+	 * The callable receives arguments:
+	 * 		- 1. array $nodes
+	 * The callable can process the nodes in any way appropriate.
+	 *
+	 *
+	 * @param bool|callable $sorting
+	 * @return self fluent
+	 * @throws RuntimeException
+	 */
 	public function setSorting($sorting)
 	{
 		if ($sorting === TRUE) {
@@ -208,16 +275,16 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 
 	/**
-	 * Get hierarchy (or any unique identifier) of a node.
+	 * Get hierarchy (or any unique identifier) of a parent's node.
 	 * This method is used to parse a parent's portion of a given hierarchy.
 	 *
 	 *
-	 * @param string $hierarchy
+	 * @param string $currentHierarchy
 	 * @return string
 	 */
-	protected function getParentIdentification($hierarchy)
+	protected function getParentHierarchy($currentHierarchy)
 	{
-		return call_user_func($this->delimitingProcessor[0], $hierarchy, $this->delimitingProcessor[1]);
+		return call_user_func($this->delimitingProcessor[0], $currentHierarchy, $this->delimitingProcessor[1]);
 	}
 
 
@@ -278,6 +345,13 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	}
 
 
+	/**
+	 * Get the value of the hierarchy for a given node's data.
+	 *
+	 *
+	 * @param mixed $data arbitrary node's data
+	 * @return string
+	 */
 	protected function getHierarchyValue($data)
 	{
 		return call_user_func($this->hierarchy[0], $data, $this->hierarchy[1]);
@@ -324,6 +398,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	/**
 	 * Replaces a node with a new one. Copies all its relationships and resets its child index if it has a parent.
 	 * @internal
+	 * 
 	 *
 	 * @param INode $source
 	 * @param mixed $data data for the node
