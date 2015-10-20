@@ -108,7 +108,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 				$nodeCache[$itemPosition] = $currentNode = $this->createNode($item);
 
 				// get the parent's position
-				$parentPos = $itemPosition !== NULL ? $this->getParentIdentification($itemPosition) : NULL;
+				$parentPos = $itemPosition !== NULL ? $this->getParentHierarchy($itemPosition) : NULL;
 
 				// insert node into the tree
 				if ($itemPosition !== NULL && isset($nodeCache[$parentPos])) {
@@ -130,7 +130,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 						$stubParent->addChild($childNode, $this->getChildIndex($childPosition, $childNode !== $currentNode ? NULL : $currentNode ));
 						$childNode = $stubParent;
 						$childPosition = $stubParentPos;
-						$stubParentPos = $stubParentPos !== NULL ? $this->getParentIdentification($stubParentPos) : NULL;
+						$stubParentPos = $stubParentPos !== NULL ? $this->getParentHierarchy($stubParentPos) : NULL;
 					} while (!isset($nodeCache[$stubParentPos]));
 					// connect to the previously processed node,
 					// EXCEPT when the above cycle terminated due to reaching the root
