@@ -74,8 +74,9 @@ $root = $builder->build($data);
 testRoot($root);
 
 
-function testRoot($root)
+function testRoot(Node $root)
 {
+	Assert::equal(FALSE, $root->getChild(NULL));
 	Assert::same('hello', $root->getChild(1)->title);
 	Assert::same('world', $root->getChild(2)->title);
 	Assert::same('world second child', $root->getChild(2)->getChild(22)->title);
