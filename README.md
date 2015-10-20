@@ -236,8 +236,6 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 * node moving
 * tree writers - alter the node's data to reflect current tree structure (prepare for storage) - a counterpart to tree builders
 * nested sets
-* fluent tree construction
-* improvement: in recursive tree builder - allow users to choose which member is used as a node key (currently id is forced)
 * unite and document exception codes
 
 
