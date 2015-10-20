@@ -234,11 +234,11 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 * extended documentation
 * prunning (condition- and depth-based)
 * node moving
-* tree writers - alter the nodes data to reflect current tree structure (prepare for storage)
-* materialized path tree (id variant)
+* tree writers - alter the node's data to reflect current tree structure (prepare for storage) - a counterpart to tree builders
 * nested sets
 * fluent tree construction
-* improvement: in path tree builder - and recursive tree builder - allow users to choose which member is used as a node key (currently position - and id - are forced)
+* improvement: in recursive tree builder - allow users to choose which member is used as a node key (currently id is forced)
+* unite and document exception codes
 
 
 ## Caveats
