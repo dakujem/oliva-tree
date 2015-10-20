@@ -40,7 +40,7 @@ class JsonTreeBuilder extends SimpleTreeBuilder implements ITreeBuilder
 	 * @return mixed the value of the member
 	 * @throws RuntimeException
 	 */
-	protected function getMember($item, $member)
+	public function getMember($item, $member)
 	{
 		if ($item instanceof stdClass && isset($item->$member)) {
 			$value = $item->$member;

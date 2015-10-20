@@ -43,7 +43,7 @@ abstract class TreeBuilder
 	 * @return mixed the value of the member
 	 * @throws RuntimeException
 	 */
-	protected function getMember($item, $member)
+	public function getMember($item, $member)
 	{
 		if (is_object($item)) {
 			try {
