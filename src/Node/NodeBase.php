@@ -24,7 +24,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * TRUE for a root node (when no parent has been set).
 	 *
 	 * 
-	 * @return type
+	 * @return bool
 	 */
 	public function isRoot()
 	{
@@ -84,7 +84,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * 
 	 * @param bool $excludeThisNode = TRUE (default) this node will be ignored in sibling nodes
-	 * @return array|FALSE returns siblings in an array or FALSE if no parent is present.
+	 * @return INode[]|FALSE returns siblings in an array or FALSE if no parent is present.
 	 */
 	public function getSiblings($excludeThisNode = TRUE)
 	{
@@ -118,7 +118,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Returns the node's direct parent.
 	 *
 	 *
-	 * @return type
+	 * @return INode|NULL
 	 */
 	public function getParent()
 	{
@@ -130,7 +130,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Return all the parents from the direct parent node to the root node.
 	 *
 	 *
-	 * @return type
+	 * @return INode[]
 	 */
 	public function getParents()
 	{
@@ -144,10 +144,27 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
+	 * Returns the root connected to the node.
+	 * When the node itself is a root, it is returned.
+	 *
+	 * 
+	 * @return INode
+	 */
+	public function getRoot()
+	{
+		if ($this->isRoot()) {
+			return $this;
+		}
+		$parents = $this->getParents();
+		return end($parents); // $parents cannot be empty
+	}
+
+
+	/**
 	 * Return all the parents from the root node to the direct parent of the node.
 	 *
 	 *
-	 * @return type
+	 * @return INode[]
 	 */
 	public function getPath()
 	{
@@ -231,11 +248,23 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Returns all the node's children.
 	 *
 	 *
-	 * @return array
+	 * @return INode[]
 	 */
 	public function getChildren()
 	{
 		return $this->children;
+	}
+
+
+	/**
+	 * Return the indices of all children.
+	 *
+	 *
+	 * @return array
+	 */
+	public function getChildrenIndices()
+	{
+		return array_keys($this->children);
 	}
 
 
@@ -297,9 +326,6 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 */
 	public function addChild(INode $node, $index = NULL)
 	{
-		if (!$node instanceof static) {
-			$node = new static($node);
-		}
 		$node->setParent($this);
 		if ($index === NULL) {
 			$this->children[] = $node;
@@ -335,6 +361,71 @@ abstract class NodeBase implements INode, IteratorAggregate
 	public function removeChildren()
 	{
 		$this->children = [];
+		return $this;
+	}
+
+
+	/**
+	 * An alternative to addChild() method, provides a fluent interface for tree building,
+	 * it will automatically create an instance of static and pass the data to the constructor
+	 * and return the new node.
+	 * Note the difference between addNode and addLeaf methods.
+	 *
+	 * This approach is useful for fluent tree building, like this:
+	 *
+	 * $root->addNode('1')
+	 *           ->addNode('1.1')
+	 *               ->addLeaf('1.1.1')
+	 *               ->addLeaf('1.1.2')
+	 *               ->getParent()
+	 *           ->addLeaf('1.2')
+	 *           ->addNode('1.3')
+	 *               ->addLeaf('1.3.1')
+	 *               ->addLeaf('1.3.2')
+	 *               ->getParent()
+	 *           ->getParent()
+	 *      ->addLeaf('2');
+	 *
+	 * 
+	 * @param mixed $data any data that can be passed to the node's constructor
+	 * @param int|string $index any node's index that can be used as array index
+	 * @return INode the newly created node (!)
+	 */
+	public function addNode($data, $index = NULL)
+	{
+		return $this->addChild(new static($data), $index);
+	}
+
+
+	/**
+	 * An alternative to addChild() method, provides a fluent interface for tree building,
+	 * it will automatically create an instance of static and pass the data to the constructor
+	 * and return the current node.
+	 * Note the difference between addNode and addLeaf methods.
+	 *
+	 * This approach is useful for fluent tree building, like this:
+	 *
+	 * $root->addNode('1')
+	 *           ->addNode('1.1')
+	 *               ->addLeaf('1.1.1')
+	 *               ->addLeaf('1.1.2')
+	 *               ->getParent()
+	 *           ->addLeaf('1.2')
+	 *           ->addNode('1.3')
+	 *               ->addLeaf('1.3.1')
+	 *               ->addLeaf('1.3.2')
+	 *               ->getParent()
+	 *           ->getParent()
+	 *      ->addLeaf('2');
+	 *
+	 *
+	 * @param mixed $data any data that can be passed to the node's constructor
+	 * @param int|string $index any node's index that can be used as array index
+	 * @return INode the current node (!)
+	 */
+	public function addLeaf($data, $index = NULL)
+	{
+		$this->addChild(new static($data), $index);
 		return $this;
 	}
 

@@ -38,6 +38,9 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same(3, $root->getChildrenCount());
 		Assert::same($children, $root->getChildren());
 
+		Assert::same([0,1,2], $root->getChildrenIndices());
+		Assert::same(array_keys($children), $root->getChildrenIndices());
+
 		$impostor = (new SimpleNode(10));
 		$getChildIndexFalsy = FALSE; // if getChildIndex return on failure is changed to NULL, change here as well
 		Assert::same($getChildIndexFalsy, $root->getChildIndex($impostor, FALSE));
@@ -221,6 +224,35 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same($grandchild, $leaf->getParent());
 		Assert::same([$grandchild, $child, $root->getChild(1), $root], $leaf->getParents());
 		Assert::same([$root, $root->getChild(1), $child, $grandchild], $leaf->getPath());
+	}
+
+
+	public function testFluentInterface()
+	{
+		$root = new SimpleNode('0');
+
+		$root
+				->addNode('1')
+				/**/->addNode('1.1')
+				/*   */->addLeaf('1.1.1')
+				/*   */->addLeaf('1.1.2')
+				/*   */->getParent()
+				/**/->addLeaf('1.2')
+				/**/->addNode('1.3')
+				/*   */->addLeaf('1.3.1')
+				/*   */->addLeaf('1.3.2')
+				/*   */->getParent()
+				/**/->getParent()
+				->addLeaf('2', 17);
+
+		Assert::same('1', $root->getChild(0)->getContents());
+		Assert::same('1.1.1', $root->getChild(0)->getChild(0)->getChild(0)->getContents());
+		Assert::same('1.1.2', $root->getChild(0)->getChild(0)->getChild(1)->getContents());
+		Assert::same('1.2', $root->getChild(0)->getChild(1)->getContents());
+		Assert::same('1.3', $root->getChild(0)->getChild(2)->getContents());
+		Assert::same('1.3.2', $root->getChild(0)->getChild(2)->getChild(1)->getContents());
+		Assert::equal(FALSE, $root->getChild(1));
+		Assert::equal('2', $root->getChild(17)->getContents());
 	}
 
 
