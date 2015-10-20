@@ -179,7 +179,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		} elseif (is_string($hierarchy)) {
 			$this->hierarchyGetter = [[$this, 'getMember'], $hierarchy[0] === '@' ? substr($hierarchy, 1) : $hierarchy];
 		} else {
-			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)));
+			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)), 4);
 		}
 		return $this;
 	}
@@ -213,7 +213,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		} elseif (is_callable($delimiter)) {
 			$this->delimitingProcessor = [$delimiter, NULL];
 		} else {
-			throw new RuntimeException(sprintf('Invalid delimiter of type %s provided. Either provide an integer for fixed-length hierarchy delimiting, a string containing a delimiting character or a callable function that will process the node\'s hierarchy member value.', is_object($delimiter) ? get_class($delimiter) : gettype($delimiter)));
+			throw new RuntimeException(sprintf('Invalid delimiter of type %s provided. Either provide an integer for fixed-length hierarchy delimiting, a string containing a delimiting character or a callable function that will process the node\'s hierarchy member value.', is_object($delimiter) ? get_class($delimiter) : gettype($delimiter)), 4);
 		}
 		return $this;
 	}
@@ -238,7 +238,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	public function setIndex($processor = NULL)
 	{
 		if ($processor !== NULL && !is_callable($processor) && !is_string($processor)) {
-			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($processor) ? get_class($processor) : gettype($processor)));
+			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($processor) ? get_class($processor) : gettype($processor)), 4);
 		}
 		$this->indexProcessor = $processor;
 		return $this;
@@ -268,7 +268,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		} elseif (is_callable($sorting)) {
 			$this->sorting = $sorting;
 		} else {
-			throw new RuntimeException(sprintf('Invalid sorting processor of type %s provided. Provide a valid callable function that will sort array of nodes or use TRUE to use default sorting or FALSE to not use any sorting.', is_object($sorting) ? get_class($sorting) : gettype($sorting)));
+			throw new RuntimeException(sprintf('Invalid sorting processor of type %s provided. Provide a valid callable function that will sort array of nodes or use TRUE to use default sorting or FALSE to not use any sorting.', is_object($sorting) ? get_class($sorting) : gettype($sorting)), 4);
 		}
 		return $this;
 	}
