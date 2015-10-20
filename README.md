@@ -11,8 +11,9 @@ It provides many utilities for data manipulation, it will make building componen
 
 ### What can Oliva Tree do?
 * **build** tree structures **from arbitrary flat data** with support for
-    *  materialized paths (position path variant)
-    *  recursive trees (parent - id)
+    *  materialized path data model
+    *  recursive trees (parent - id) (adjacency list data model, self-joined tables)
+* build trees using fluent interface
 * enhance functionality of data already in tree structures
 * build trees **from JSON** strings
 * **find nodes**, breadth-first or depth-first
@@ -38,7 +39,9 @@ The easiest way to install is to use composer. Just add `"oliva/tree"` to the "r
 Each tree has a root node. Each node allows getting/setting of children and parent, thus creating a tree structure.
 
 ### Node
-`NodeBase` is a basic abstract implementation of the `INode` interface. `Node` is a full-featured implementation allowing creation of trees with **arbitrary data** or objects.
+`NodeBase` is an abstract implementation of the `INode` interface and the base for `Node` and `SimpleNode` classes. It provides a rich set of convenience methods.
+
+`Node` is an implementation allowing creation of trees with **arbitrary data** or objects with seamless access to the original data.
 ```php
 $node = new Node();
 $node->title = 'item one';
@@ -51,7 +54,7 @@ $allChildren = $node->getChildren();
 $child->isFirst(); // TRUE - first of the siblings
 $child->isLast(); // FALSE - last of the siblings
 
-$child->getLevel(); // 1 - since it only has one parent, the root (the root is level 0)
+$child->getDepth(); // 1 - since it only has one parent, the root (the root has depth 0)
 
 $child->detach(); // detach from the tree, becomes root
 $child->isRoot(); // TRUE
@@ -64,7 +67,29 @@ $myObject = new MyObject();
 $node = new Node($myObject);
 $node->aMethodOfTheobject(); // the call is forwarded to the object
 ```
+`SimpleNode` only has a value accessible by `getValue()` and `setValue()` methods. It can be any value.
 
+#### Fluent tree building
+Another cool feature. Both `Node` and `SimpleNode` descend from `NodeBase` that provides methods for fluent tree building and many more.
+```
+$root = new SimpleNode('0');
+$root->addNode('1')
+       ->addNode('1.1')
+           ->addLeaf('1.1.1')
+           ->addLeaf('1.1.2')
+           ->getParent()
+       ->addLeaf('1.2')
+       ->addNode('1.3')
+           ->addLeaf('1.3.1')
+           ->addLeaf('1.3.2')
+           ->getParent()
+       ->getParent()
+  ->addLeaf('2');
+  ```
+  The same works with any `NodeBase` descendant.
+
+#### Own nodes
+You can create your own nodes by implementing the `INode` inteface to work with the rest of the library. By implementing the `IDataNode` interface, you can compare nodes using node comparator.
 
 ### Comparing nodes
 
@@ -233,10 +258,10 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 
 * extended documentation
 * prunning (condition- and depth-based)
-* node moving
+* node moving mechanism / helpers
 * tree writers - alter the node's data to reflect current tree structure (prepare for storage) - a counterpart to tree builders
-* nested sets
 * unite and document exception codes
+* nested sets
 
 
 ## Caveats
