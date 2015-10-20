@@ -10,12 +10,15 @@ use Oliva\Utils\Tree\Node\INode;
 /**
  * Materialized path tree builder.
  * Builds data from a linear data structure, where each node holds its
- * position within the tree in its hierarchy member.
+ * position within the tree in its hierarchy member, e.g. the Materialized Path Tree data model.
  *
  *
- * - explode the position to parents
- * - get a parent identification
- * - get a parent position
+ * NOTE:	When using hierarchy member only containing IDs of parents,
+ * 			a delimiter must be present at the end of the string,
+ * 			otherwise the direct parent will always be cut out.
+ *
+ * NOTE:	A custom hierarchy getter can be used to cut a certain portion of the string for building sub-trees
+ * 			that need not be bridged all the way to the root.
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
@@ -26,26 +29,60 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * The default hierarchy member.
 	 * @var string
 	 */
-	public static $hierarchyMemberDefault = 'position';
+	public static $hierarchyDefault = 'position';
+
+	/**
+	 * The delimiter default. Can be integer for fixed-length hierarchy or string for delimited hierarchy.
+	 * @var int|string
+	 */
+	public static $delimiterDefault = 3;
+
+	/**
+	 * The index default. Can be string for data member or a callable.
+	 * @var callable|string
+	 */
+	public static $indexDefault = NULL;
 
 	/**
 	 * The Node's member carrying the hierarchy information.
 	 * @var string
 	 */
-	public $hierarchyMember;
+	protected $hierarchy;
+
+	/**
+	 * The delimiting processor.
+	 * @var array[$callable, $delimiterParameter]
+	 */
+	protected $delimitingProcessor;
+
+	/**
+	 * The index processor - will produce indices for nodes.
+	 * @var callable
+	 */
+	protected $indexProcessor;
+
+	/**
+	 *
+	 * @var callable|NULL
+	 */
+	protected $sorting;
 
 
-	public function __construct($hierarchyMember = NULL)
+	public function __construct($hierarchy = NULL, $delimiter = NULL, $index = NULL, $sortNodes = FALSE)
 	{
-		$this->hierarchyMember = $hierarchyMember !== NULL ? $hierarchyMember : self::$hierarchyMemberDefault;
+		$this->setHierarchy($hierarchy !== NULL ? $hierarchy : static::$hierarchyDefault);
+		$this->setDelimiter(!$delimiter ? static::$delimiterDefault : $delimiter); // intentionally operator ! to match NULL, FALSE, 0, "0" and ""
+		$this->setIndex($index !== NULL ? $index : static::$indexDefault);
+		$this->setSorting($sortNodes);
 	}
 
 
 	/**
 	 * Build the tree from linear data.
-	 * The root node contains no data and is always created, unless data item with NULL position is provided.
+	 * The root node contains no data (unless data item with NULL position is provided) and is always created.
 	 *
-	 * Note: duplicity in position member of items is not detected and may result in unexpected behaviour.
+	 * Note:	duplicity in hierarchy member of items is not detected and may result in unexpected behaviour.
+	 * 			Duplicit nodes actually replace the ones comming before them.
 	 *
 	 *
 	 * @param array|Traversable $data traversable data containing node data items
@@ -61,35 +98,25 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		foreach ($data as $item) {
 
 			// NOTE: I'm using the word "position" in meaning of "node's hierarchy member value"
-			//TODO preprocess the hierarchy member
-			$itemPosition = $this->getMember($item, $this->getHierarchyMemberName());
+			$itemPosition = $this->getHierarchyValue($item);
 
 			if (!isset($nodeCache[$itemPosition])) {
-
 				// create a new node and insert it into the node cache
-				$nodeCache[$itemPosition] = $this->createNode($item);
-				$currentNode = $nodeCache[$itemPosition];
-
+				$nodeCache[$itemPosition] = $currentNode = $this->createNode($item);
 
 				// get the parent's position
 				$parentPos = $itemPosition !== NULL ? $this->getParentIdentification($itemPosition) : NULL;
 
-				dump([$itemPosition, $parentPos]);
-
-
-				dump(['parent of ' . $itemPosition, $parentPos, isset($nodeCache[$parentPos]) ? 'exists' : 'not found']);
-
+				// insert node into the tree
 				if ($itemPosition !== NULL && isset($nodeCache[$parentPos])) {
-
-					// set parent or bridge the gap to the root
-					// parent has already been processed, link the child
-					$nodeCache[$parentPos]->addChild($currentNode, $this->createChildIndex($itemPosition, $parentPos, $currentNode));
+					// Parent has already been processed, link the child
+					$nodeCache[$parentPos]->addChild($currentNode, $this->getChildIndex($itemPosition, $currentNode));
 				} elseif ($itemPosition !== NULL) {
-					// Bridge the gap between the current node and the nearest parent:
+					// Parent not processed yet, bridge the gap between the current node and the nearest processed ancestor:
 					//
-					// When processing a node that does not connect directly to an already processed node (in cache),
+					// When processing a node that does not connect directly to an already processed parent node (in cache),
 					// we need to create stub nodes (empty) and connect through them until we connect to a node in cache:
-					// anyExistingNode -> stub -> stub -> ... -> currentNode
+					// currentNode -> stub -> stub -> ... -> anyCachedNode
 					// The bridging is terminated when it reaches the root level or a cached node.
 					// If the data provided is consistent, the stub nodes will be replaced by well-formed nodes later on.
 					$stubParentPos = $parentPos;
@@ -97,45 +124,115 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 					$childNode = $currentNode;
 					do {
 						$nodeCache[$stubParentPos] = $stubParent = $this->createNode();
-						$stubParent->addChild($childNode, $this->createChildIndex($childPosition, $stubParentPos, $childNode));
+						$stubParent->addChild($childNode, $this->getChildIndex($childPosition, $childNode !== $currentNode ? NULL : $currentNode ));
 						$childNode = $stubParent;
 						$childPosition = $stubParentPos;
 						$stubParentPos = $stubParentPos !== NULL ? $this->getParentIdentification($stubParentPos) : NULL;
 					} while (!isset($nodeCache[$stubParentPos]));
-					// connect to the existing node,
+					// connect to the previously processed node,
 					// EXCEPT when the above cycle terminated due to reaching the root
 					if ($stubParent !== $nodeCache[$stubParentPos]) {
-						$nodeCache[$stubParentPos]->addChild($childNode, $this->createChildIndex($childPosition, $stubParentPos, $childNode));
+						$nodeCache[$stubParentPos]->addChild($childNode, $this->getChildIndex($childPosition, NULL));
 					}
 				} else {
 					// root found, nothing to do here
-					echo 'ROOT FOUND!';
-//					dump($item);
 				}
 			} else {
 				// the node already exists in the node cache (due to data failure or gap bridging)
 				// replace the (stub) node and copy node relations
-				$nodeCache[$itemPosition] = $this->replaceNode($nodeCache[$itemPosition], $item);
+				$nodeCache[$itemPosition] = $this->replaceNode($nodeCache[$itemPosition], $item, $itemPosition);
 			}
 		}
 
-		// post process nodes
-		//TODO sorting & more
-//		$this->autoSort && $this->sortChildren($root);
+		// the root
+		$root = isset($nodeCache[NULL]) ? $nodeCache[NULL] : NULL;
 
-		return isset($nodeCache[NULL]) ? $nodeCache[NULL] : NULL;
+		// post process nodes (sort)
+		$this->sortChildren($root);
+
+		return $root;
 	}
 
 
-	private function getParentIdentification($hierarchy)
+	public function setDelimiter($delimiter)
 	{
-		return $this->getParentIdentification_delimited($hierarchy);
+		if (is_numeric($delimiter)) {
+			$this->delimitingProcessor = [[$this, 'getParentPositionFixedLength'], $delimiter];
+		} elseif (is_string($delimiter)) {
+			$this->delimitingProcessor = [[$this, 'getParentPositionDelimited'], $delimiter];
+		} elseif (is_callable($delimiter)) {
+			$this->delimitingProcessor = [$delimiter, NULL];
+		} else {
+			throw new RuntimeException(sprintf('Invalid delimiter of type %s provided. Either provide an integer for fixed-length hierarchy delimiting, a string containing a delimiting character or a callable function that will process the node\'s hierarchy member value.', is_object($delimiter) ? get_class($delimiter) : gettype($delimiter)));
+		}
+		return $this;
 	}
 
 
-	private function getParentIdentification_delimited($hierarchy)
+	public function setHierarchy($hierarchy)
 	{
-		$str = substr($hierarchy, 0, strrpos($hierarchy, '.'));
+		if (is_callable($hierarchy)) {
+			$this->hierarchy = [$hierarchy, NULL];
+		} elseif (is_string($hierarchy)) {
+			$this->hierarchy = [[$this, 'getMember'], $hierarchy[0] === '@' ? substr($hierarchy, 1) : $hierarchy];
+		} else {
+			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)));
+		}
+		return $this;
+	}
+
+
+	public function setIndex($processor = NULL)
+	{
+		if ($processor !== NULL && !is_callable($processor) && !is_string($processor)) {
+			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($processor) ? get_class($processor) : gettype($processor)));
+		}
+		$this->indexProcessor = $processor;
+		return $this;
+	}
+
+
+	public function setSorting($sorting)
+	{
+		if ($sorting === TRUE) {
+			$this->sorting = [$this, 'sortNodes'];
+		} elseif (!$sorting) {
+			$this->sorting = NULL;
+		} elseif (is_callable($sorting)) {
+			$this->sorting = $sorting;
+		} else {
+			throw new RuntimeException(sprintf('Invalid sorting processor of type %s provided. Provide a valid callable function that will sort array of nodes or use TRUE to use default sorting or FALSE to not use any sorting.', is_object($sorting) ? get_class($sorting) : gettype($sorting)));
+		}
+		return $this;
+	}
+
+
+	/**
+	 * Get hierarchy (or any unique identifier) of a node.
+	 * This method is used to parse a parent's portion of a given hierarchy.
+	 *
+	 *
+	 * @param string $hierarchy
+	 * @return string
+	 */
+	protected function getParentIdentification($hierarchy)
+	{
+		return call_user_func($this->delimitingProcessor[0], $hierarchy, $this->delimitingProcessor[1]);
+	}
+
+
+	/**
+	 * Method used as a default callable for the string-delimited hierarchies.
+	 * @internal set in self::setDelimiter()
+	 *
+	 *
+	 * @param string $hierarchy
+	 * @param string $delimiter
+	 * @return string
+	 */
+	protected function getParentPositionDelimited($hierarchy, $delimiter)
+	{
+		$str = substr($hierarchy, 0, strrpos($hierarchy, $delimiter));
 		if ($str === FALSE || strlen($str) == 0) {
 			return NULL;
 		}
@@ -143,28 +240,47 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	}
 
 
-	private function getParentIdentification_fixed($hierarchy)
+	/**
+	 * Method used as a default callable for the fixed-length hierarchies.
+	 * @internal set in self::setDelimiter()
+	 *
+	 *
+	 * @param string $hierarchy
+	 * @param int $length
+	 * @return string
+	 */
+	protected function getParentPositionFixedLength($hierarchy, $length)
 	{
-		$str = substr($hierarchy, 0, -3);
-		if ($str === FALSE || strlen($str) == 0) {
+		$str = substr($hierarchy, 0, -$length);
+		if ($str === FALSE || strlen($str) < $length) {
 			return NULL;
 		}
 		return $str;
 	}
 
 
-	private function createChildIndex($hierarchy, $parentHierarchy, INode $node)
+	/**
+	 * Calculate the index for the node. Either use node's data or the hierarchy string.
+	 *
+	 *
+	 * @param string $hierarchy
+	 * @param INode $node is NULL for stub nodes
+	 * @return int|string index for node
+	 */
+	protected function getChildIndex($hierarchy, INode $node = NULL)
 	{
-//		return $node->id;
-		$usePositionAsIndex = TRUE;
-		$cutoff = '';
-		return $usePositionAsIndex ? $cutoff . $hierarchy : NULL;
+		if (is_callable($this->indexProcessor)) {
+			return call_user_func($this->indexProcessor, $hierarchy, $node);
+		} elseif ($node !== NULL && is_string($this->indexProcessor)) {
+			return $this->getMember($node, $this->indexProcessor[0] === '@' ? substr($this->indexProcessor, 1) : $this->indexProcessor);
+		}
+		return $hierarchy;
 	}
 
 
-	protected function getHierarchyMemberName()
+	protected function getHierarchyValue($data)
 	{
-		return $this->hierarchyMember;
+		return call_user_func($this->hierarchy[0], $data, $this->hierarchy[1]);
 	}
 
 
@@ -177,17 +293,22 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function sortChildren(INode $node)
 	{
-		$children = $node->getChildren();
-		$node->removeChildren();
-		foreach ($this->sortNodes($children) as $index => $child) {
-			$this->sortChildren($child); // recursion
-			$node->addChild($child, $index);
+		if ($this->sorting !== NULL) {
+			$children = $node->getChildren();
+			$node->removeChildren();
+			$sortedNodes = call_user_func($this->sorting, $children);
+			foreach ($sortedNodes as $index => $child) {
+				$this->sortChildren($child); // recursion
+				$node->addChild($child, $index);
+			}
 		}
+		return $this;
 	}
 
 
 	/**
 	 * Sorts nodes by key using ksort().
+	 * @internal set in self::setSorting()
 	 *
 	 *
 	 * @param INode[] $nodes array of INode objects
@@ -200,29 +321,26 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	}
 
 
-	protected function copyNodesRelationsAndReplace(INode $source, INode $destination)
+	/**
+	 * Replaces a node with a new one. Copies all its relationships and resets its child index if it has a parent.
+	 * @internal
+	 *
+	 * @param INode $source
+	 * @param mixed $data data for the node
+	 * @param string $hierarchy the hierarchy member string value
+	 * @return INode
+	 */
+	protected function replaceNode(INode $source, $data, $hierarchy)
 	{
-		foreach ($source->getChildren() as $index => $child) {
-			/* @var $child INode */
-			$destination->addChild($child, $index);
-		}
-		$parent = $source->getParent();
-		if ($parent instanceof INode && $parent !== $source) {
-			$parent->addChild($destination, $parent->getChildIndex($source));
-		}
-	}
-
-
-	protected function replaceNode(INode $source, $data = NULL)
-	{
+		/* @var $destination INode */
 		$destination = $this->createNode($data);
 		foreach ($source->getChildren() as $index => $child) {
-			/* @var $child INode */
 			$destination->addChild($child, $index);
 		}
 		$parent = $source->getParent();
 		if ($parent instanceof INode && $parent !== $source) {
-			$parent->addChild($destination, $parent->getChildIndex($source));
+			$parent->removeChild($parent->getChildIndex($source));
+			$parent->addChild($destination, $this->getChildIndex($hierarchy, $destination));
 		}
 		return $destination;
 	}

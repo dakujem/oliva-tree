@@ -35,7 +35,10 @@ use Oliva\Utils\Tree\Node\Node,
 
 $hierarchyMember = 'position';
 
-$builder = new MaterializedPathTreeBuilder($hierarchyMember);
+$builder = new MaterializedPathTreeBuilder(function($data) {
+	return $data->position;
+}, '.', '@id');
+$builder2 = new MaterializedPathTreeBuilder($hierarchyMember, 3);
 
 //		0   root
 //		|
@@ -70,10 +73,21 @@ $root = $builder->build($data);
 dump($root);
 
 // basic test
-testRoot($root, 'e2');
+testRoot($root, 'e3');
 
 
+$data2 = (new DefaultScene)->getData();
+$root2 = $builder2->build($data2);
+
+dump($root2);
+testRoot($root2, 'e1');
+
+//TODO: test the materialized tree capabilities - callbacks, diffeerent data types, etc.
 die;
+
+
+/**/
+
 
 
 // multiple root problem - colliding roots
@@ -109,12 +123,14 @@ function testRoot(Node $root, $encoder)
 }
 
 
+// return position string as is
 function e1($position)
 {
 	return $position;
 }
 
 
+// convert position string to "."-delimited string with numeric positions
 function e2($position)
 {
 	$pcs = str_split($position, 3);
@@ -123,6 +139,20 @@ function e2($position)
 	});
 //	dump(implode('.', $pcs));
 	return implode('.', $pcs);
+}
+
+
+// convert position string to ID
+function e3($position)
+{
+	$pcs = str_split($position, 3);
+	$acc = 0;
+	$order = count($pcs);
+	array_walk($pcs, function(&$item, $index) use (&$acc, $order) {
+		$item = (int) $item;
+		$acc += $item * (10 ** ($order - $index - 1));
+	});
+	return $acc;
 }
 
 

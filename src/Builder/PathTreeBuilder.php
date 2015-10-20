@@ -8,16 +8,20 @@ use Oliva\Utils\Tree\Node\INode;
 
 
 /**
- * Materialized path tree builder.
+ * Path tree builder.
  * Builds data from a linear data structure, where each node holds its
  * position within the tree in its hierarchy member.
  * Fixed number of characters is used for each level.
  * A node with NULL position (or position shorter than needed for first level)
  * can be provided and will be set as the root.
  *
+ * NOTE:	This is a special case of the Materialized Path Tree data model,
+ * 			where the positions are presented in fixed length per level and
+ * 			with decimal numbers used (no encoding).
+ *
  * Example:
  * With 3 characters per level, node with position "002001" is the first
- * child of the second child of the root with position "002".
+ * child of the second child of the root with position "002". The root has NULL position.
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
