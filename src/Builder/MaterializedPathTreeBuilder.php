@@ -50,7 +50,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * The Node's hierarchy value getter.
 	 * @var array[$callable, $parameter]
 	 */
-	protected $hierarchy;
+	protected $hierarchyGetter;
 
 	/**
 	 * The delimiting processor.
@@ -101,7 +101,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		foreach ($data as $item) {
 
 			// NOTE: I'm using the word "position" in meaning of "node's hierarchy member value"
-			$itemPosition = $this->getHierarchyValue($item);
+			$itemPosition = $this->getCurrentHierarchy($item);
 
 			if (!isset($nodeCache[$itemPosition])) {
 				// create a new node and insert it into the node cache
@@ -175,9 +175,9 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	public function setHierarchy($hierarchy)
 	{
 		if (is_callable($hierarchy)) {
-			$this->hierarchy = [$hierarchy, NULL];
+			$this->hierarchyGetter = [$hierarchy, NULL];
 		} elseif (is_string($hierarchy)) {
-			$this->hierarchy = [[$this, 'getMember'], $hierarchy[0] === '@' ? substr($hierarchy, 1) : $hierarchy];
+			$this->hierarchyGetter = [[$this, 'getMember'], $hierarchy[0] === '@' ? substr($hierarchy, 1) : $hierarchy];
 		} else {
 			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)));
 		}
@@ -275,6 +275,23 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 
 	/**
+	 * Get the value of the hierarchy for a given node's data.
+	 *
+	 *
+	 * @param mixed $data arbitrary node's data
+	 * @return string
+	 */
+	protected function getCurrentHierarchy($data)
+	{
+		$str = call_user_func($this->hierarchyGetter[0], $data, $this->hierarchyGetter[1]);
+		if ($str === FALSE || strlen($str) === 0) {
+			return NULL;
+		}
+		return $str;
+	}
+
+
+	/**
 	 * Get hierarchy (or any unique identifier) of a parent's node.
 	 * This method is used to parse a parent's portion of a given hierarchy.
 	 *
@@ -284,7 +301,11 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getParentHierarchy($currentHierarchy)
 	{
-		return call_user_func($this->delimitingProcessor[0], $currentHierarchy, $this->delimitingProcessor[1]);
+		$str = call_user_func($this->delimitingProcessor[0], $currentHierarchy, $this->delimitingProcessor[1]);
+		if ($str === FALSE || strlen($str) === 0) {
+			return NULL;
+		}
+		return $str;
 	}
 
 
@@ -299,11 +320,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getParentPositionDelimited($hierarchy, $delimiter)
 	{
-		$str = substr($hierarchy, 0, strrpos($hierarchy, $delimiter));
-		if ($str === FALSE || strlen($str) == 0) {
-			return NULL;
-		}
-		return $str;
+		return substr($hierarchy, 0, strrpos($hierarchy, $delimiter));
 	}
 
 
@@ -318,11 +335,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getParentPositionFixedLength($hierarchy, $length)
 	{
-		$str = substr($hierarchy, 0, -$length);
-		if ($str === FALSE || strlen($str) < $length) {
-			return NULL;
-		}
-		return $str;
+		return substr($hierarchy, 0, -$length);
 	}
 
 
@@ -342,19 +355,6 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 			return $this->getMember($node, $this->indexProcessor[0] === '@' ? substr($this->indexProcessor, 1) : $this->indexProcessor);
 		}
 		return $hierarchy;
-	}
-
-
-	/**
-	 * Get the value of the hierarchy for a given node's data.
-	 *
-	 *
-	 * @param mixed $data arbitrary node's data
-	 * @return string
-	 */
-	protected function getHierarchyValue($data)
-	{
-		return call_user_func($this->hierarchy[0], $data, $this->hierarchy[1]);
 	}
 
 
