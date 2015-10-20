@@ -38,8 +38,10 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same(3, $root->getChildrenCount());
 		Assert::same($children, $root->getChildren());
 
-		Assert::same([0,1,2], $root->getChildrenIndices());
+		Assert::same([0, 1, 2], $root->getChildrenIndices());
 		Assert::same(array_keys($children), $root->getChildrenIndices());
+
+		Assert::same($children[0], $root->getChild($root->getChildrenIndices()[0]));
 
 		$impostor = (new SimpleNode(10));
 		$getChildIndexFalsy = FALSE; // if getChildIndex return on failure is changed to NULL, change here as well
