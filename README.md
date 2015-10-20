@@ -238,6 +238,7 @@ an empty root node will be created to wrap the data tree. You can provide a data
 > Note: if you have more than one root, the later will override the previous one.
 
 And now an example of a delimited hierarchy string with node position in `position` member.
+
 | ID        | position    | title|
 |:----------|:----------|:-------|
 |`1`         | `1` | the first level|
