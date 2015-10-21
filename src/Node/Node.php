@@ -19,6 +19,10 @@ use RuntimeException,
  * $node->getObject(); // $any_data
  *
  *
+ * Note:	when clonning a Node instance, the data is NOT clonned! Only a shallow copy is created.
+ *			Use cloneContents() after clonning to clone objects.
+ *
+ *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class Node extends NodeBase implements ArrayAccess, IDataNode
@@ -238,6 +242,26 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 	public function offsetUnset($offset)
 	{
 		return $this->__unset($offset);
+	}
+
+	//-----------------------------------------------------------------
+	//------------------------- clonning ------------------------------
+
+
+	/**
+	 * Make a copy of the contents.
+	 *
+	 * This is useful when clonning a branch or a node.
+	 *
+	 * 
+	 * @return self fluent
+	 */
+	public function cloneContents()
+	{
+		if (is_object($this->getContents())) {
+			$this->setContents(clone $this->getContents());
+		}
+		return $this;
 	}
 
 }
