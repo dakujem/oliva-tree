@@ -13,7 +13,8 @@ use ArrayIterator;
 use Tester,
 	Tester\Assert;
 use Oliva\Utils\Tree\Node\SimpleNode,
-	Oliva\Utils\Tree\Node\NodeBase;
+	Oliva\Utils\Tree\Node\NodeBase,
+	Oliva\Utils\Tree\Comparator\NodeComparator;
 
 
 /**
@@ -265,6 +266,36 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same('1.3.2', $root->getChild(0)->getChild(2)->getChild(1)->getContents());
 		Assert::equal(FALSE, $root->getChild(1));
 		Assert::equal('2', $root->getChild(17)->getContents());
+	}
+
+
+	public function testClonning()
+	{
+		$root = new SimpleNode('0');
+		$root
+				->addNode('1')
+				->addLeaf('1.1')
+				->getParent()
+				->addLeaf('2')
+		;
+		$clonedRoot = clone $root;
+
+
+		// Note:	normal == comparison cannot be used here for the PHP recursion limitations (or is it an implementation bug?)
+		Assert::equal(FALSE, $clonedRoot === $root); // as expected of clonning, the nodes are not identical
+//		Assert::equal(TRUE, $clonedRoot == $root); //   but are equal // Fatal Error Nesting level too deep - recursive dependency?
+		// I can't check this, but let's continue
+		/**/
+
+		// however, by default, we need to clone the whole node structure (the branch), not the current node only!
+		Assert::equal(FALSE, $root->getChild(0) === $clonedRoot->getChild(0)); // must not be identical!
+		Assert::equal(FALSE, $root->getChild(0)->getChild(0) === $clonedRoot->getChild(0)->getChild(0)); // must not be identical!
+		Assert::equal(FALSE, $root->getChild(1) === $clonedRoot->getChild(1)); // must not be identical!
+		/**/
+
+		// the data has to be identical
+		$comparator = new NodeComparator(TRUE, NodeComparator::STRICT_ALL, TRUE, TRUE);
+		Assert::equal(TRUE, $comparator->compare($root, $clonedRoot));
 	}
 
 

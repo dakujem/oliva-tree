@@ -8,6 +8,10 @@ namespace Oliva\Utils\Tree\Node;
  * SimpleNode.
  *
  *
+ * Note:	when clonning a SimpleNode instance, the value is NOT clonned! Only a shallow copy is created.
+ * 			Use cloneContents() after clonning to clone objects.
+ *
+ *
  * @property mixed $value
  *
  *
@@ -73,6 +77,26 @@ class SimpleNode extends NodeBase implements IDataNode
 	public function setContents($value)
 	{
 		return $this->setValue($value);
+	}
+
+	//-----------------------------------------------------------------
+	//------------------------- clonning ------------------------------
+
+
+	/**
+	 * Make a copy of the contents.
+	 *
+	 * This is useful when clonning a branch or a node.
+	 *
+	 *
+	 * @return self fluent
+	 */
+	public function cloneContents()
+	{
+		if (is_object($this->getContents())) {
+			$this->setContents(clone $this->getContents());
+		}
+		return $this;
 	}
 
 }
