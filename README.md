@@ -130,6 +130,8 @@ $tree = new Tree($rootNode);
 ```
 Iterators provide a way to **iterate through all the nodes**, **filter** them, **search** a specific node, **prune the tree** and so on.
 
+More [here](doc/trees.md).
+
 ### Iterations, search, filtering
 
 Iterate through all the nodes, with nodes on the current level first (**breadth-first** iteration).
