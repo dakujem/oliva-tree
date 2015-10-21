@@ -3,7 +3,8 @@
 
 namespace Oliva\Utils\Tree\Node;
 
-use IteratorAggregate;
+use IteratorAggregate,
+	Traversable;
 use Oliva\Utils\Tree\Iterator\TreeIterator;
 
 
@@ -102,6 +103,9 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 	/**
 	 * Set the node's direct parent.
+	 *
+	 * Note:	Calling $node->setParent($parent) DOES NOT ADD the node to its parent's children array!
+	 * 			To do that, call $parent->addChild($node) instead.
 	 *
 	 *
 	 * @param INode $node
@@ -297,15 +301,18 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 	/**
 	 * Replace the entire children array with a new one.
+	 *
+	 * Note: using keys can overwrite any previously added nodes with the same indices.
 	 * 
 	 *
-	 * @param array $children
+	 * @param array|Traversable $children an array or a traversable object. 
+	 * @param bool $useKeys = FALSE indicate whether the $children keys are supposed to be used as indices
 	 * @return NodeBase fluent
 	 */
-	public function addChildren(array $children)
+	public function addChildren($children, $useKeys = FALSE)
 	{
-		foreach ($children as $child) {
-			$this->addChild($child);
+		foreach ($children as $key => $child) {
+			$this->addChild($child, $useKeys ? $key : NULL);
 		}
 		return $this;
 	}

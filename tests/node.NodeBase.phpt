@@ -9,6 +9,7 @@ namespace Oliva\Test\NodeBase;
 
 require_once __DIR__ . '/bootstrap.php';
 
+use ArrayIterator;
 use Tester,
 	Tester\Assert;
 use Oliva\Utils\Tree\Node\SimpleNode,
@@ -65,7 +66,7 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same(0, $root->getChildrenCount());
 		Assert::same([], $root->getChildren());
 
-		$root->addChildren($children);
+		$root->addChildren(new ArrayIterator($children));
 		Assert::same($childrenIndices, $root->getChildrenIndices());
 
 		foreach (array_reverse($children) as $child) {
