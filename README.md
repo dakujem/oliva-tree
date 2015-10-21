@@ -280,6 +280,7 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 ## What's comming next
 
 * extended documentation
+* fetching nodes using a vector (1D array of node indices)
 * prunning (condition- and depth-based)
 * node moving mechanism / helpers
 * tree writers - alter the node's data to reflect current tree structure (prepare for storage) - a counterpart to tree builders
