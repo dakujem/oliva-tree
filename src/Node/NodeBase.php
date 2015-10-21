@@ -235,6 +235,30 @@ abstract class NodeBase implements INode, IteratorAggregate
 	}
 
 
+	public function getDescendant($vector)
+	{
+		if (count($vector) > 0) {
+			$node = $this;
+			reset($vector);
+			while (list(, $index) = each($vector) && $node instanceof INode) {
+				if ($index instanceof INode) {
+					$index = $node->getChildIndex($index);
+					if ($index === FALSE || $index === NULL) {
+						$node = NULL;
+						break;
+					}
+				}
+				$node = $node->getChild($index);
+			}
+			if (current($vector) === FALSE && $node instanceof INode) {
+				// found!
+				return $node;
+			}
+		}
+		return FALSE;
+	}
+
+
 	/**
 	 * Returns the index of the child within the children array.
 	 *
