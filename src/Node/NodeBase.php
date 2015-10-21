@@ -337,14 +337,23 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
-	 * Remove a child node by index.
-	 * 
+	 * Remove a child node by index or by an INode instance.
 	 *
-	 * @param type $index
+	 * Note:	this method does not tell whether the action was successful or not.
+	 * 			To be sure, use methods getChild() or getChildIndex() before or after the call.
+	 *
+	 *
+	 * @param int|string|INode $index an array index or an instance of INode
 	 * @return NodeBase
 	 */
 	public function removeChild($index)
 	{
+		if ($index instanceof INode) {
+			$index = $this->getChildIndex($index);
+			if ($index === FALSE) {
+				return $this;
+			}
+		}
 		if (isset($this->children[$index])) {
 			unset($this->children[$index]);
 		}

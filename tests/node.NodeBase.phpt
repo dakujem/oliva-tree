@@ -38,9 +38,10 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same(3, $root->getChildrenCount());
 		Assert::same($children, $root->getChildren());
 
-		Assert::same([0, 1, 2], $root->getChildrenIndices());
-		Assert::same(array_keys($children), $root->getChildrenIndices());
+		$childrenIndices = array_keys($children);
+		Assert::same([0, 1, 2], $childrenIndices); // sanity check
 
+		Assert::same($childrenIndices, $root->getChildrenIndices());
 		Assert::same($children[0], $root->getChild($root->getChildrenIndices()[0]));
 
 		$impostor = (new SimpleNode(10));
@@ -51,7 +52,6 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same($getChildIndexFalsy, $root->getChildIndex($impostor, TRUE));
 		Assert::same($getChildIndexFalsy, $root->getChildIndex($impostor));
 
-		$childrenIndices = array_keys($children);
 		foreach ($childrenIndices as $index) {
 			$root->removeChild($index);
 		}
@@ -64,6 +64,15 @@ class NodeBaseTest extends Tester\TestCase
 		$root->removeChildren();
 		Assert::same(0, $root->getChildrenCount());
 		Assert::same([], $root->getChildren());
+
+		$root->addChildren($children);
+		Assert::same($childrenIndices, $root->getChildrenIndices());
+
+		foreach (array_reverse($children) as $child) {
+			$root->removeChild($child);
+		}
+		Assert::same(0, $root->getChildrenCount());
+
 
 		foreach (array_reverse($childrenIndices) as $index) {
 			$root->addChild($children[$index], $index);
