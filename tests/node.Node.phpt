@@ -4,6 +4,7 @@
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 
+
 namespace Oliva\Test\Node;
 
 require_once __DIR__ . '/bootstrap.php';
@@ -129,6 +130,22 @@ class NodeTest extends Tester\TestCase
 		// __call test
 		Assert::same('Calling "foobar" on an instance of "Oliva\Test\DataWrapper" with 0 arguments.', $node->foobar());
 		Assert::same('Calling "foobar2" on an instance of "Oliva\Test\DataWrapper" with 3 arguments.', $node->foobar2(1, 2, 6));
+	}
+
+
+	public function testClonning()
+	{
+		$root = new Node('0');
+		$root->addChild(new Node(new DataWrapper('foo')));
+		$root->addChild(new Node('bar'));
+		$clone = clone $root;
+		Assert::equal(FALSE, $clone === $root);
+		Assert::equal(FALSE, $clone->getChild(0) === $root->getChild(0));
+		Assert::equal(TRUE, $clone->getChild(0)->getContents() === $root->getChild(0)->getContents()); // the data not clonned => identical
+		Assert::equal(TRUE, $clone->getChild(1)->getContents() === $root->getChild(1)->getContents()); // scalar data is identical
+		$clone->getChild(0)->cloneContents(); // clone the data
+		Assert::equal(FALSE, $clone->getChild(0)->getContents() === $root->getChild(0)->getContents()); // the data has been clonned
+		Assert::equal(TRUE, $clone->getChild(1)->getContents() === $root->getChild(1)->getContents()); // scalar data remains identical
 	}
 
 }
