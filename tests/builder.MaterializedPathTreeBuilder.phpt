@@ -16,14 +16,19 @@ require_once SCENES . '/PathTree/UndefinedRootScene.php';
 require_once SCENES . '/PathTree/CutoffScene.php';
 require_once SCENES . '/PathTree/CutoffScene2.php';
 require_once SCENES . '/PathTree/DelimitedScene.php';
+require_once SCENES . '/PathTree/ParentStringDelimitedScene.php';
 
 use RuntimeException;
 use Tester\Assert;
 use Oliva\Utils\Tree\Builder\MaterializedPathTreeBuilder;
 use Oliva\Utils\Tree\Node\Node,
+	Oliva\Utils\Tree\Node\INode,
+	Oliva\Utils\Tree\Builder\MaterializedPathTreeHelper,
+	Oliva\Utils\Tree\Builder\MaterializedPathTreeBuilderFactory,
 	Oliva\Test\Scene\Scene,
 	Oliva\Test\Scene\DefaultScene,
 	Oliva\Test\Scene\DelimitedScene,
+	Oliva\Test\Scene\PathTree\ParentStringDelimitedScene,
 	Oliva\Test\Scene\MissingRefScene,
 	Oliva\Test\Scene\BridgingScene,
 	Oliva\Test\Scene\PathTree\CollidingRootsScene,
@@ -35,6 +40,44 @@ use Oliva\Utils\Tree\Node\Node,
 
 coreTest();
 testBuilderWithEncoder(new MaterializedPathTreeBuilder('position', 3), 'e1');
+
+testDelimitedParentSceneSubroutine();
+
+
+function testDelimitedParentSceneSubroutine()
+{
+	$scene = new ParentStringDelimitedScene();
+
+
+	$delimiter = '.'; // delimit by "."
+	$index = 'id'; // index children by ID
+
+	
+/**/
+//	$builder = new MaterializedPathTreeBuilder(NULL, $delimiter, $index);
+//	$hierarchyGetter = function($data) use ($builder) {
+//		return $builder->getMember($data, 'position');
+//	};
+//	$idGetter = function($data) use ($builder) {
+//		return $builder->getMember($data, 'id');
+//	};
+//	$hierarchy = MaterializedPathTreeHelper::robustHierarchyGetter($delimiter, $hierarchyGetter, $idGetter);
+//	$builder->setHierarchy($hierarchy);
+
+//	$builder = new MaterializedPathTreeBuilder($hierarchy, $delimiter, $index);
+/**/
+
+
+	$builder = MaterializedPathTreeBuilderFactory::createDelimitedReferenceVariant('position', $delimiter, 'id', $index);
+
+	
+//	dump($builder->build($scene->getData('')));
+	testRoutine($builder, $scene->getData(''), 'e3');
+
+
+//	dump($builder->build($scene->getData($delimiter, $delimiter)));
+	testRoutine($builder, $scene->getData($delimiter, $delimiter), 'e3');
+}
 
 
 function coreTest()
