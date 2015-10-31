@@ -13,15 +13,16 @@ use Oliva\Utils\Tree\Node\INode;
  * position within the tree in its hierarchy member, e.g. the Materialized Path Tree data model.
  *
  *
- * NOTE:	When using hierarchy member only containing IDs of parents,
- * 			a delimiter must be present at the end of the string,
- * 			otherwise the direct parent will always be cut out.
- *
  * NOTE:	When a connection to the root node or to any ancestor is missing,
  * 			the builder will automatically create empty stub nodes and bridge the gap - connect the node through
  * 			these stub nodes all the way to the root node or other nearest ancestor.
  * 			A custom hierarchy getter can be used to cut a certain portion of the string for building sub-trees
  * 			that need not be bridged all the way to the root.
+ *
+ * NOTE:	When the hierarchy contains IDs or other reference values of its parents only,
+ * 			reference to the current node needs to be added to the end for the builder to work. This can be done
+ * 			using MaterializedPathTreeBuilderFactory::createDelimitedReferenceVariant() method.
+ *			@see MaterializedPathTreeBuilderFactory
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
@@ -100,7 +101,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		$nodeCache = [];
 		foreach ($data as $item) {
 
-			// NOTE: I'm using the word "position" in meaning of "node's hierarchy member value"
+			// NOTE: I'm using the word "position" in meaning of "node's hierarchy value"
 			$itemPosition = $this->getCurrentHierarchy($item);
 
 			if (!isset($nodeCache[$itemPosition])) {
@@ -312,7 +313,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 
 	/**
-	 * Method used as a default callable for the string-delimited hierarchies.
+	 * Method used as the default callable for the string-delimited hierarchies.
 	 * @internal set in self::setDelimiter()
 	 *
 	 *
@@ -322,12 +323,12 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getParentPositionDelimited($hierarchy, $delimiter)
 	{
-		return substr($hierarchy, 0, strrpos($hierarchy, $delimiter));
+		return substr($hierarchy, 0, strrpos($hierarchy, $delimiter)); // truncate the string at the last delimiter
 	}
 
 
 	/**
-	 * Method used as a default callable for the fixed-length hierarchies.
+	 * Method used as the default callable for the fixed-length hierarchies.
 	 * @internal set in self::setDelimiter()
 	 *
 	 *
@@ -337,6 +338,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getParentPositionFixedLength($hierarchy, $length)
 	{
+		// simply discard the last $length-count characters from the end of the hierarchy
 		return substr($hierarchy, 0, -$length);
 	}
 
