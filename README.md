@@ -5,15 +5,16 @@ Useful for handling **tree data stored in database** or for performing **search*
 
 
 ## Why use Oliva Tree?
-It has been build for real-life usage and it is tested that way.
+Because you want one library for all your trees.
+Because Oliva Tree has been build for real-life usage and it is also tested that way.
+Because Oliva Tree provides many utilities for data manipulation, thus it makes building components like **menus**, **tree views**, **grids**, **data lists** (and other) an easy and fun thing to do.
 
-It provides many utilities for data manipulation, it will make building components like **menus**, **tree views**, **grids**, **data lists** and other a fun thing to do.
-
-### What can Oliva Tree do?
+### What can you do with Oliva Tree?
 * **build** tree structures **from arbitrary flat data** with support for
     *  materialized path data model
     *  recursive trees (parent - id) (adjacency list data model, self-joined tables)
 * build trees using fluent interface
+* seamlessly wrap any data (Node class)
 * enhance functionality of data already in tree structures
 * build trees **from JSON** strings
 * **find nodes**, breadth-first or depth-first
@@ -43,7 +44,7 @@ Each tree has a root node. Each node allows getting/setting of children and pare
 
 `Node` is an implementation allowing creation of trees with **arbitrary data** or objects with seamless access to the original data.
 ```php
-$node = new Node();
+$node = new Node(['title' => NULL]);
 $node->title = 'item one';
 $child = $node->addChild(new Node(['title' => 'first child of one']));
 $node->addChildren([new Node(['title' => 'second child of one']), new Node(['title' => 'third child of one'])]);
