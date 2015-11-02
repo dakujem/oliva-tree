@@ -134,12 +134,13 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 */
 	public function getParents()
 	{
-		$parent = $this->getParent();
-		if ($parent !== NULL) {
-			return array_merge([$parent], $parent->getParents());
-		} else {
-			return [];
+		$ancestors = [];
+		$current = $this;
+		while (($parent = $current->getParent()) instanceof INode) {
+			$ancestors[] = $parent;
+			$current = $parent;
 		}
+		return $ancestors;
 	}
 
 
