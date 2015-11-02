@@ -240,7 +240,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
-	 * Get a single child.
+	 * Get a single child (direct descendant).
 	 *
 	 *
 	 * @param scalar $index
@@ -289,6 +289,34 @@ abstract class NodeBase implements INode, IteratorAggregate
 	public function getChildrenIndices()
 	{
 		return array_keys($this->children);
+	}
+
+
+	/**
+	 * Get a distant descendant by a vector.
+	 * Each element of the vector will be used to get the descendant of the current descendant,
+	 * creating a chain of getChild() calls.
+	 *
+	 * Calling
+	 * $node->getDescendant([1,2,3]);
+	 * equals to a chained call
+	 * $node->getChild(1)->getChild(2)->getChild(3);
+	 * provided all the children exist under the indices in the tree structure.
+	 *
+	 * Note: this method returns self when $indexVector is empty!
+	 * 
+	 *
+	 * @param array $indexVector array of indices
+	 * @return INode|NULL returns NULL when the node is not found
+	 */
+	public function getDescendant(array $indexVector)
+	{
+		$descendant = $this;
+		while (!empty($indexVector) && $descendant instanceof INode) {
+			$index = array_shift($indexVector);
+			$descendant = $descendant->getChild($index);
+		}
+		return $descendant instanceof INode ? $descendant : NULL;
 	}
 
 

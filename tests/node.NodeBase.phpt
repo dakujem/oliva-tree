@@ -269,6 +269,40 @@ class NodeBaseTest extends Tester\TestCase
 	}
 
 
+	public function testVectorGetting()
+	{
+		$root = new SimpleNode('0');
+
+		$root
+				->addNode('1')
+				/**/->addNode('1.1')
+				/*   */->addLeaf('1.1.1')
+				/*   */->addLeaf('1.1.2')
+				/*   */->getParent()
+				/**/->addLeaf('1.2')
+				/**/->addNode('1.3')
+				/*   */->addLeaf('1.3.1')
+				/*   */->addLeaf('1.3.2')
+				/*   */->getParent()
+				/**/->getParent()
+				->addLeaf('2', 17)
+				->addLeaf('3')
+				->addNode('four')
+				/**/->addNode('four one')
+				/*   */->addLeaf('four one one');
+
+		Assert::same('1.1.1', $root->getDescendant([0, 0, 0])->getContents());
+		Assert::same('1.1.2', $root->getDescendant([0, 0, 1])->getContents());
+		Assert::same('1.3.2', $root->getDescendant([0, 2, 1])->getContents());
+		Assert::same(NULL, $root->getDescendant([1]));
+		Assert::same('3', $root->getDescendant([18])->getContents());
+		Assert::same('four', $root->getDescendant([19])->getContents());
+		Assert::same('four one', $root->getDescendant([19, 0])->getContents());
+		Assert::same('four one one', $root->getDescendant([19, 0, 0])->getContents());
+		Assert::same($root, $root->getDescendant([])); // returns self when vector empty
+	}
+
+
 	public function testClonning()
 	{
 		$root = new SimpleNode('0');
