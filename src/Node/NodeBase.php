@@ -24,7 +24,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	/**
 	 * TRUE for a root node (when no parent has been set).
 	 *
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isRoot()
@@ -82,7 +82,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Returns all the node's siblings.
 	 * Excludes this node by default.
 	 *
-	 * 
+	 *
 	 * @param bool $excludeThisNode = TRUE (default) this node will be ignored in sibling nodes
 	 * @return INode[]|FALSE returns siblings in an array or FALSE if no parent is present.
 	 */
@@ -150,7 +150,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	/**
 	 * @deprecated this method's name may lead to misunderstnding that a node can have multiple parents (thus not be a tree node),
 	 *             use getAncestors() instead
-	 * 
+	 *
 	 * Return all the parents from the direct parent node to the root node.
 	 * Alias of getAncestors().
 	 *
@@ -167,7 +167,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Returns the root connected to the node.
 	 * When the node itself is a root, it is returned.
 	 *
-	 * 
+	 *
 	 * @return INode
 	 */
 	public function getRoot()
@@ -181,6 +181,8 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
+	 * @deprecated for no real use
+	 *
 	 * Return all the parents from the root node to the direct parent of the node.
 	 *
 	 *
@@ -193,6 +195,8 @@ abstract class NodeBase implements INode, IteratorAggregate
 
 
 	/**
+	 * @deprecated for no real use
+	 *
 	 * Return the level of the node, e.g. the distance to the root, the depth.
 	 * Alias of getDepth().
 	 *
@@ -238,7 +242,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	/**
 	 * Get a single child.
 	 *
-	 * 
+	 *
 	 * @param scalar $index
 	 * @return INode|FALSE returns FALSE when there is no child node under the index
 	 */
@@ -296,7 +300,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * @see TreeIterator for recursion modes
 	 *
-	 * 
+	 *
 	 * @param string|NULL $recursion
 	 * @return TreeIterator
 	 */
@@ -319,9 +323,9 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * Replace the entire children array with a new one.
 	 *
 	 * Note: using keys can overwrite any previously added nodes with the same indices.
-	 * 
 	 *
-	 * @param array|Traversable $children an array or a traversable object. 
+	 *
+	 * @param array|Traversable $children an array or a traversable object.
 	 * @param bool $useKeys = FALSE indicate whether the $children keys are supposed to be used as indices
 	 * @return NodeBase fluent
 	 */
@@ -418,7 +422,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *           ->getParent()
 	 *      ->addLeaf('2');
 	 *
-	 * 
+	 *
 	 * @param mixed $data any data that can be passed to the node's constructor
 	 * @param int|string $index any node's index that can be used as array index
 	 * @return INode the newly created node (!)
