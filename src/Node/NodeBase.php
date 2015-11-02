@@ -70,8 +70,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 */
 	public function isLast()
 	{
-		$parent = $this->getParent();
-		if ($parent !== NULL) {
+		if ($this->getParent() !== NULL) {
 			$siblings = $this->getSiblings(FALSE);
 			return $this === array_pop($siblings);
 		}
@@ -136,14 +135,31 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 * @return INode[]
 	 */
+	public function getAncestors()
+	{
+		$ancestors = [];
+		$current = $this;
+		while (($parent = $current->getParent()) instanceof INode) {
+			$ancestors[] = $parent;
+			$current = $parent;
+		}
+		return $ancestors;
+	}
+
+
+	/**
+	 * @deprecated this method's name may lead to misunderstnding that a node can have multiple parents (thus not be a tree node),
+	 *             use getAncestors() instead
+	 * 
+	 * Return all the parents from the direct parent node to the root node.
+	 * Alias of getAncestors().
+	 *
+	 *
+	 * @return INode[]
+	 */
 	public function getParents()
 	{
-		$parent = $this->getParent();
-		if ($parent !== NULL) {
-			return array_merge([$parent], $parent->getParents());
-		} else {
-			return [];
-		}
+		return $this->getAncestors();
 	}
 
 
@@ -159,7 +175,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 		if ($this->isRoot()) {
 			return $this;
 		}
-		$parents = $this->getParents();
+		$parents = $this->getAncestors();
 		return end($parents); // $parents cannot be empty
 	}
 
@@ -172,7 +188,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 */
 	public function getPath()
 	{
-		return array_reverse($this->getParents());
+		return array_reverse($this->getAncestors());
 	}
 
 
@@ -197,7 +213,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 */
 	public function getDepth()
 	{
-		return count($this->getParents());
+		return count($this->getAncestors());
 	}
 
 

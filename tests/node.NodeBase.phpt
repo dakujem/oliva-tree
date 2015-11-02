@@ -171,8 +171,8 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same($root, $child->getParent());
 		Assert::same($child, $grandchild->getParent());
 
-		Assert::same([$child, $root], $grandchild->getParents()); // the order of expected parents is important
-		Assert::same([$root], $child->getParents());
+		Assert::same([$child, $root], $grandchild->getAncestors()); // the order of expected parents is important
+		Assert::same([$root], $child->getAncestors());
 
 
 		// detach a node
@@ -194,8 +194,8 @@ class NodeBaseTest extends Tester\TestCase
 		//   +-- 300
 		//
 		Assert::same(FALSE, $root->getChild(2));
-		Assert::same([], $child->getParents());
-		Assert::same([$child], $grandchild->getParents());
+		Assert::same([], $child->getAncestors());
+		Assert::same([$child], $grandchild->getAncestors());
 		Assert::same(2, $root->getChildrenCount());
 		Assert::same(3, $child->getChildrenCount());
 		$vals = [];
@@ -222,20 +222,20 @@ class NodeBaseTest extends Tester\TestCase
 		//   |         +-- 300
 		//   |
 		//   +-- 30
-		Assert::same([$child, $root->getChild(1), $root], $grandchild->getParents());
+		Assert::same([$child, $root->getChild(1), $root], $grandchild->getAncestors());
 		Assert::same([$child], $root->getChild(1)->getChildren());
 
 		$leaf = new SimpleNode(1000);
 		$leaf->setParent($root); // NOTE: setParent does NOT set the parent-child relation, only sets the child-parent part. Use $parent->addChild($child) for this purpose.
 		Assert::same($root, $leaf->getParent());
-		Assert::same([$root], $leaf->getParents());
+		Assert::same([$root], $leaf->getAncestors());
 		$leaf->detach();
 		Assert::same(NULL, $leaf->getParent());
-		Assert::same([], $leaf->getParents());
+		Assert::same([], $leaf->getAncestors());
 
 		$grandchild->addChild($leaf);
 		Assert::same($grandchild, $leaf->getParent());
-		Assert::same([$grandchild, $child, $root->getChild(1), $root], $leaf->getParents());
+		Assert::same([$grandchild, $child, $root->getChild(1), $root], $leaf->getAncestors());
 		Assert::same([$root, $root->getChild(1), $child, $grandchild], $leaf->getPath());
 	}
 
