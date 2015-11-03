@@ -142,7 +142,7 @@ function missingRefSubroutine(RecursiveTreeBuilder $builder)
 	Assert::same('world', $root->getChild(1)->getChild(11)->title);
 	Assert::same([], $root->getChild(1)->getChild(11)->getChildren()); // no children, no bridging is happening
 	// whole branch lost
-	Assert::same(NULL, $root->getChild(2));
+	Assert::same(FALSE, $root->getChild(2)); // Note: the return value can change to NULL
 }
 
 

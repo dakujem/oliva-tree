@@ -45,7 +45,7 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same($children[0], $root->getChild($root->getChildrenIndices()[0]));
 
 		$impostor = (new SimpleNode(10));
-		$getChildIndexFalsy = NULL;
+		$getChildIndexFalsy = FALSE; // if getChildIndex return on failure is changed to NULL, change here as well
 		Assert::same($getChildIndexFalsy, $root->getChildIndex($impostor, FALSE));
 		$impostor->setParent($root);
 		Assert::same(0, $root->getChildIndex($impostor, FALSE));
@@ -183,7 +183,7 @@ class NodeBaseTest extends Tester\TestCase
 		//   |
 		//   +-- 300
 		//
-		Assert::same(NULL, $root->getChild(2));
+		Assert::same(FALSE, $root->getChild(2));
 		Assert::same([], $child->getParents());
 		Assert::same([$child], $grandchild->getParents());
 		Assert::same(2, $root->getChildrenCount());
@@ -254,8 +254,8 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same('1.2', $root->getChild(0)->getChild(1)->getContents());
 		Assert::same('1.3', $root->getChild(0)->getChild(2)->getContents());
 		Assert::same('1.3.2', $root->getChild(0)->getChild(2)->getChild(1)->getContents());
-		Assert::same(NULL, $root->getChild(1));
-		Assert::same('2', $root->getChild(17)->getContents());
+		Assert::equal(FALSE, $root->getChild(1));
+		Assert::equal('2', $root->getChild(17)->getContents());
 	}
 
 
