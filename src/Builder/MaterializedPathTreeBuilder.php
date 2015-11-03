@@ -74,6 +74,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 	public function __construct($hierarchy = NULL, $delimiter = NULL, $index = NULL, $sortNodes = FALSE)
 	{
+		parent::__construct();
 		$this->setHierarchy($hierarchy !== NULL ? $hierarchy : static::$hierarchyDefault);
 		$this->setDelimiter(!$delimiter ? static::$delimiterDefault : $delimiter); // intentionally operator ! to match NULL, FALSE, 0, "0" and ""
 		$this->setIndex($index !== NULL ? $index : static::$indexDefault);

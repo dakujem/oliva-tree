@@ -20,7 +20,7 @@ use RuntimeException,
  *
  *
  * Note:	when clonning a Node instance, the data is NOT clonned! Only a shallow copy is created.
- *			Use cloneContents() after clonning to clone objects.
+ * 			Use cloneContents() after clonning to clone objects.
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
@@ -121,7 +121,7 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 	{
 		if ($this->type === self::TYPE_OBJECT) {
 			// delegate call
-			return $this->contents->$name(...$args);
+			return call_user_func_array([$this->contents, $name], $args);
 		}
 		throw new BadMethodCallException($this->formatErrorMessage('Undefined call to %s::%s(). The method cannot be called on the node\'s contents of type %s either.', $name));
 	}
@@ -262,6 +262,21 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 			$this->setContents(clone $this->getContents());
 		}
 		return $this;
+	}
+
+	//-----------------------------------------------------------------
+	//------------------------- PHP 5.4 -------------------------------
+
+
+	/**
+	 * Method added for the sake of PHP 5.4 support.
+	 *
+	 *
+	 * @return string
+	 */
+	public static function getClass()
+	{
+		return __CLASS__;
 	}
 
 }

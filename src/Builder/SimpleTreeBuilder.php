@@ -32,6 +32,7 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 	public function __construct($childrenMember = NULL)
 	{
+		parent::__construct();
 		$this->childrenMember = $childrenMember !== NULL ? $childrenMember : self::$childrenMemberDefault;
 	}
 

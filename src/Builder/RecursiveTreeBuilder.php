@@ -67,6 +67,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 	public function __construct($parentMember = NULL, $idMember = NULL)
 	{
+		parent::__construct();
 		$this->parentMember = $parentMember != NULL ? $parentMember : self::$parentMemberDefault; // intentionally !=
 		$this->idMember = $idMember != NULL ? $idMember : self::$idMemberDefault; // intentionally !=
 	}

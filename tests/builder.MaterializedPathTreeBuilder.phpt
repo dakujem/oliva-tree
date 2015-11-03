@@ -52,8 +52,8 @@ function testDelimitedParentSceneSubroutine()
 	$delimiter = '.'; // delimit by "."
 	$index = 'id'; // index children by ID
 
-	
-/**/
+
+	/**/
 //	$builder = new MaterializedPathTreeBuilder(NULL, $delimiter, $index);
 //	$hierarchyGetter = function($data) use ($builder) {
 //		return $builder->getMember($data, 'position');
@@ -63,14 +63,13 @@ function testDelimitedParentSceneSubroutine()
 //	};
 //	$hierarchy = MaterializedPathTreeHelper::robustHierarchyGetter($delimiter, $hierarchyGetter, $idGetter);
 //	$builder->setHierarchy($hierarchy);
-
 //	$builder = new MaterializedPathTreeBuilder($hierarchy, $delimiter, $index);
-/**/
+	/**/
 
 
 	$builder = MaterializedPathTreeBuilderFactory::createDelimitedReferenceVariant('position', $delimiter, 'id', $index);
 
-	
+
 //	dump($builder->build($scene->getData('')));
 	testRoutine($builder, $scene->getData(''), 'e3');
 
@@ -222,7 +221,7 @@ function e3($position)
 	$order = count($pcs);
 	array_walk($pcs, function(&$item, $index) use (&$acc, $order) {
 		$item = (int) $item;
-		$acc += $item * (10 ** ($order - $index - 1));
+		$acc += $item * pow(10, ($order - $index - 1));
 	});
 	return $acc;
 }

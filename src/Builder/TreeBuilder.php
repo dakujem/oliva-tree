@@ -21,7 +21,8 @@ abstract class TreeBuilder
 	 * Node class. An instance will be created upon transformation for each node.
 	 * @var string
 	 */
-	public $nodeClass = Node::CLASS;
+//	public $nodeClass = Node::CLASS;
+	public $nodeClass = NULL;
 
 	/**
 	 * @var array|NULL [callable, params]
@@ -32,6 +33,15 @@ abstract class TreeBuilder
 	 * @var array|NULL [callable, params]
 	 */
 	protected $dataErrorCallback = NULL;
+
+
+	public function __construct()
+	{
+		// added for PHP 5.4
+		if ($this->nodeClass === NULL) {
+			$this->nodeClass = Node::getClass();
+		}
+	}
 
 
 	/**
@@ -94,10 +104,10 @@ abstract class TreeBuilder
 	 * @param callable $function
 	 * @return self fluent
 	 */
-	public function setNodeCallback(callable $function = NULL, ...$params)
+	public function setNodeCallback(callable $function = NULL/* , ...$params */)
 	{
 		if ($function !== NULL) {
-			$this->nodeCallback = [$function, $params];
+			$this->nodeCallback = [$function, array_slice(func_get_args(), 1)]; // $params here [PHP 5.6]
 		} else {
 			$this->nodeCallback = NULL;
 		}
@@ -120,10 +130,10 @@ abstract class TreeBuilder
 	 * @param callable $function
 	 * @return self fluent
 	 */
-	public function setDataErrorCallback(callable $function = NULL, ...$params)
+	public function setDataErrorCallback(callable $function = NULL/* , ...$params */)
 	{
 		if ($function !== NULL) {
-			$this->dataErrorCallback = [$function, $params];
+			$this->dataErrorCallback = [$function, array_slice(func_get_args(), 1)]; // $params here [PHP 5.6]
 		} else {
 			$this->dataErrorCallback = NULL;
 		}
