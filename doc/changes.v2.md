@@ -8,3 +8,5 @@ See [structure.md](structure.md) document for more.
 Set `$throwOnMultipleRoots` to TRUE by default.
 
 
+# NodeBase API
+Change `NodeBase::getChild`, `NodeBase::getChildIndex` and `NodeBase::getSiblings` to return `NULL` instead of `FALSE`.
