@@ -90,7 +90,7 @@ cutoffSubroutine2($builder);
 
 function testRoot(Node $root)
 {
-	Assert::same(NULL, $root->getChild(NULL));
+	Assert::equal(FALSE, $root->getChild(NULL));
 	Assert::same('hello', $root->getChild('001')->title);
 	Assert::same('world', $root->getChild('002')->title);
 	Assert::same('world second child', $root->getChild('002')->getChild('002002')->title);
@@ -106,7 +106,7 @@ function collidingRootsSubroutine(PathTreeBuilder $builder, CollidingRootsScene 
 	Assert::same('root2', $root->title);
 	Assert::same(2, count($root->getChildren()));
 	Assert::same('hello', $root->getChild('001')->title);
-	Assert::same(NULL, $root->getChild('002'));
+	Assert::same(FALSE, $root->getChild('002')); // Note: the return value can change to NULL
 	Assert::same('lonely', $root->getChild('003')->title);
 	Assert::same('hello child', $root->getChild('001')->getChild('001001')->title);
 }
@@ -136,7 +136,7 @@ function missingRefSubroutine(PathTreeBuilder $builder)
 	Assert::same('world', $root->getChild('001')->getChild('001001')->title);
 	Assert::same(NULL, $root->getChild('001')->getChild('001001')->getChild('001001001')->getContents()); // stub node
 	Assert::same('foo', $root->getChild('001')->getChild('001001')->getChild('001001001')->getChild('001001001001')->title);
-	Assert::same(NULL, $root->getChild(2));
+	Assert::same(FALSE, $root->getChild(2)); // Note: the return value can change to NULL
 	// whole branch bridged
 	Assert::same(NULL, $root->getChild('002')->getContents());
 	Assert::same(NULL, $root->getChild('002')->getChild('002002')->getContents());
@@ -187,8 +187,8 @@ function cutoffSubroutine1(PathTreeBuilder $builder)
 	// test cutoff
 	Assert::same(3, $nodeCut->getLevel());
 	Assert::same(NULL, $rootCut->getContents());
-	Assert::same(NULL, $rootCut->getChild('007'));
-	Assert::same(2, count($rootCut->getChildren()));
+	Assert::equal(FALSE, $rootCut->getChild('007'));
+	Assert::equal(2, count($rootCut->getChildren()));
 }
 
 
@@ -208,8 +208,8 @@ function cutoffSubroutine2(PathTreeBuilder $builder)
 	// test cutoff
 	Assert::same(3, $nodeCut->getLevel());
 	Assert::same('root', $rootCut->title);
-	Assert::same(NULL, $rootCut->getChild('007'));
-	Assert::same(2, count($rootCut->getChildren()));
+	Assert::equal(FALSE, $rootCut->getChild('007'));
+	Assert::equal(2, count($rootCut->getChildren()));
 }
 
 

@@ -84,7 +84,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 *
 	 * @param bool $excludeThisNode = TRUE (default) this node will be ignored in sibling nodes
-	 * @return INode[]|NULL returns siblings in an array or NULL if no parent is present.
+	 * @return INode[]|FALSE returns siblings in an array or FALSE if no parent is present.
 	 */
 	public function getSiblings($excludeThisNode = TRUE)
 	{
@@ -96,7 +96,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 			}
 			return $children;
 		}
-		return NULL;
+		return FALSE;
 	}
 
 
@@ -244,26 +244,27 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 *
 	 *
 	 * @param scalar $index
-	 * @return INode|NULL returns NULL when there is no child node under the index
+	 * @return INode|FALSE returns FALSE when there is no child node under the index
 	 */
 	public function getChild($index)
 	{
-		return isset($this->children[$index]) ? $this->children[$index] : NULL;
+		if (!isset($this->children[$index])) {
+			return FALSE;
+		}
+		return $this->children[$index];
 	}
 
 
 	/**
-	 * Returns the index of a node within this node's children array.
-	 * Returns NULL in case the node is not a child of this node.
+	 * Returns the index of the child within the children array.
 	 *
 	 *
 	 * @param INode $node
-	 * @return int|NULL returns NULL when the node is not a child of this node.
+	 * @return int|FALSE returns FALSE if the node is not a child of this node.
 	 */
 	public function getChildIndex(INode $node, $strict = TRUE)
 	{
-		$i = array_search($node, $this->children, $strict);
-		return $i !== FALSE ? $i : NULL;
+		return array_search($node, $this->children, $strict);
 	}
 
 

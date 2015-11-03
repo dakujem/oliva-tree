@@ -177,7 +177,7 @@ function testRoutine(MaterializedPathTreeBuilder $builder, $data, $encoder)
 {
 	$root = $builder->build($data);
 
-	Assert::same(NULL, $root->getChild(NULL));
+	Assert::equal(FALSE, $root->getChild(NULL));
 	$encoder = __NAMESPACE__ . '\\' . $encoder;
 	Assert::same('hello', $root->getChild($encoder('001'))->title);
 	Assert::same('world', $root->getChild($encoder('002'))->title);
@@ -235,7 +235,7 @@ function collidingRootsSubroutine(MaterializedPathTreeBuilder $builder, Collidin
 	Assert::same('root2', $root->title);
 	Assert::same(2, count($root->getChildren()));
 	Assert::same('hello', $root->getChild($encoder('001'))->title);
-	Assert::same(NULL, $root->getChild($encoder('002')));
+	Assert::same(FALSE, $root->getChild($encoder('002'))); // Note: the return value can change to NULL
 	Assert::same('lonely', $root->getChild($encoder('003'))->title);
 	Assert::same('hello child', $root->getChild($encoder('001'))->getChild($encoder('001001'))->title);
 }
@@ -267,7 +267,7 @@ function missingRefSubroutine(MaterializedPathTreeBuilder $builder, $encoder)
 	Assert::same('world', $root->getChild($encoder('001'))->getChild($encoder('001001'))->title);
 	Assert::same(NULL, $root->getChild($encoder('001'))->getChild($encoder('001001'))->getChild($encoder('001001001'))->getContents()); // stub node
 	Assert::same('foo', $root->getChild($encoder('001'))->getChild($encoder('001001'))->getChild($encoder('001001001'))->getChild($encoder('001001001001'))->title);
-	Assert::same(NULL, $root->getChild($encoder(2)));
+	Assert::same(FALSE, $root->getChild($encoder(2))); // Note: the return value can change to NULL
 	// whole branch bridged
 	Assert::same(NULL, $root->getChild($encoder('002'))->getContents());
 	Assert::same(NULL, $root->getChild($encoder('002'))->getChild($encoder('002002'))->getContents());
@@ -325,8 +325,8 @@ function cutoffSubroutine1(MaterializedPathTreeBuilder $builder, $encoder)
 	// test cutoff
 	Assert::same(3, $nodeCut->getLevel());
 	Assert::same(NULL, $rootCut->getContents());
-	Assert::same(NULL, $rootCut->getChild($encoder('007')));
-	Assert::same(2, count($rootCut->getChildren()));
+	Assert::equal(FALSE, $rootCut->getChild($encoder('007')));
+	Assert::equal(2, count($rootCut->getChildren()));
 }
 
 
@@ -347,8 +347,8 @@ function cutoffSubroutine2(MaterializedPathTreeBuilder $builder, $encoder)
 	// test cutoff
 	Assert::same(3, $nodeCut->getLevel());
 	Assert::same('root', $rootCut->title);
-	Assert::same(NULL, $rootCut->getChild($encoder('007')));
-	Assert::same(2, count($rootCut->getChildren()));
+	Assert::equal(FALSE, $rootCut->getChild($encoder('007')));
+	Assert::equal(2, count($rootCut->getChildren()));
 }
 
 
