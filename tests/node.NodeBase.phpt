@@ -337,11 +337,11 @@ class NodeBaseTest extends Tester\TestCase
 	{
 		if (is_int($countOrIndices) && $countOrIndices > 0) {
 			for ($i = 0; $i < $countOrIndices; $i++) {
-				$node->addChild(new SimpleNode(($i + 1) * (10 ** $level)));
+				$node->addChild(new SimpleNode(($i + 1) * pow(10, $level)));
 			}
 		} elseif (is_array($countOrIndices)) {
 			foreach ($countOrIndices as $index) {
-				$node->addChild(new SimpleNode($index * (10 ** $level)), $index);
+				$node->addChild(new SimpleNode($index * pow(10, $level)), $index);
 			}
 		} else {
 			throw new \LogicException;

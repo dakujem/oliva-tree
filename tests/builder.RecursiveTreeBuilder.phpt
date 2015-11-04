@@ -89,7 +89,7 @@ Assert::same(123, $nullRoot->getChild(123)->id);
 // no root exception
 Assert::exception(function() use ($builder) {
 	$builder->build((new NoRootScene())->getData());
-}, RuntimeException::CLASS, 'No root node present.', 100);
+}, 'RuntimeException' /* RuntimeException::CLASS */, 'No root node present.', 100);
 
 
 // multiple root problem
@@ -103,7 +103,7 @@ Assert::same(0, count($fooRoot->getChildren()));
 $builder->throwOnMultipleRoots = TRUE;
 Assert::exception(function() use ($builder) {
 	$builder->build((new MultiRootScene())->getData());
-}, RuntimeException::CLASS, 'Multiple roots occurring in the data.', 200);
+}, 'RuntimeException' /* RuntimeException::CLASS */, 'Multiple roots occurring in the data.', 200);
 
 
 // test missing reference behaviour

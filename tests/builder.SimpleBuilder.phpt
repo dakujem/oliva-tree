@@ -40,11 +40,12 @@ function subroutine2()
 {
 	$data = ['a' => 'a', NULL => ['c', 'd', ['e' => 'ee']]];
 	$builder = new SimpleTreeBuilder('');
-	$builder->nodeClass = SimpleNode::CLASS;
+	$nodeClass = 'Oliva\Utils\Tree\Node\SimpleNode'; //SimpleNode::CLASS;
+	$builder->nodeClass = $nodeClass;
 
 	// default build
 	$root = $builder->build($data);
-	Assert::type(SimpleNode::CLASS, $root);
+	Assert::type($nodeClass, $root);
 	Assert::same('d', $root->getChild(1)->getContents());
 	Assert::same(['e' => 'ee'], $root->getChild(2)->getContents());
 
@@ -54,9 +55,9 @@ function subroutine2()
 			$data = reset($data);
 		}
 		return new $class($data);
-	}, SimpleNode::CLASS);
+	}, $nodeClass);
 	$root2 = $builder->build($data);
-	Assert::type(SimpleNode::CLASS, $root2);
+	Assert::type($nodeClass, $root2);
 	Assert::same('d', $root2->getChild(1)->getContents());
 	Assert::same('ee', $root2->getChild(2)->getContents());
 }

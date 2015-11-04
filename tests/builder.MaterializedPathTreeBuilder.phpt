@@ -303,7 +303,7 @@ function cutoffSubroutine0(MaterializedPathTreeBuilder $builder, $encoder)
 	// must throw exception - prefix 007 not present in "stray dog" node
 	Assert::error(function()use($builderWithCutoff, $data) {
 		$builderWithCutoff->build($data);
-	}, RuntimeException::CLASS, NULL, 3);
+	}, 'RuntimeException' /* RuntimeException::CLASS */, NULL, 3);
 }
 
 
