@@ -40,7 +40,7 @@ function subroutine2()
 {
 	$data = ['a' => 'a', NULL => ['c', 'd', ['e' => 'ee']]];
 	$builder = new SimpleTreeBuilder('');
-	$nodeClass = 'Oliva\Utils\Tree\Node\SimpleNode'; //SimpleNode::CLASS;
+	$nodeClass = SimpleNode::className(); //SimpleNode::CLASS;
 	$builder->nodeClass = $nodeClass;
 
 	// default build

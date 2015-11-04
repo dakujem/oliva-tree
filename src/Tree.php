@@ -141,8 +141,8 @@ class Tree implements ITree, IteratorAggregate
 	public function getCallbackFilterIterator(callable $filteringCallback, $recursion = TreeIterator::BREADTH_FIRST_RECURSION/* , ...$params */)
 	{
 //		return new TreeCallbackFilterIterator($this->getIterator($recursion), $filteringCallback, ...$params); // this would work on PHP 5.6
-		// and this is the PHP 5.4 workaround...
-		$ref = new ReflectionClass(TreeCallbackFilterIterator::getClass());
+		// and the following is the PHP 5.4 workaround...
+		$ref = new ReflectionClass(TreeCallbackFilterIterator::className());
 		return $ref->newInstanceArgs(array_merge([$this->getIterator($recursion), $filteringCallback], array_slice(func_get_args(), 2)));
 	}
 

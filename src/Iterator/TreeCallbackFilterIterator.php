@@ -34,6 +34,9 @@ class TreeCallbackFilterIterator extends FilterIterator
 		);
 	}
 
+	//-----------------------------------------------------------------
+	//------------------------- PHP 5.4 -------------------------------
+
 
 	/**
 	 * Method added for the sake of PHP 5.4 support.
@@ -41,7 +44,7 @@ class TreeCallbackFilterIterator extends FilterIterator
 	 * 
 	 * @return string
 	 */
-	public static function getClass()
+	public static function className()
 	{
 		return __CLASS__;
 	}

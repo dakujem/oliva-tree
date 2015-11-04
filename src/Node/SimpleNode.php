@@ -99,4 +99,19 @@ class SimpleNode extends NodeBase implements IDataNode
 		return $this;
 	}
 
+	//-----------------------------------------------------------------
+	//------------------------- PHP 5.4 -------------------------------
+
+
+	/**
+	 * Method added for the sake of PHP 5.4 support.
+	 *
+	 *
+	 * @return string
+	 */
+	public static function className()
+	{
+		return __CLASS__;
+	}
+
 }

@@ -32,10 +32,10 @@ function subroutine1()
 	]];
 
 	// default node type should be Node
-	Assert::type('Oliva\Utils\Tree\Node\Node' /* Node::CLASS */, $builder->build($data));
+	Assert::type(Node::className() /* Node::CLASS */, $builder->build($data));
 
 	// change node class
-	$nodeClass = 'Oliva\Utils\Tree\Node\SimpleNode'; //SimpleNode::CLASS;
+	$nodeClass = SimpleNode::className(); //SimpleNode::CLASS;
 	$builder->nodeClass = $nodeClass;
 	Assert::type($nodeClass, $builder->build($data));
 

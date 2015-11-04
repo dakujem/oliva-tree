@@ -21,7 +21,6 @@ abstract class TreeBuilder
 	 * Node class. An instance will be created upon transformation for each node.
 	 * @var string
 	 */
-//	public $nodeClass = Node::CLASS;
 	public $nodeClass = NULL;
 
 	/**
@@ -37,10 +36,7 @@ abstract class TreeBuilder
 
 	public function __construct()
 	{
-		// added for PHP 5.4
-		if ($this->nodeClass === NULL) {
-			$this->nodeClass = Node::getClass();
-		}
+
 	}
 
 
@@ -142,7 +138,8 @@ abstract class TreeBuilder
 
 
 	/**
-	 * Creates a node. If arguments are provided, they are passed to the constructor and callback (if provided).
+	 * Creates a node.
+	 * If an argument is provided, it is passed to the constructor and callback (if provided).
 	 *
 	 *
 	 * @return INode
@@ -152,7 +149,11 @@ abstract class TreeBuilder
 		if ($this->nodeCallback !== NULL) {
 			return call_user_func_array($this->nodeCallback[0], array_merge([$data], $this->nodeCallback[1]));
 		}
-		return new $this->nodeClass($data);
+		if ($this->nodeClass !== NULL) {
+			return new $this->nodeClass($data);
+		}
+		// otherwise create a default node
+		return new Node($data);
 	}
 
 

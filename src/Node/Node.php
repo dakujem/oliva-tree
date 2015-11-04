@@ -274,7 +274,7 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 	 *
 	 * @return string
 	 */
-	public static function getClass()
+	public static function className()
 	{
 		return __CLASS__;
 	}
