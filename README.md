@@ -1,5 +1,5 @@
-# Oliva Tree Utilities for PHP
-Simple utility for handling tree structures in PHP.
+# Oliva Tree
+**Oliva Tree** is a powerful yet simple to use utility for handling tree structures in PHP.
 
 Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on arbitrary tree structures.
 
@@ -7,25 +7,35 @@ Useful for handling **tree data stored in database** or for performing **search*
 ## Why use Oliva Tree?
 Because you want one library for all your trees.
 Because Oliva Tree has been build for real-life usage and it is also tested that way.
-Because Oliva Tree provides many utilities for data manipulation, thus it makes building components like **menus**, **tree views**, **grids**, **data lists** (and other) an easy and fun thing to do.
+Because Oliva Tree provides many utilities for data manipulation, thus it makes writing components like **menus**, **tree views**, **grids**, **data lists** (and other) an easy and fun thing to do.
+Because Oliva Tree is well documented (IMHO).
+
 
 ### What can you do with Oliva Tree?
 * **build** tree structures **from arbitrary flat data** with support for
     *  materialized path data model
     *  recursive trees (parent - id) (adjacency list data model, self-joined tables)
-* build trees using fluent interface
-* seamlessly wrap any data (Node class)
+	*  build trees **from JSON** strings
+* build trees using a fluent interface
+* seamlessly wrap objects with `Node` class and keep using them as before
 * enhance functionality of data already in tree structures
-* build trees **from JSON** strings
 * **find nodes**, breadth-first or depth-first
 * **filter nodes** by any condition
 * **compare trees**, nodes, sub-trees
 * provide means for **easy** tree structure **manipulation**
-* **transform** tree structures to flat data, in breadth-first or depth-first manner
+* **transform** tree structures (back) to flat data, in breadth-first or depth-first manner
+
+
+## Code snippets
+You want to do this? Get Oliva Tree!
+
+```php
+TODO
+```
 
 
 ## Installation
-The easiest way to install is to use composer. Just add `"oliva/tree"` to the "require" section in your `composer.json` file.
+The easiest way to install Oliva Tree is to use composer. Just add `"oliva/tree"` to the "require" section in your `composer.json` file.
 ```json
 {
 	"require": {
@@ -34,6 +44,23 @@ The easiest way to install is to use composer. Just add `"oliva/tree"` to the "r
 	}
 }
 ```
+
+
+## Docs
+
+* Interfaces
+* Nodes
+* Building a tree from data stored in a database
+* Fluent tree building
+* Filtering, iterations
+* Creating menu
+* Creating a data list or a grid
+* Transformations
+* Recursive tree
+* Materialized path tree
+
+
+
 
 
 ## Usage
