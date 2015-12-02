@@ -1,9 +1,13 @@
 # Oliva Tree
 
-## Documentation - Contents
+This documentation ~~covers~~ will try to cover most aspects of Oliva Tree.
+For the **root readme** file, go [here](../README.md).
 
 
-* [Tree](trees.md)
+## Documentation
+
+* [Installation](installation.md)
+* [Trees](trees.md)
 * [Nodes](nodes.md)
 * [Interfaces](interfaces.md)
 * Building a tree

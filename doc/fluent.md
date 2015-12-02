@@ -1,6 +1,4 @@
-# Oliva Tree
-
-[Home](home.md) > Fluent tree building
+[Oliva Tree](home.md) > Fluent tree building
 
 ## Fluent tree building
 

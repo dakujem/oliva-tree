@@ -1,6 +1,4 @@
-# Oliva Tree
-
-Home > Nodes
+[Oliva Tree](home.md) > Nodes
 
 ## Nodes
 A "node" is anything implementing the `INode` interface, providing basic methods for adding, getting and removing child nodes and parent.

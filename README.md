@@ -6,7 +6,7 @@ Useful for handling **tree data stored in database** or for performing **search*
 
 ## Why use Oliva Tree?
 Because you want one library for all your trees.
-Because Oliva Tree has been build for real-life usage and it is also tested that way.
+Because Oliva Tree has been build for real-life usage and it is also tested in real life, along with unit tests.
 Because Oliva Tree provides many utilities for data manipulation, thus it makes writing components like **menus**, **tree views**, **grids**, **data lists** (and other) an easy and fun thing to do.
 Because Oliva Tree is well documented (IMHO).
 

@@ -1,4 +1,6 @@
-# Trees
+[Oliva Tree](home.md) > Trees
+
+## Trees
 
 Trees are implementations of `ITree` interface. Class `Tree` holds the root and provides convenient methods for creating iterators easily. Most of the "tree" functionality is contained in the nodes themselves.
 
