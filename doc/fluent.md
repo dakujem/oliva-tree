@@ -1,4 +1,4 @@
-[Oliva Tree](home.md) > Fluent tree building
+[Oliva Tree](docs.md) > Fluent tree building
 
 ## Fluent tree building
 
@@ -22,7 +22,7 @@ $root->addNode('1')
 
 ----
 |Reference|Full class name|File|Docs|
-|:-|:-|:-|:-|
+|:---|:---|:---|:---|
 |`Node` | `Oliva\Utils\Tree\Node\Node` | [src/Node/Node.php](../src/Node/Node.php) |[Nodes](nodes.md)|
 |`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [src/Node/SimpleNode.php](../src/Node/SimpleNode.php) |[Nodes](nodes.md)|
 |`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [src/Node/NodeBase.php](../src/Node/NodeBase.php) |[Nodes](nodes.md)|
