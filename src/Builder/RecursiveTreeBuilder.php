@@ -94,8 +94,8 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 		$rootId = NULL;
 		$rootFound = FALSE;
 		foreach ($data as $item) {
-			$id = $this->getMember($item, $idMember);
-			$parent = $this->getMember($item, $parentMember);
+			$id = $this->getCallbackMember($item, $idMember);
+			$parent = $this->getCallbackMember($item, $parentMember);
 
 			if ($parent === NULL || $id === $parent) {
 				if ($this->throwOnMultipleRoots && $rootFound) {

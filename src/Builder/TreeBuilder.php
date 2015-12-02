@@ -45,7 +45,7 @@ abstract class TreeBuilder
 	 *
 	 *
 	 * @param mixed $item
-	 * @param string $member
+	 * @param string|int $member
 	 * @return mixed the value of the member
 	 * @throws RuntimeException
 	 */
@@ -63,6 +63,26 @@ abstract class TreeBuilder
 			$value = $this->dataError($item, $member, new RuntimeException($this->formatMissingMemberMessage($item, $member), 1));
 		}
 		return $value;
+	}
+
+
+	/**
+	 * Get a member from the data, process the callback when applicable.
+	 *
+	 *
+	 * @param mixed $item
+	 * @param mixed $member
+	 * @return mixed the value of the data member or the return value of the callback
+	 * @throws RuntimeException
+	 */
+	public function getCallbackMember($item, $member)
+	{
+		if (is_callable($member)) {
+			return call_user_func($member, $item, $this);
+		} elseif (is_scalar($member)) {
+			return $this->getMember($item, is_string($member) && isset($member[0]) && $member[0] === '@' ? substr($member, 1) : $member);
+		}
+		throw new RuntimeException('Incorrect getter provided. Please provide a name of a data member or a valid callback to retrieve it.');
 	}
 
 

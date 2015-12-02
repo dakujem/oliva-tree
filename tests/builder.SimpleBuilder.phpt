@@ -33,6 +33,14 @@ function subroutine1()
 	Assert::same(['c' => 'c'], $root->getChild(0)->getContents());
 	Assert::same(['d' => 'd'], $root->getChild(1)->getContents());
 	Assert::same(['e' => 'e', 'f' => 'f'], $root->getChild(0)->getChild(0)->getContents());
+
+//	$root2 = (new SimpleTreeBuilder(function($item) {
+//		return $item['children'];
+//	}))->build($data);
+//	Assert::same(['a' => 'a', 'b' => 'b'], $root2->getContents());
+//	Assert::same(['c' => 'c'], $root2->getChild(0)->getContents());
+//	Assert::same(['d' => 'd'], $root2->getChild(1)->getContents());
+//	Assert::same(['e' => 'e', 'f' => 'f'], $root2->getChild(0)->getChild(0)->getContents());
 }
 
 

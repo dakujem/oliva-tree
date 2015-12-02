@@ -110,13 +110,30 @@ Assert::exception(function() use ($builder) {
 missingRefSubroutine($builder);
 bridgingSubroutine($builder, $root);
 
-// test altering indices
-testIndexAltering($builder, $data);
+// test altering indices, clone data recursively, so that it is not modified
+testIndexAltering($builder, array_clone($data));
+
+// test callback members
+$parentCallback = function($item, $builder) {
+	Assert::type('Oliva\Utils\Tree\Builder\RecursiveTreeBuilder', $builder);
+	return $item->parent;
+};
+$idCallback = function($item, $builder) {
+	Assert::type('Oliva\Utils\Tree\Builder\RecursiveTreeBuilder', $builder);
+	return $item->id;
+};
+testRoot((new RecursiveTreeBuilder($parentCallback, $idCallback))->build($data));
 
 
 function testRoot(Node $root)
 {
 	Assert::equal(FALSE, $root->getChild(NULL));
+	Assert::type('Oliva\Utils\Tree\Node\INode', $root->getChild(1));
+	Assert::type('Oliva\Utils\Tree\Node\INode', $root->getChild(2));
+	Assert::type('Oliva\Utils\Tree\Node\INode', $root->getChild(3));
+	Assert::type('Oliva\Utils\Tree\Node\INode', $root->getChild(2)->getChild(22));
+	Assert::type('Oliva\Utils\Tree\Node\INode', $root->getChild(2)->getChild(22)->getChild(222));
+	Assert::type('Oliva\Utils\Tree\Node\INode', $root->getChild(2)->getChild(22)->getChild(222)->getChild(2221));
 	Assert::same('hello', $root->getChild(1)->title);
 	Assert::same('world', $root->getChild(2)->title);
 	Assert::same('world second child', $root->getChild(2)->getChild(22)->title);
@@ -183,4 +200,15 @@ function testIndexAltering(RecursiveTreeBuilder $builder, $data)
 	$root = $builderClone->build($data);
 
 	testRoot($root);
+}
+
+
+function array_clone($array)
+{
+	return array_map(function($element) {
+		return (is_array($element) ?
+						call_user_func(__FUNCTION__, $element) //
+						: ( is_object($element) ? clone $element : $element )//
+				);
+	}, $array);
 }

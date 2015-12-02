@@ -67,6 +67,7 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 		// get children data - if present
 		try {
+//			$childrenDataItems = $this->getCallbackMember($nodeData, $childrenMember); //NOTE: callback getting not possible due to later unsetting
 			$childrenDataItems = $this->getMember($nodeData, $childrenMember);
 			if (is_object($nodeData)) {
 				unset($nodeData->$childrenMember);
