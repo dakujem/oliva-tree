@@ -1,6 +1,7 @@
-[Oliva Tree](home.md) > Nodes
+[Oliva Tree](docs.md) > Nodes
 
 ## Nodes
+
 A "node" is anything implementing the `INode` interface, providing basic methods for adding, getting and removing child nodes and parent.
 A "data node" is anything implementing the `IDataNode` interface, providing the `getContents()` method.
 
@@ -61,6 +62,7 @@ $node->getChild(2)->addChild(new SimpleNode('a leaf'));
 $node->removeChild($node->getChildIndex($child));
 $node->removeChildren(); // dump all the children
 ```
+For building trees from data structures, see [Building a tree](building.md).
 
 
 ## Convenience methods
@@ -105,6 +107,37 @@ class MyNode implements INode, IDataNode {
 }
 ```
 
+## Comparing nodes
+
+To compare the data of nodes, use the `NodeComparator` class.
+```php
+// the comparator
+$comparator = new NodeComparator();
+
+// simple nodes
+$node1 = new SimpleNode(1);
+$node2 = new SimpleNode(1);
+$node3 = new SimpleNode(2);
+
+// basic comparison
+$comparator->compare($node1, $node2); // TRUE
+$comparator->compare($node1, $node3); // FALSE
+```
+`NodeComparator` can be configured to compare with various strictness (can be set up to compare to equality `==` or identity `===` for different data types), not to compare recursively, to compare child indices and much more.
+
+A **custom comparison function** can also be provided:
+```php
+$comparator->callbackCompare($node1, $node3, function($nodeData1, $nodeData2) {
+            if($nodeData1 > 10){
+                return $nodeData1 > $nodeData2;
+            }
+			return $nodeData1 === $nodeData2;
+		}); // FALSE
+```
+> **Note**: this is just a basic example, `NodeComparator` can of course compare whole branches with all their nodes  **recursively**.
+
+
+
 
 ## Using `Node` with other data types
 
@@ -122,10 +155,12 @@ $child = $node->addChild(new Node(['title' => 'first child of one']));
 ----
 TODO !
 |Reference|Full class name|File|Docs|
-|:-|:-|:-|:-|
+|:---|:---|:---|:---|
 |`INode` | `Oliva\Utils\Tree\Node\INode` | [src/Node/INode.php](../src/Node/INode.php) ||
 |`IDataNode` | `Oliva\Utils\Tree\Node\IDataNode` | [src/Node/IDataNode.php](../src/Node/IDataNode.php) ||
-|`Node` | `Oliva\Utils\Tree\Node\Node` | [src/Node/Node.php](../src/Node/Node.php) ||
-|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [src/Node/SimpleNode.php](../src/Node/SimpleNode.php) ||
 |`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [src/Node/NodeBase.php](../src/Node/NodeBase.php) ||
+|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [src/Node/SimpleNode.php](../src/Node/SimpleNode.php) ||
+|`Node` | `Oliva\Utils\Tree\Node\Node` | [src/Node/Node.php](../src/Node/Node.php) ||
+|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [src/Comparator/INodeComparator.php](../src/Comparator/INodeComparator.php) ||
+|`NodeComparator` | `Oliva\Utils\Tree\Comparator\NodeComparator` | [src/Comparator/NodeComparator.php](../src/Comparator/NodeComparator.php) ||
 

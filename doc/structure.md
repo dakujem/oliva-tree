@@ -30,8 +30,6 @@ Oliva
 +--- Tree
      |
      +--- Builder
-     |
-     +--- Iterator [remove]
 ```
 
 *Option 3*
