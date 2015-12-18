@@ -134,7 +134,7 @@ $comparator->callbackCompare($node1, $node3, function($nodeData1, $nodeData2) {
 			return $nodeData1 === $nodeData2;
 		}); // FALSE
 ```
-> **Note**: this is just a basic example, `NodeComparator` can of course compare whole branches with all their nodes  **recursively**.
+> **Note**: this is just a basic example, `NodeComparator` can of course compare whole branches with all their nodes  **recursively**. See more on comparing nodes here: [Comparing nodes](comparing.md)
 
 
 
@@ -147,13 +147,13 @@ $node = new Node(['title' => NULL]);
 $node->title = 'item one';
 $child = $node->addChild(new Node(['title' => 'first child of one']));
 ```
-> Note: using array as data for a `Node` class instance is a little cumbersome (see caveats of using `Node`). The class is best fitted for using objects as the data.
+> Note: using array as data for a `Node` class instance may be a little cumbersome (see [caveats of using `Node`](caveats.md)). The class is best fitted for using objects as the data.
 
 **TODO: test scalar data type operations like +, - ...
 
 
 ----
-TODO !
+TODO ! doplnit do ostatnych
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
 |`INode` | `Oliva\Utils\Tree\Node\INode` | [src/Node/INode.php](../src/Node/INode.php) ||
@@ -161,6 +161,6 @@ TODO !
 |`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [src/Node/NodeBase.php](../src/Node/NodeBase.php) ||
 |`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [src/Node/SimpleNode.php](../src/Node/SimpleNode.php) ||
 |`Node` | `Oliva\Utils\Tree\Node\Node` | [src/Node/Node.php](../src/Node/Node.php) ||
-|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [src/Comparator/INodeComparator.php](../src/Comparator/INodeComparator.php) ||
-|`NodeComparator` | `Oliva\Utils\Tree\Comparator\NodeComparator` | [src/Comparator/NodeComparator.php](../src/Comparator/NodeComparator.php) ||
+|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [src/Comparator/INodeComparator.php](../src/Comparator/INodeComparator.php) |[Comparing nodes](comparing.md)|
+|`NodeComparator` | `Oliva\Utils\Tree\Comparator\NodeComparator` | [src/Comparator/NodeComparator.php](../src/Comparator/NodeComparator.php) |[Comparing nodes](comparing.md)|
 

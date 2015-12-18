@@ -3,31 +3,44 @@
 This documentation ~~covers~~ will try to cover most aspects of Oliva Tree.
 For the **root readme** file, go [here](../README.md).
 
-## Usage
-Each tree has a root node. Each node allows getting/setting of children and parent, thus creating a tree structure.
+
+## The very basics on a tree structure
+
+Each tree has a root node.
+Each node can have *any number of child nodes*, but *only one parent* node. A *root* node has no parent, a *leaf* node has no children.
+Each node allows getting/setting of children and parent, thus creating a tree structure.
 
 
 
-## Documentation
+## Oliva Tree documentation
 
 * [Installation](installation.md)
 * [Trees](trees.md)
 * [Nodes](nodes.md)
 	* [Comparing nodes](comparing.md)
-* [Interfaces](interfaces.md)
 * [Building a tree](building.md)
 	* [fluently - fluent tree building](fluent.md)
 	* from data stored in a database
 		* [Recursive tree](recursive.md)
 		* [Materialized path tree](materialized.md)
-* [Traversing and filtering a tree](traversing.md)
-	* [iterators](iterators.md)
+* [Iterators](iterators.md)
+* [Caveats](caveats.md)
+
+
+## Hints
+
+Most of the source code is commented, so if you can't find sufficient information in this docs section,
+you most probably will find your answers looking at the sources.
+
+There are some useful use cases in the **test sources**,
+however, I admit that I did not write the tests to be human readable.
+
+
+## Comming soon (docs):
+
+* [Interfaces](interfaces.md)
+* Traversing and filtering a tree
 * [Transformations](transformations.md)
 * Creating application components
 	* Creating menu
 	* Creating a data list or a grid
-* [Caveats](caveats.md)
-
-
-TODO:
-* [heap](heap.md)
