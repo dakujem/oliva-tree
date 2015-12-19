@@ -17,6 +17,6 @@ Get this structure from a database as an array.
 Tell the tree that "parent" is the member where the parent's "id" is found.
 Create the tree.
 ```php
-$tree = new DataTree($data, new RecursiveTreeBuilder('parent', 'id'));
+$tree = new DataTree(Database::fetchAll(), new RecursiveTreeBuilder('parent', 'id'));
 ```
 > Note: if you have more than one root, the builder's behaviour is undefined, the trees will overwrite one another.

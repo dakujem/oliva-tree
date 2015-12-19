@@ -1,9 +1,5 @@
 # Oliva Tree
 
-This documentation ~~covers~~ will try to cover most aspects of Oliva Tree.
-For the **root readme** file, go [here](../README.md).
-
-
 ## The very basics on a tree structure
 
 Each tree has a root node.
@@ -11,8 +7,12 @@ Each node can have *any number of child nodes*, but *only one parent* node. A *r
 Each node allows getting/setting of children and parent, thus creating a tree structure.
 
 
-
 ## Oliva Tree documentation
+
+This documentation covers most aspects of Oliva Tree.
+For the **root readme** file, go [here](../README.md).
+I will continue to update it with more examples, use case and class descriptions.
+
 
 * [Installation](installation.md)
 * [Trees](trees.md)

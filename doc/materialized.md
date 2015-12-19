@@ -13,8 +13,6 @@ Path trees with sibling numbers are useful for storing menu hierarchy or similar
 
 In this example, each depth level is represented by a fixed-length string representing the position of the node in the current sub-tree (3 characters per depth level) and sibling numbers are used. This allows ordering of leafs and is useful for creating for example menu components.
 
-> **Note**: this is a special case of Materialized Path data model, where fixed number of characters (3) are used for each level. No encoding is used.
-
 | ID        | hierarchy    | title|
 |:----------|:----------|:-------|
 |1         | `001`| the first level|
@@ -30,7 +28,7 @@ Get this structure from a database as an array.
 Tell the tree that you are using 'position' as the hierarchy column and there are 3 characters for each level.
 Create the tree.
 ```php
-$tree = new DataTree($data, new MaterializedPathTreeBuilder('hierarchy', 3));
+$tree = new DataTree(Database::fetchAll(), new MaterializedPathTreeBuilder('hierarchy', 3));
 ```
 Unless specified with NULL position (or position that is shorter than number of characters needed for each level),
 an empty root node will be created to wrap the data tree. You can provide a data item with NULL position to specify your own root.
@@ -50,7 +48,7 @@ And now an example of a delimited hierarchy string with node position in `positi
 |`7`|`2`|second first-level item
 
 ```php
-$tree = new DataTree($data, new MaterializedPathTreeBuilder('position', '.'));
+$tree = new DataTree(Database::fetchAll(), new MaterializedPathTreeBuilder('position', '.'));
 ```
 
-> **Note**: for now, when using IDs in hierarchy and only specify the "parents" path, you need to provide your own processing routines to the builder. See code for more details.
+> **Note**: for now, when using IDs in hierarchy and only specifying the parents in the "path", you need to provide your own processing routines to the builder. See code for more details.
