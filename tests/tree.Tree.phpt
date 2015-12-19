@@ -32,7 +32,7 @@ function subroutine1()
 
 	Assert::equal(1, $tree->getRoot()->id);
 
-	Assert::type(TreeIterator::CLASS, $tree->getIterator());
+	Assert::type('Oliva\Utils\Tree\Iterator\TreeIterator'/* TreeIterator::CLASS */, $tree->getIterator());
 	Assert::same(TreeIterator::BREADTH_FIRST_RECURSION, $tree->getIterator(TreeIterator::BREADTH_FIRST_RECURSION)->getRecursion());
 	Assert::same(TreeIterator::DEPTH_FIRST_RECURSION, $tree->getIterator(TreeIterator::DEPTH_FIRST_RECURSION)->getRecursion());
 	Assert::same(TreeIterator::NON_RECURSIVE, $tree->getIterator(TreeIterator::NON_RECURSIVE)->getRecursion());

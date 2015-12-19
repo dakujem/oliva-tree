@@ -6,7 +6,8 @@ namespace Oliva\Utils\Tree;
 use RuntimeException,
 	Iterator,
 	IteratorAggregate,
-	Traversable;
+	Traversable,
+	ReflectionClass;
 use Oliva\Utils\Tree\Node\INode,
 	Oliva\Utils\Tree\Node\NodeBase,
 	Oliva\Utils\Tree\Iterator\TreeIterator,
@@ -137,9 +138,12 @@ class Tree implements ITree, IteratorAggregate
 	 * @param ...
 	 * @return TreeCallbackFilterIterator
 	 */
-	public function getCallbackFilterIterator(callable $filteringCallback, $recursion = TreeIterator::BREADTH_FIRST_RECURSION, ...$params)
+	public function getCallbackFilterIterator(callable $filteringCallback, $recursion = TreeIterator::BREADTH_FIRST_RECURSION/* , ...$params */)
 	{
-		return new TreeCallbackFilterIterator($this->getIterator($recursion), $filteringCallback, ...$params);
+//		return new TreeCallbackFilterIterator($this->getIterator($recursion), $filteringCallback, ...$params); // this would work on PHP 5.6
+		// and the following is the PHP 5.4 workaround...
+		$ref = new ReflectionClass(TreeCallbackFilterIterator::className());
+		return $ref->newInstanceArgs(array_merge([$this->getIterator($recursion), $filteringCallback], array_slice(func_get_args(), 2)));
 	}
 
 

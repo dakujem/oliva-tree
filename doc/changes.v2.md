@@ -14,3 +14,5 @@ Public property access will be replaced by public getters and the members will b
 All stuff marked as deprecated will be removed.
 
 
+# NodeBase API
+Change `NodeBase::getChild`, `NodeBase::getChildIndex` and `NodeBase::getSiblings` to return `NULL` instead of `FALSE`.

@@ -27,7 +27,7 @@ class NodeComparator implements INodeComparator
 	protected $recursive = TRUE;
 
 	/** @var int $strictness set up which data types are compared to equality and which to identity */
-	protected $strictness = self::STRICT_INDICES | self::STRICT_SCALARS | self::STRICT_ARRAYS;
+	protected $strictness = 0b1011; // self::STRICT_INDICES | self::STRICT_SCALARS | self::STRICT_ARRAYS; // [PHP 5.6]
 
 	/** @var bool $compareChildIndices compare indices of children? */
 	protected $compareChildIndices = TRUE;

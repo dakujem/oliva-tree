@@ -75,6 +75,7 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 	public function __construct($hierarchyMember = NULL, $charsPerLevel = NULL, $autoSort = TRUE, $hierarchyCutoff = '')
 	{
+		parent::__construct();
 		$this->hierarchyMember = $hierarchyMember !== NULL ? $hierarchyMember : self::$hierarchyMemberDefault;
 		$this->charsPerLevel = $charsPerLevel > 0 ? $charsPerLevel : self::$charsPerLevelDefault;
 		$this->autoSort = !!$autoSort;

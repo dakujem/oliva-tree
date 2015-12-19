@@ -18,11 +18,11 @@ class TreeCallbackFilterIterator extends FilterIterator
 	protected $callbackParams = NULL;
 
 
-	public function __construct(TreeIterator $iterator, callable $filteringCallback, ...$params)
+	public function __construct(TreeIterator $iterator, callable $filteringCallback/* , ...$params */)
 	{
 		parent::__construct($iterator);
 		$this->filteringCallback = $filteringCallback;
-		$this->callbackParams = $params;
+		$this->callbackParams = array_slice(func_get_args(), 2); // $params here [PHP 5.6]
 	}
 
 
@@ -32,6 +32,21 @@ class TreeCallbackFilterIterator extends FilterIterator
 				$this->filteringCallback, //
 				array_merge([$this->getInnerIterator()->current(), $this->getInnerIterator()->key()], !empty($this->callbackParams) ? $this->callbackParams : []) //
 		);
+	}
+
+	//-----------------------------------------------------------------
+	//------------------------- PHP 5.4 -------------------------------
+
+
+	/**
+	 * Method added for the sake of PHP 5.4 support.
+	 * 
+	 * 
+	 * @return string
+	 */
+	public static function className()
+	{
+		return __CLASS__;
 	}
 
 }

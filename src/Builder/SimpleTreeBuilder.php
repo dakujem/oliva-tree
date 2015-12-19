@@ -32,6 +32,7 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 	public function __construct($childrenMember = NULL)
 	{
+		parent::__construct();
 		$this->childrenMember = $childrenMember !== NULL ? $childrenMember : self::$childrenMemberDefault;
 	}
 
@@ -66,6 +67,7 @@ class SimpleTreeBuilder extends TreeBuilder implements ITreeBuilder
 
 		// get children data - if present
 		try {
+//			$childrenDataItems = $this->getCallbackMember($nodeData, $childrenMember); //NOTE: callback getting not possible due to later unsetting
 			$childrenDataItems = $this->getMember($nodeData, $childrenMember);
 			if (is_object($nodeData)) {
 				unset($nodeData->$childrenMember);

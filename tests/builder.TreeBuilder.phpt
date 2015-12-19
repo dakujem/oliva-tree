@@ -32,19 +32,20 @@ function subroutine1()
 	]];
 
 	// default node type should be Node
-	Assert::type(Node::CLASS, $builder->build($data));
+	Assert::type(Node::className() /* Node::CLASS */, $builder->build($data));
 
 	// change node class
-	$builder->nodeClass = SimpleNode::CLASS;
-	Assert::type(SimpleNode::CLASS, $builder->build($data));
+	$nodeClass = SimpleNode::className(); //SimpleNode::CLASS;
+	$builder->nodeClass = $nodeClass;
+	Assert::type($nodeClass, $builder->build($data));
 
 	// set own node creation callback
 	$builder->setNodeCallback(function($data, $className) {
 		return new $className(array_merge($data, ['foo' => 'bar',]));
-	}, SimpleNode::CLASS);
+	}, $nodeClass);
 
 	$root = $builder->build($data);
-	Assert::type(SimpleNode::CLASS, $root);
+	Assert::type($nodeClass, $root);
 	Assert::same(['a' => 'a', 'b' => 'b', 'foo' => 'bar'], $root->getContents());
 	Assert::same(['c' => 'c', 'foo' => 'bar'], $root->getChild(0)->getContents());
 }
@@ -58,7 +59,7 @@ function subroutine2()
 	// data for this builder have to contain 'id' and 'parent' members
 	Assert::exception(function() use ($builder) {
 		$builder->build(['a']);
-	}, RuntimeException::CLASS, 'Missing attribute "id" of $item of type string.', 1);
+	}, 'RuntimeException' /* RuntimeException::CLASS */, 'Missing attribute "id" of $item of type string.', 1);
 
 	// set own throwing error handling routine
 	$builder->setDataErrorCallback(function() {
@@ -67,7 +68,7 @@ function subroutine2()
 
 	Assert::exception(function() use ($builder) {
 		$builder->build(['a']);
-	}, RuntimeException::CLASS, 'foo', 123);
+	}, 'RuntimeException' /* RuntimeException::CLASS */, 'foo', 123);
 
 
 	// set own repairing error handling routine
@@ -106,5 +107,5 @@ function subroutine2()
 	// building from invalid data
 	Assert::exception(function() use ($builder) {
 		$builder->build('foo');
-	}, RuntimeException::CLASS, 'The data provided must be an array or must be traversable, string provided.', 2);
+	}, 'RuntimeException' /* RuntimeException::CLASS */, 'The data provided must be an array or must be traversable, string provided.', 2);
 }

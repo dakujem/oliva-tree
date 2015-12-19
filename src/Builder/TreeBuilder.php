@@ -21,7 +21,7 @@ abstract class TreeBuilder
 	 * Node class. An instance will be created upon transformation for each node.
 	 * @var string
 	 */
-	public $nodeClass = Node::CLASS;
+	public $nodeClass = NULL;
 
 	/**
 	 * @var array|NULL [callable, params]
@@ -34,12 +34,18 @@ abstract class TreeBuilder
 	protected $dataErrorCallback = NULL;
 
 
+	public function __construct()
+	{
+
+	}
+
+
 	/**
 	 * Get the value of a member of the $item. The $item can be either array or object.
 	 *
 	 *
 	 * @param mixed $item
-	 * @param string $member
+	 * @param string|int $member
 	 * @return mixed the value of the member
 	 * @throws RuntimeException
 	 */
@@ -57,6 +63,26 @@ abstract class TreeBuilder
 			$value = $this->dataError($item, $member, new RuntimeException($this->formatMissingMemberMessage($item, $member), 1));
 		}
 		return $value;
+	}
+
+
+	/**
+	 * Get a member from the data, process the callback when applicable.
+	 *
+	 *
+	 * @param mixed $item
+	 * @param mixed $member
+	 * @return mixed the value of the data member or the return value of the callback
+	 * @throws RuntimeException
+	 */
+	public function getCallbackMember($item, $member)
+	{
+		if (is_callable($member)) {
+			return call_user_func($member, $item, $this);
+		} elseif (is_scalar($member)) {
+			return $this->getMember($item, is_string($member) && isset($member[0]) && $member[0] === '@' ? substr($member, 1) : $member);
+		}
+		throw new RuntimeException('Incorrect getter provided. Please provide a name of a data member or a valid callback to retrieve it.');
 	}
 
 
@@ -94,10 +120,10 @@ abstract class TreeBuilder
 	 * @param callable $function
 	 * @return self fluent
 	 */
-	public function setNodeCallback(callable $function = NULL, ...$params)
+	public function setNodeCallback(callable $function = NULL/* , ...$params */)
 	{
 		if ($function !== NULL) {
-			$this->nodeCallback = [$function, $params];
+			$this->nodeCallback = [$function, array_slice(func_get_args(), 1)]; // $params here [PHP 5.6]
 		} else {
 			$this->nodeCallback = NULL;
 		}
@@ -120,10 +146,10 @@ abstract class TreeBuilder
 	 * @param callable $function
 	 * @return self fluent
 	 */
-	public function setDataErrorCallback(callable $function = NULL, ...$params)
+	public function setDataErrorCallback(callable $function = NULL/* , ...$params */)
 	{
 		if ($function !== NULL) {
-			$this->dataErrorCallback = [$function, $params];
+			$this->dataErrorCallback = [$function, array_slice(func_get_args(), 1)]; // $params here [PHP 5.6]
 		} else {
 			$this->dataErrorCallback = NULL;
 		}
@@ -132,7 +158,8 @@ abstract class TreeBuilder
 
 
 	/**
-	 * Creates a node. If arguments are provided, they are passed to the constructor and callback (if provided).
+	 * Creates a node.
+	 * If an argument is provided, it is passed to the constructor and callback (if provided).
 	 *
 	 *
 	 * @return INode
@@ -142,7 +169,11 @@ abstract class TreeBuilder
 		if ($this->nodeCallback !== NULL) {
 			return call_user_func_array($this->nodeCallback[0], array_merge([$data], $this->nodeCallback[1]));
 		}
-		return new $this->nodeClass($data);
+		if ($this->nodeClass !== NULL) {
+			return new $this->nodeClass($data);
+		}
+		// otherwise create a default node
+		return new Node($data);
 	}
 
 

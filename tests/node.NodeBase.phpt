@@ -13,7 +13,8 @@ use ArrayIterator;
 use Tester,
 	Tester\Assert;
 use Oliva\Utils\Tree\Node\SimpleNode,
-	Oliva\Utils\Tree\Node\NodeBase;
+	Oliva\Utils\Tree\Node\NodeBase,
+	Oliva\Utils\Tree\Comparator\NodeComparator;
 
 
 /**
@@ -170,8 +171,8 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same($root, $child->getParent());
 		Assert::same($child, $grandchild->getParent());
 
-		Assert::same([$child, $root], $grandchild->getParents()); // the order of expected parents is important
-		Assert::same([$root], $child->getParents());
+		Assert::same([$child, $root], $grandchild->getAncestors()); // the order of expected parents is important
+		Assert::same([$root], $child->getAncestors());
 
 
 		// detach a node
@@ -193,8 +194,8 @@ class NodeBaseTest extends Tester\TestCase
 		//   +-- 300
 		//
 		Assert::same(FALSE, $root->getChild(2));
-		Assert::same([], $child->getParents());
-		Assert::same([$child], $grandchild->getParents());
+		Assert::same([], $child->getAncestors());
+		Assert::same([$child], $grandchild->getAncestors());
 		Assert::same(2, $root->getChildrenCount());
 		Assert::same(3, $child->getChildrenCount());
 		$vals = [];
@@ -221,20 +222,20 @@ class NodeBaseTest extends Tester\TestCase
 		//   |         +-- 300
 		//   |
 		//   +-- 30
-		Assert::same([$child, $root->getChild(1), $root], $grandchild->getParents());
+		Assert::same([$child, $root->getChild(1), $root], $grandchild->getAncestors());
 		Assert::same([$child], $root->getChild(1)->getChildren());
 
 		$leaf = new SimpleNode(1000);
 		$leaf->setParent($root); // NOTE: setParent does NOT set the parent-child relation, only sets the child-parent part. Use $parent->addChild($child) for this purpose.
 		Assert::same($root, $leaf->getParent());
-		Assert::same([$root], $leaf->getParents());
+		Assert::same([$root], $leaf->getAncestors());
 		$leaf->detach();
 		Assert::same(NULL, $leaf->getParent());
-		Assert::same([], $leaf->getParents());
+		Assert::same([], $leaf->getAncestors());
 
 		$grandchild->addChild($leaf);
 		Assert::same($grandchild, $leaf->getParent());
-		Assert::same([$grandchild, $child, $root->getChild(1), $root], $leaf->getParents());
+		Assert::same([$grandchild, $child, $root->getChild(1), $root], $leaf->getAncestors());
 		Assert::same([$root, $root->getChild(1), $child, $grandchild], $leaf->getPath());
 	}
 
@@ -268,15 +269,79 @@ class NodeBaseTest extends Tester\TestCase
 	}
 
 
+	public function testVectorGetting()
+	{
+		$root = new SimpleNode('0');
+
+		$root
+				->addNode('1')
+				/**/->addNode('1.1')
+				/*   */->addLeaf('1.1.1')
+				/*   */->addLeaf('1.1.2')
+				/*   */->getParent()
+				/**/->addLeaf('1.2')
+				/**/->addNode('1.3')
+				/*   */->addLeaf('1.3.1')
+				/*   */->addLeaf('1.3.2')
+				/*   */->getParent()
+				/**/->getParent()
+				->addLeaf('2', 17)
+				->addLeaf('3')
+				->addNode('four')
+				/**/->addNode('four one')
+				/*   */->addLeaf('four one one');
+
+		Assert::same('1.1.1', $root->getDescendant([0, 0, 0])->getContents());
+		Assert::same('1.1.2', $root->getDescendant([0, 0, 1])->getContents());
+		Assert::same('1.3.2', $root->getDescendant([0, 2, 1])->getContents());
+		Assert::same(NULL, $root->getDescendant([1]));
+		Assert::same('3', $root->getDescendant([18])->getContents());
+		Assert::same('four', $root->getDescendant([19])->getContents());
+		Assert::same('four one', $root->getDescendant([19, 0])->getContents());
+		Assert::same('four one one', $root->getDescendant([19, 0, 0])->getContents());
+		Assert::same($root, $root->getDescendant([])); // returns self when vector empty
+	}
+
+
+	public function testClonning()
+	{
+		$root = new SimpleNode('0');
+		$root
+				->addNode('1')
+				->addLeaf('1.1')
+				->getParent()
+				->addLeaf('2')
+		;
+		$clonedRoot = clone $root;
+
+
+		// Note:	normal == comparison cannot be used here for the PHP recursion limitations (or is it an implementation bug?)
+		Assert::equal(FALSE, $clonedRoot === $root); // as expected of clonning, the nodes are not identical
+//		Assert::equal(TRUE, $clonedRoot == $root); //   but are equal // Fatal Error Nesting level too deep - recursive dependency?
+		// I can't check this, but let's continue
+		/**/
+
+		// however, by default, we need to clone the whole node structure (the branch), not the current node only!
+		Assert::equal(FALSE, $root->getChild(0) === $clonedRoot->getChild(0)); // must not be identical!
+		Assert::equal(FALSE, $root->getChild(0)->getChild(0) === $clonedRoot->getChild(0)->getChild(0)); // must not be identical!
+		Assert::equal(FALSE, $root->getChild(1) === $clonedRoot->getChild(1)); // must not be identical!
+		/**/
+
+		// the data has to be identical
+		$comparator = new NodeComparator(TRUE, NodeComparator::STRICT_ALL, TRUE, TRUE);
+		Assert::equal(TRUE, $comparator->compare($root, $clonedRoot));
+	}
+
+
 	protected function addChildren(NodeBase $node, $level, $countOrIndices = 3)
 	{
 		if (is_int($countOrIndices) && $countOrIndices > 0) {
 			for ($i = 0; $i < $countOrIndices; $i++) {
-				$node->addChild(new SimpleNode(($i + 1) * (10 ** $level)));
+				$node->addChild(new SimpleNode(($i + 1) * pow(10, $level)));
 			}
 		} elseif (is_array($countOrIndices)) {
 			foreach ($countOrIndices as $index) {
-				$node->addChild(new SimpleNode($index * (10 ** $level)), $index);
+				$node->addChild(new SimpleNode($index * pow(10, $level)), $index);
 			}
 		} else {
 			throw new \LogicException;
