@@ -1,5 +1,7 @@
 # Oliva Tree
 
+For the **root readme** file, see [readme.md](../README.md).
+
 ## The very basics on a tree structure
 
 Each tree has a root node.
@@ -10,7 +12,6 @@ Each node allows getting/setting of children and parent, thus creating a tree st
 ## Oliva Tree documentation
 
 This documentation covers most aspects of Oliva Tree.
-For the **root readme** file, go [here](../README.md).
 I will continue to update it with more examples, use case and class descriptions.
 
 
@@ -21,10 +22,11 @@ I will continue to update it with more examples, use case and class descriptions
 * [Building a tree](building.md)
 	* [fluently - fluent tree building](fluent.md)
 	* from data stored in a database
-		* [Recursive tree](recursive.md)
-		* [Materialized path tree](materialized.md)
+		* [Recursive trees](recursive.md)
+		* [Materialized path trees](materialized.md)
 * [Iterators](iterators.md)
 * [Caveats](caveats.md)
+
 
 
 ## Hints
@@ -39,8 +41,4 @@ however, I admit that I did not write the tests to be human readable.
 ## Comming soon (docs):
 
 * [Interfaces](interfaces.md)
-* Traversing and filtering a tree
 * [Transformations](transformations.md)
-* Creating application components
-	* Creating menu
-	* Creating a data list or a grid

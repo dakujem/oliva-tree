@@ -39,7 +39,7 @@ $filtered = $fruitTree->getFilterIterator(['name' => ['apple', 'pear'], 'categor
 A **filtering callback** can be used for *advanced filtering options*.
 ```php
 // filter very specific nodes
-$it = $tree->getFilteringCallbackIterator(function(\Oliva\Tree\NodeBase $node, $index) {
+$it = $tree->getFilteringCallbackIterator(function(NodeBase $node, $index) {
     try {
     	return $index === '002' || $node->id === 4;
     } catch (MemberAccessException $e) {
@@ -47,3 +47,11 @@ $it = $tree->getFilteringCallbackIterator(function(\Oliva\Tree\NodeBase $node, $
     }
 });
 ```
+
+----
+|Reference|Full class name|File|Docs|
+|:---|:---|:---|:---|
+|`TreeIterator` | `Oliva\Utils\Tree\Iterator\TreeIterator` | [src/Iterator/TreeIterator.php](../src/Iterator/TreeIterator.php) ||
+|`TreeFilterIterator` | `Oliva\Utils\Tree\Iterator\TreeFilterIterator` | [src/Iterator/TreeFilterIterator.php](../src/Iterator/TreeFilterIterator.php) ||
+|`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [src/Node/NodeBase.php](../src/Node/NodeBase.php) |[Nodes](nodes.md)|
+

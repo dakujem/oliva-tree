@@ -53,3 +53,9 @@ To iterate over the data, use:
 foreach($node->getContents() as $item){
 	...
 }
+
+
+----
+|Reference|Full class name|File|Docs|
+|:---|:---|:---|:---|
+|`Node` | `Oliva\Utils\Tree\Node\Node` | [src/Node/Node.php](../src/Node/Node.php) |[Nodes](nodes.md)|

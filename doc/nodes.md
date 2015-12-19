@@ -29,10 +29,10 @@ class Foo {
 }
 
 $node = new Node(new Foo);
-$node->foo; // equal to callintg $node->getContents()->foo
-$node->setFoo('bar'); // equal to calling $node->getContents()->setFoo('bar');
-$node->getFoo(); // again, the call is forwarded to the inner object
-$node->isParent(); // calling a method of the node itself
+$node->foo;            // equal to calling $node->getContents()->foo
+$node->setFoo('bar');  // equal to calling $node->getContents()->setFoo('bar');
+$node->getFoo();       // again, the call is forwarded to the inner object
+$node->isParent();     // calling a method of the node itself
 $node->getContents();
 ```
 
@@ -47,8 +47,8 @@ A very simple node implementation where the node only carries a value accessible
 ```php
 $node = new SimpleNode($myObject);
 $node->getContents()->myMethod();
-$node->getValue() === $myObject; // TRUE
-$node->getValue() === $$node->getContents(); // TRUE
+$node->getValue() === $myObject;              // TRUE
+$node->getValue() === $$node->getContents();  // TRUE
 ```
 
 
@@ -62,7 +62,7 @@ $node->getChild(2)->addChild(new SimpleNode('a leaf'));
 $node->removeChild($node->getChildIndex($child));
 $node->removeChildren(); // dump all the children
 ```
-For building trees from data structures, see [Building a tree](building.md).
+For building trees from data structures, fluent tree building and more, see [Building a tree](building.md).
 
 
 ## Convenience methods
@@ -74,22 +74,22 @@ Here is a snippet using some of the methods:
 $node = new SimpleNode('the root');
 $child = $node->addChild(new SimpleNode('first child of one'));
 $node->addChildren([new SimpleNode('second child of one'), new SimpleNode('third child of one')]);
-$child->getParent() === $node; // TRUE
+$child->getParent() === $node;        // TRUE
 $siblings = $child->getSiblings();
 $allChildren = $node->getChildren();
-$child->isFirst(); // TRUE - first of the siblings
-$child->isLast(); // FALSE - last of the siblings
+$child->isFirst();                    // TRUE - first of the siblings
+$child->isLast();                     // FALSE - last of the siblings
 
-$child->getDepth(); // 1 - since it only has one parent, the root (the root has depth 0)
+$child->getDepth();                   // returns 1 - since it only has one parent, the root (the root has depth 0)
 
-$child->detach(); // detach from the tree, becomes root
-$child->isRoot(); // TRUE
+$child->detach();                     // detach from the tree, becomes root
+$child->isRoot();                     // TRUE
 
 // implements IteratorAggregate interface
 foreach($node as $key => $childNode){...}
 ```
 
-Form all available methods, see the sources.
+Form all available methods, see the sources of [`NodeBase`](../src/Node/NodeBase.php) and its traits.
 
 
 ## Creating your own nodes
@@ -111,8 +111,7 @@ class MyNode implements INode, IDataNode {
 
 To compare the data of nodes, use the `NodeComparator` class.
 ```php
-// the comparator
-$comparator = new NodeComparator();
+$comparator = new NodeComparator(); // the comparator
 
 // simple nodes
 $node1 = new SimpleNode(1);
@@ -123,20 +122,7 @@ $node3 = new SimpleNode(2);
 $comparator->compare($node1, $node2); // TRUE
 $comparator->compare($node1, $node3); // FALSE
 ```
-`NodeComparator` can be configured to compare with various strictness (can be set up to compare to equality `==` or identity `===` for different data types), not to compare recursively, to compare child indices and much more.
-
-A **custom comparison function** can also be provided:
-```php
-$comparator->callbackCompare($node1, $node3, function($nodeData1, $nodeData2) {
-            if($nodeData1 > 10){
-                return $nodeData1 > $nodeData2;
-            }
-			return $nodeData1 === $nodeData2;
-		}); // FALSE
-```
-> **Note**: this is just a basic example, `NodeComparator` can of course compare whole branches with all their nodes  **recursively**. See more on comparing nodes here: [Comparing nodes](comparing.md)
-
-
+`NodeComparator` offers flexible configuration options, compares whole tree branches recursively and more. See: [Comparing nodes](comparing.md)
 
 
 ## Using `Node` with other data types
@@ -147,13 +133,23 @@ $node = new Node(['title' => NULL]);
 $node->title = 'item one';
 $child = $node->addChild(new Node(['title' => 'first child of one']));
 ```
-> Note: using array as data for a `Node` class instance may be a little cumbersome (see [caveats of using `Node`](caveats.md)). The class is best fitted for using objects as the data.
 
-**TODO: test scalar data type operations like +, - ...
+It is also possible to use any scalar type as the data.
+```php
+$node = new Node('foo');
+$node2 = new Node(2);
+$node->getContents() === 'foo'; // TRUE
+```
+
+Obviously, arithmetic and other operators won't work on Node instances. You need to use the `$node->getContents()` method.
+```php
+$value = $node1->getcontents() + $node2->getContents();
+```
+
+> Note: using array as data for a `Node` class instance may be a little cumbersome (see [caveats of using `Node`](caveats.md)). The class is best fitted for using objects as the data.
 
 
 ----
-TODO ! doplnit do ostatnych
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
 |`INode` | `Oliva\Utils\Tree\Node\INode` | [src/Node/INode.php](../src/Node/INode.php) ||

@@ -12,7 +12,8 @@ $child->addChild(...);
 However, this approach is inconvenient for building trees from data that already exists in some structure or a storage.
 
 Oliva Tree library provides "builders" for this purpose. A "builder" is any object implementing the `ITreeBuilder` interface.
-The `DataTree` class is a tree that also encapsulates a builder and povides a reusable way to create a tree from data.
+
+The `DataTree` class is a tree that encapsulates a builder and so povides a reusable way to create a tree from data.
 
 
 
@@ -22,11 +23,11 @@ This is one of the key features of the library.
 
 The building is done using tree builders, as simply as this:
 ```php
-$data = Database::gimmeData();
+$data = MyDatabase::gimmeData();
 $rootNode = (new MyBuilder)->build($data);
 ```
 
-The `DataTree` class is used to encapsulate the builder, so that you can comfortably rebuild the tree.
+The `DataTree` class is used to encapsulate the builder, so that you can comfortably rebuild the tree later.
 ```php
 $tree = new DataTree($data, $builder);
 $tree->rebuild($anotherData);
@@ -34,7 +35,7 @@ $rootNode = $tree->getRoot(); // built from $anotherData
 ```
 
 
-There are many ways trees can be stored in database tables. Oliva Tree builders can handle:
+There are many ways trees can be stored in database tables. Oliva Tree builders can (so far) handle:
 * [trivial recursive approach](recursive.md)
 * [materialized paths data model](materialized.md)
 
@@ -58,14 +59,14 @@ $data = [
 	]
 ];
 
-$tree = new DataTree($data, new SimpleTreeBuilder());
+$root = (new SimpleTreeBuilder('children'))->build($data); // "children" is the default value for the constructor
 // the 'children' key will be unset and the root node will contain the remaining content of the input,
 // it's three children will contain their respective data
 
-dump($tree->getRoot()->getContents());
-dump($tree->getRoot()->getChild(0)->getContents());
-dump($tree->getRoot()->getChild(1)->getContents());
-dump($tree->getRoot()->getChild(2)->getContents());
+dump($root->getContents());
+dump($root->getChild(0)->getContents());
+dump($root->getChild(1)->getContents());
+dump($root->getChild(2)->getContents());
 
 /* the result of the previous calls:
 array (2)
@@ -83,11 +84,13 @@ child2 => "val" (3)
 ```
 > Note: the *children* member can be set to be any key.
 
+It does not matter whether the data is stored in an **array matrix** or as **objects**.
+The children need to be held in a common attribute ("children" by default).
 
 For data in a JSON string, use `JsonTreeBuilder` class. It first decodes the string to an object,
 then continues exactly as `SimpleTreeBuilder` (which is it's parent).
 ```php
-$jsonTree = new DataTree($json, new JsonTreeBuilder());
+$jsonRoot = (new JsonTreeBuilder('children'))->build($json); // again, you can specify your "children" key
 ```
 
 

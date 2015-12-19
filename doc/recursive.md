@@ -17,6 +17,13 @@ Get this structure from a database as an array.
 Tell the tree that "parent" is the member where the parent's "id" is found.
 Create the tree.
 ```php
-$tree = new DataTree(Database::fetchAll(), new RecursiveTreeBuilder('parent', 'id'));
+$root = (new RecursiveTreeBuilder('parent', 'id'))->build(MyDatabase::fetchAll());
 ```
 > Note: if you have more than one root, the builder's behaviour is undefined, the trees will overwrite one another.
+
+
+
+----
+|Reference|Full class name|File|Docs|
+|:---|:---|:---|:---|
+|`RecursiveTreeBuilder` | `Oliva\Utils\Tree\Builder\RecursiveTreeBuilder` | [src/Builder/RecursiveTreeBuilder.php](../src/Builder/RecursiveTreeBuilder.php) ||
