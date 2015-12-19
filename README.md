@@ -26,6 +26,8 @@ Because Oliva Tree is well documented (IMHO).
 * provide means for **easy** tree structure **manipulation**
 * **transform** tree structures (back) to flat data, in breadth-first or depth-first manner
 
+See the [documentation](doc/docs.md) for more info.
+
 
 ## Installation
 The easiest way to install Oliva Tree is to use [Composer](https://getcomposer.org/). Just add `"oliva/tree"` to the "require" section in your `composer.json` file, like this:
@@ -39,22 +41,21 @@ The easiest way to install Oliva Tree is to use [Composer](https://getcomposer.o
 ```
 
 
-## Docs
+## Documentation
 
 For more in-depth documentation see the sources or view the documents below:
 
 * [Documentation](doc/docs.md)
-	* Interfaces
-	* Nodes
-	* Building a tree from data stored in a database
-	* Fluent tree building
-	* Filtering, iterations
-	* Creating menu
-	* Creating a data list or a grid
-	* Transformations
-	* Recursive tree
-	* Materialized path tree
+	* [Nodes](doc/nodes.md)
+	* [Trees](doc/trees.md)
+	* [Building a tree from data stored in a database](doc/building.md)
+	* [Fluent tree building](doc/fluent.md)
+	* [Recursive trees](doc/recursive.md)
+	* [Materialized path trees](doc/materialized.md)
+	* [Filtering, iterations](doc/iterators.md)
 
+If you can't find sufficient information in the *Documentation* section,
+you most probably will find your answers looking at the sources.
 
 
 ## What's comming next
