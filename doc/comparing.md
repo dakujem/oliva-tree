@@ -68,7 +68,7 @@ $comparator->callbackCompare($node1, $node3, function($nodeData1, $nodeData2) {
 ----
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
-|`NodeComparator` | `Oliva\Utils\Tree\Comparator\NodeComparator` | [src/Comparator/NodeComparator.php](../src/Comparator/NodeComparator.php) ||
-|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [src/Comparator/INodeComparator.php](../src/Comparator/INodeComparator.php) ||
-|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [src/Node/SimpleNode.php](../src/Node/SimpleNode.php) |[Nodes](nodes.md)|
+|`NodeComparator` | `Oliva\Utils\Tree\Comparator\NodeComparator` | [NodeComparator.php](../src/Comparator/NodeComparator.php) ||
+|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [INodeComparator.php](../src/Comparator/INodeComparator.php) ||
+|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [SimpleNode.php](../src/Node/SimpleNode.php) |[Nodes](nodes.md)|
 

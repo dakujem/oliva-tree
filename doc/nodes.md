@@ -152,11 +152,11 @@ $value = $node1->getcontents() + $node2->getContents();
 ----
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
-|`INode` | `Oliva\Utils\Tree\Node\INode` | [src/Node/INode.php](../src/Node/INode.php) ||
-|`IDataNode` | `Oliva\Utils\Tree\Node\IDataNode` | [src/Node/IDataNode.php](../src/Node/IDataNode.php) ||
-|`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [src/Node/NodeBase.php](../src/Node/NodeBase.php) ||
-|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [src/Node/SimpleNode.php](../src/Node/SimpleNode.php) ||
-|`Node` | `Oliva\Utils\Tree\Node\Node` | [src/Node/Node.php](../src/Node/Node.php) ||
-|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [src/Comparator/INodeComparator.php](../src/Comparator/INodeComparator.php) |[Comparing nodes](comparing.md)|
-|`NodeComparator` | `Oliva\Utils\Tree\Comparator\NodeComparator` | [src/Comparator/NodeComparator.php](../src/Comparator/NodeComparator.php) |[Comparing nodes](comparing.md)|
+|`INode` | `Oliva\Utils\Tree\Node\INode` | [INode.php](../src/Node/INode.php) ||
+|`IDataNode` | `Oliva\Utils\Tree\Node\IDataNode` | [IDataNode.php](../src/Node/IDataNode.php) ||
+|`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [NodeBase.php](../src/Node/NodeBase.php) ||
+|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [SimpleNode.php](../src/Node/SimpleNode.php) ||
+|`Node` | `Oliva\Utils\Tree\Node\Node` | [Node.php](../src/Node/Node.php) ||
+|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [INodeComparator.php](../src/Comparator/INodeComparator.php) |[Comparing nodes](comparing.md)|
+|`NodeComparator` | `Oliva\Utils\Tree\Comparator\NodeComparator` | [NodeComparator.php](../src/Comparator/NodeComparator.php) |[Comparing nodes](comparing.md)|
 

@@ -138,4 +138,4 @@ Or in this case:
 ----
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
-|`MaterializedPathTreeBuilder` | `Oliva\Utils\Tree\Builder\MaterializedPathTreeBuilder` | [src/Builder/MaterializedPathTreeBuilder.php](../src/Builder/MaterializedPathTreeBuilder.php) ||
+|`MaterializedPathTreeBuilder` | `Oliva\Utils\Tree\Builder\MaterializedPathTreeBuilder` | [Mate...Builder.php](../src/Builder/MaterializedPathTreeBuilder.php) ||

@@ -98,9 +98,9 @@ $jsonRoot = (new JsonTreeBuilder('children'))->build($json); // again, you can s
 ----
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
-|`ITreeBuilder` | `Oliva\Utils\Tree\Builder\ITreeBuilder` | [src/Builder/ITreeBuilder.php](../src/Builder/ITreeBuilder.php) ||
-|`SimpleTreeBuilder` | `Oliva\Utils\Tree\Builder\SimpleTreeBuilder` | [src/Builder/SimpleTreeBuilder.php](../src/Builder/SimpleTreeBuilder.php) ||
-|`JsonTreeBuilder` | `Oliva\Utils\Tree\Builder\JsonTreeBuilder` | [src/Builder/JsonTreeBuilder.php](../src/Builder/JsonTreeBuilder.php) ||
-|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [src/Node/SimpleNode.php](../src/Node/SimpleNode.php) |[Nodes](nodes.md)|
-|`DataTree` | `Oliva\Utils\Tree\DataTree` | [src/DataTree.php](../src/DataTree.php) |[Trees](trees.md)|
+|`ITreeBuilder` | `Oliva\Utils\Tree\Builder\ITreeBuilder` | [ITreeBuilder.php](../src/Builder/ITreeBuilder.php) ||
+|`SimpleTreeBuilder` | `Oliva\Utils\Tree\Builder\SimpleTreeBuilder` | [SimpleTreeBuilder.php](../src/Builder/SimpleTreeBuilder.php) ||
+|`JsonTreeBuilder` | `Oliva\Utils\Tree\Builder\JsonTreeBuilder` | [JsonTreeBuilder.php](../src/Builder/JsonTreeBuilder.php) ||
+|`SimpleNode` | `Oliva\Utils\Tree\Node\SimpleNode` | [SimpleNode.php](../src/Node/SimpleNode.php) |[Nodes](nodes.md)|
+|`DataTree` | `Oliva\Utils\Tree\DataTree` | [DataTree.php](../src/DataTree.php) |[Trees](trees.md)|
 

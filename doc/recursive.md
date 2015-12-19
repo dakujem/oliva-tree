@@ -26,4 +26,4 @@ $root = (new RecursiveTreeBuilder('parent', 'id'))->build(MyDatabase::fetchAll()
 ----
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
-|`RecursiveTreeBuilder` | `Oliva\Utils\Tree\Builder\RecursiveTreeBuilder` | [src/Builder/RecursiveTreeBuilder.php](../src/Builder/RecursiveTreeBuilder.php) ||
+|`RecursiveTreeBuilder` | `Oliva\Utils\Tree\Builder\RecursiveTreeBuilder` | [RecursiveTreeBuilder.php](../src/Builder/RecursiveTreeBuilder.php) ||

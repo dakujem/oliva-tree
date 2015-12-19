@@ -51,7 +51,7 @@ $it = $tree->getFilteringCallbackIterator(function(NodeBase $node, $index) {
 ----
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
-|`TreeIterator` | `Oliva\Utils\Tree\Iterator\TreeIterator` | [src/Iterator/TreeIterator.php](../src/Iterator/TreeIterator.php) ||
-|`TreeFilterIterator` | `Oliva\Utils\Tree\Iterator\TreeFilterIterator` | [src/Iterator/TreeFilterIterator.php](../src/Iterator/TreeFilterIterator.php) ||
-|`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [src/Node/NodeBase.php](../src/Node/NodeBase.php) |[Nodes](nodes.md)|
+|`TreeIterator` | `Oliva\Utils\Tree\Iterator\TreeIterator` | [TreeIterator.php](../src/Iterator/TreeIterator.php) ||
+|`TreeFilterIterator` | `Oliva\Utils\Tree\Iterator\TreeFilterIterator` | [TreeFilterIterator.php](../src/Iterator/TreeFilterIterator.php) ||
+|`NodeBase` | `Oliva\Utils\Tree\Node\NodeBase` | [NodeBase.php](../src/Node/NodeBase.php) |[Nodes](nodes.md)|
 
