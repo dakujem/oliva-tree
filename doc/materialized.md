@@ -81,6 +81,7 @@ for example IDs.
 
 
 And now an example of a delimited hierarchy string with node IDs in `parents` member.
+
 | ID        | parents    | title|
 |:----------|:----------|:-------|
 |`1`         | `.` | the first level|
@@ -107,9 +108,11 @@ This means that:
 * you will always get a consistent tree structure
 
 Like in this case:
+
 | ID        | position    | title|
 |:----------|:----------|:-------|
 |`2`|`1.1`|first child of ID `1`
+
 The resulting tree will have an empty root, its empty child, and a leaf node with ID 2.
 ```
 (empty root)
@@ -120,6 +123,7 @@ The resulting tree will have an empty root, its empty child, and a leaf node wit
 ```
 
 Or in this case:
+
 | ID        | position    | title|
 |:----------|:----------|:-------|
 |`2`|`1`|a node
