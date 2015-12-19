@@ -51,6 +51,21 @@ class NodeTest extends Tester\TestCase
 	}
 
 
+	public function testScalarOperations()
+	{
+		// operations are not supported - conversion of Node to scalar types is not possible
+		$i = new Node(1);
+		$s = new Node('string');
+
+		Assert::error(function()use($i) {
+			(int) $i;
+		}, E_NOTICE);
+		Assert::error(function()use($s) {
+			(string) $s;
+		}, E_RECOVERABLE_ERROR);
+	}
+
+
 	public function testArray()
 	{
 		$array = [1, 2, 3];
