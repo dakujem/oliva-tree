@@ -60,7 +60,7 @@ class MaterializedPathTreeBuilderFactory
 	public static function createFixedLengthReferenceVariant($hierarchyMember = 'position', $delimiterLength = 3, $reference = 'id', $index = NULL, $sortNodes = FALSE)
 	{
 		$builder = new MaterializedPathTreeBuilder(NULL, $delimiterLength, $index, $sortNodes);
-		list($hierarchyGetter, $referenceGetter) = self::getGetters($builder, $hierarchyMember, $reference);
+		list($hierarchyGetter, $referenceGetter) = self::prepareGetters($builder, $hierarchyMember, $reference);
 		$hierarchy = function($data) use($delimiterLength, $hierarchyGetter, $referenceGetter) {
 			$pos = call_user_func($hierarchyGetter, $data);
 			$ref = call_user_func($referenceGetter, $data);
@@ -83,7 +83,7 @@ class MaterializedPathTreeBuilderFactory
 	 *
 	 * Use this factory when the hierarchy member is not well formed in the data set:
 	 * - has unnecessary delimiter at the end or beginning , e.g.   ".1.2.1" or "1.2.1."
-	 * - has multiple delimiters in a row, e.g.   "1..2...1"
+	 * - has multiple delimiters in a row, e.g.   "1,,2,,,1"
 	 *
 	 *
 	 * @param string $hierarchyMember member containing the hierarchy information
@@ -104,7 +104,7 @@ class MaterializedPathTreeBuilderFactory
 	protected static function createDelimitedVariant($hierarchyMember, $delimiterString, $reference, $index, $sortNodes)
 	{
 		$builder = new MaterializedPathTreeBuilder(NULL, $delimiterString, $index, $sortNodes);
-		list($hierarchyGetter, $referenceGetter) = self::getGetters($builder, $hierarchyMember, $reference);
+		list($hierarchyGetter, $referenceGetter) = self::prepareGetters($builder, $hierarchyMember, $reference);
 		$hierarchy = MaterializedPathTreeHelper::robustHierarchyGetter($delimiterString, $hierarchyGetter, $referenceGetter);
 		$builder->setHierarchy($hierarchy);
 		return $builder;
@@ -114,7 +114,7 @@ class MaterializedPathTreeBuilderFactory
 	/**
 	 * @internal
 	 */
-	protected static function getGetters($builder, $hierarchyMember, $reference)
+	protected static function prepareGetters(MaterializedPathTreeBuilder $builder, $hierarchyMember, $reference)
 	{
 		$hierarchyGetter = function($data) use ($builder, $hierarchyMember) {
 			return $builder->getMember($data, $hierarchyMember);
