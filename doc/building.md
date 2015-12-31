@@ -36,7 +36,7 @@ $rootNode = $tree->getRoot(); // built from $anotherData
 
 
 There are many ways trees can be stored in database tables. Oliva Tree builders can (so far) handle:
-* [trivial recursive approach](recursive.md)
+* trivial [recursive approach](recursive.md) (adjacency list data model, self-joined tables)
 * [materialized paths data model](materialized.md)
 
 

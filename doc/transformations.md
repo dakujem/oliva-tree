@@ -13,5 +13,5 @@ $linearWithDeepestFirst = $tree->getDepthFirst();
 ----
 |Reference|Full class name|File|Docs|
 |:---|:---|:---|:---|
-|`Tree` | `Oliva\Utils\Tree\Tree` | [Tree.php](../src/Tree.php) ||
+|`Tree` | `Oliva\Utils\Tree\Tree` | [Tree.php](../src/Tree.php) |[Trees](trees.md)|
 

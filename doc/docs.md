@@ -2,19 +2,6 @@
 
 For the **root readme** file, see [readme.md](../README.md).
 
-## The very basics on a tree structure
-
-Each tree has a root node.
-Each node can have *any number of child nodes*, but *only one parent* node. A *root* node has no parent, a *leaf* node has no children.
-Each node allows getting/setting of children and parent, thus creating a tree structure.
-
-
-## Oliva Tree documentation
-
-This documentation covers most aspects of Oliva Tree.
-I will continue to update it with more examples, use case and class descriptions.
-
-
 * [Installation](installation.md)
 * [Trees](trees.md)
 * [Nodes](nodes.md)
@@ -28,6 +15,12 @@ I will continue to update it with more examples, use case and class descriptions
 * [Caveats](caveats.md)
 
 
+## The very basics on a tree structure
+
+Each tree has a root node.
+Each node can have *any number of child nodes*, but *only one parent* node. A *root* node has no parent, a *leaf* node has no children.
+Each node allows getting/setting of children and parent, thus creating a tree structure.
+
 
 ## Hints
 
@@ -36,6 +29,12 @@ you most probably will find your answers looking at the sources.
 
 There are some useful use cases in the **test sources**,
 however, I admit that I did not write the tests to be human readable.
+
+
+## Oliva Tree documentation
+
+This documentation covers most aspects of Oliva Tree.
+I will continue to update it with more examples, use cases and class descriptions.
 
 
 ## Comming soon (docs):

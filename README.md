@@ -6,10 +6,14 @@ Useful for handling **tree data stored in database** or for performing **search*
 
 
 ## Why use Oliva Tree?
+
 Because you only want one library for all your trees.
+
 Because Oliva Tree has been build for real-life usage and it is also tested in real life, along with unit tests.
+
 Because Oliva Tree provides many utilities for data manipulation, thus it makes writing components like **menus**, **tree views**, **grids**, **data lists** (and other) an easy and fun thing to do.
-Because Oliva Tree is well documented (IMHO).
+
+Because Oliva Tree is [well documented](doc/docs.md) (IMHO).
 
 
 ### What can you do with Oliva Tree?
@@ -26,7 +30,10 @@ Because Oliva Tree is well documented (IMHO).
 * provide means for **easy** tree structure **manipulation**
 * **transform** tree structures (back) to flat data, in breadth-first or depth-first manner
 
-See the [documentation](doc/docs.md) for more info.
+
+## Documentation
+
+For more in-depth information, use cases and other examples, see the **[documentation section](doc/docs.md)**.
 
 
 ## Installation
@@ -40,22 +47,6 @@ The easiest way to install Oliva Tree is to use [Composer](https://getcomposer.o
 }
 ```
 
-
-## Documentation
-
-For more in-depth documentation see the sources or view the documents below:
-
-* [Documentation](doc/docs.md)
-	* [Nodes](doc/nodes.md)
-	* [Trees](doc/trees.md)
-	* [Building a tree from data stored in a database](doc/building.md)
-	* [Fluent tree building](doc/fluent.md)
-	* [Recursive trees](doc/recursive.md)
-	* [Materialized path trees](doc/materialized.md)
-	* [Filtering, iterations](doc/iterators.md)
-
-If you can't find sufficient information in the *Documentation* section,
-you most probably will find your answers looking at the sources.
 
 
 ## What's comming next
@@ -73,4 +64,4 @@ you most probably will find your answers looking at the sources.
 
 ----
 
-> **Warning**: This library is provided **as-is** with absolutely **no warranty** nor any liability from its creators for anything it's usage, manipulation or distribution may cause.
+> **Warning**: This library is provided **as-is** with absolutely **no warranty** nor any liability from its contributors for anything it's usage, manipulation or distribution may cause.

@@ -4,6 +4,22 @@
 
 A trivial data tree where each data-node has a pointer to its parent. This data model is called the Adjacency List Model and when stored in a database, it is often referred to as the self-joined table design, self-referencing or self-referenced tables and so on.
 
+```
+[1] (root) parent: NULL
+ |
+ +-- [2] parent: 1
+ |    |
+ |    +-- [6] parent: 2
+ |    |    |
+ |    |    +-- [4] parent: 6
+ |    |
+ |    +-- [5] parent: 2
+ |
+ +-- [3] parent: 1
+```
+
+Stored in a database table:
+
 | ID        | parent    | title|
 |:----------|:----------|:-------|
 |1          | NULL| the root|
@@ -13,7 +29,7 @@ A trivial data tree where each data-node has a pointer to its parent. This data 
 |5|2|third level
 |6|2|third level, second child
 
-Get this structure from a database as an array.
+Get this structure from a database as an array of rows.
 Tell the tree that "parent" is the member where the parent's "id" is found.
 Create the tree.
 ```php
