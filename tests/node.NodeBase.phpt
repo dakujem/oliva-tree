@@ -234,9 +234,19 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same([], $leaf->getAncestors());
 
 		$grandchild->addChild($leaf);
+		$expectedLeafAncestors = [$grandchild, $child, $root->getChild(1), $root];
 		Assert::same($grandchild, $leaf->getParent());
-		Assert::same([$grandchild, $child, $root->getChild(1), $root], $leaf->getAncestors());
-		Assert::same([$root, $root->getChild(1), $child, $grandchild], $leaf->getPath());
+		Assert::same($expectedLeafAncestors, $leaf->getAncestors());
+		Assert::same(array_reverse($expectedLeafAncestors), $leaf->getPath());
+		
+		// getNthAncestor
+		Assert::same($leaf, $leaf->getNthAncestor(0));
+		Assert::same($expectedLeafAncestors[0], $leaf->getNthAncestor(1));
+		Assert::same($expectedLeafAncestors[1], $leaf->getNthAncestor(2));
+		Assert::same($expectedLeafAncestors[2], $leaf->getNthAncestor(3));
+		Assert::same($expectedLeafAncestors[3], $leaf->getNthAncestor(4));
+		Assert::same(NULL, $leaf->getNthAncestor(5));
+		Assert::same(NULL, $leaf->getNthAncestor(-1));
 	}
 
 

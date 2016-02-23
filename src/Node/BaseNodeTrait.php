@@ -119,7 +119,7 @@ trait BaseNodeTrait
 
 
 	/**
-	 * Returns the node's direct parent.
+	 * Returns the node's direct parent (direct ancestor).
 	 *
 	 *
 	 * @return INode|NULL
@@ -131,7 +131,31 @@ trait BaseNodeTrait
 
 
 	/**
-	 * Return all the parents from the direct parent node to the root node.
+	 * Returns the node's n-th ancestor.
+	 * Returns NULL when the ancestor does not exist.
+	 *
+	 * Note:
+	 *	- the 1-st ancestor is the direct parent
+	 *	- the 0-th ancestor is self
+	 *
+	 *
+	 * @return INode|NULL
+	 */
+	public function getNthAncestor($n)
+	{
+		$index = (int) $n;
+		if ($index === 0) {
+			return $this;
+		} elseif ($index === 1) {
+			return $this->getParent();
+		}
+		$ancestors = $this->getAncestors();
+		return isset($ancestors[$index - 1]) ? $ancestors[$index - 1] : NULL;
+	}
+
+
+	/**
+	 * Return all the ancestors from the direct parent node to the root node.
 	 *
 	 *
 	 * @return INode[]
