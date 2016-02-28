@@ -22,7 +22,7 @@ use Oliva\Utils\Tree\Node\INode;
  * NOTE:	When the hierarchy contains IDs or other reference values of its parents only,
  * 			reference to the current node needs to be added to the end for the builder to work. This can be done
  * 			using MaterializedPathTreeBuilderFactory::createDelimitedReferenceVariant() method.
- *			@see MaterializedPathTreeBuilderFactory
+ * 			@see MaterializedPathTreeBuilderFactory
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
@@ -176,12 +176,12 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	public function setHierarchy($hierarchy)
 	{
-		if (is_callable($hierarchy)) {
+		if (is_callable($hierarchy) && (!is_string($hierarchy) || strpos($hierarchy, '\\') !== FALSE)) {
 			$this->hierarchyGetter = [$hierarchy, NULL];
 		} elseif (is_string($hierarchy)) {
-			$this->hierarchyGetter = [[$this, 'getMember'], $hierarchy[0] === '@' ? substr($hierarchy, 1) : $hierarchy];
+			$this->hierarchyGetter = [[$this, 'getMember'], $hierarchy];
 		} else {
-			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)), 4);
+			throw new RuntimeException(sprintf('Invalid hierarchy member/getter of type %s provided. Either provide a string containing the name of the hierarchy member or a callable function that will return the node\'s hierarchy member value. Global namespace functions and objects have to be prefixed by a backslash "\\" character.', is_object($hierarchy) ? get_class($hierarchy) : gettype($hierarchy)), 4);
 		}
 		return $this;
 	}
@@ -210,7 +210,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	{
 		if (is_numeric($delimiter)) {
 			$this->delimitingProcessor = [[$this, 'getParentPositionFixedLength'], $delimiter];
-		} elseif (is_string($delimiter)) {
+		} elseif (is_string($delimiter) && (!is_callable($delimiter) || strpos($delimiter, '\\') === FALSE)) {
 			$this->delimitingProcessor = [[$this, 'getParentPositionDelimited'], $delimiter];
 		} elseif (is_callable($delimiter)) {
 			$this->delimitingProcessor = [$delimiter, NULL];
@@ -225,8 +225,8 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * Set how to calculate indices.
 	 * The accepted value types are:
 	 * 		- NULL: do not use any processor, use the hierarchy as index
-	 * 		- string: node's member, to avoid collisions with callable functions, use "@" prefix
-	 * 		- callable: any callable
+	 * 		- string: node's member
+	 * 		- callable: any callable; when using global namespace functions or global namespace object methods, prefix them with a backslash \ character
 	 *
 	 * The callable receives arguments:
 	 * 		- 1. string hierarchy
@@ -242,7 +242,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	public function setIndex($processor = NULL)
 	{
 		if ($processor !== NULL && !is_callable($processor) && !is_string($processor)) {
-			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($processor) ? get_class($processor) : gettype($processor)), 4);
+			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index.', is_object($processor) ? get_class($processor) : gettype($processor)), 4);
 		}
 		$this->indexProcessor = $processor;
 		return $this;
@@ -354,10 +354,10 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getChildIndex($hierarchy, INode $node = NULL)
 	{
-		if (is_callable($this->indexProcessor)) {
+		if (is_callable($this->indexProcessor) && (!is_string($this->indexProcessor) || strpos($this->indexProcessor, '\\') !== FALSE)) {
 			return call_user_func($this->indexProcessor, $hierarchy, $node);
 		} elseif ($node !== NULL && is_string($this->indexProcessor)) {
-			return $this->getMember($node, $this->indexProcessor[0] === '@' ? substr($this->indexProcessor, 1) : $this->indexProcessor);
+			return $this->getMember($node, $this->indexProcessor);
 		}
 		return $hierarchy;
 	}

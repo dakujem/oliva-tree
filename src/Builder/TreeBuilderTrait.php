@@ -34,7 +34,6 @@ trait TreeBuilderTrait
 	protected $dataErrorCallback = NULL;
 
 
-
 	/**
 	 * Get the value of a member of the $item. The $item can be either array or object.
 	 *
@@ -66,16 +65,16 @@ trait TreeBuilderTrait
 	 *
 	 *
 	 * @param mixed $item
-	 * @param mixed $member
+	 * @param mixed $member member name or a callback; when using global namespace functions or global namespace object methods, prefix them with a backslash \ character
 	 * @return mixed the value of the data member or the return value of the callback
 	 * @throws RuntimeException
 	 */
 	public function getCallbackMember($item, $member)
 	{
-		if (is_callable($member)) {
+		if (is_callable($member) && (!is_string($member) || strpos($member, '\\') !== FALSE)) {
 			return call_user_func($member, $item, $this);
 		} elseif (is_scalar($member)) {
-			return $this->getMember($item, is_string($member) && isset($member[0]) && $member[0] === '@' ? substr($member, 1) : $member);
+			return $this->getMember($item, $member);
 		}
 		throw new RuntimeException('Incorrect getter provided. Please provide a name of a data member or a valid callback to retrieve it.');
 	}

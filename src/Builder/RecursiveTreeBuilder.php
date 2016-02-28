@@ -161,10 +161,10 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getChildIndex($nodeId, INode $node = NULL)
 	{
-		if (is_callable($this->indexProcessor)) {
+		if (is_callable($this->indexProcessor) && (!is_string($this->indexProcessor) || strpos($this->indexProcessor, '\\') !== FALSE)) {
 			return call_user_func($this->indexProcessor, $nodeId, $node);
 		} elseif ($node !== NULL && is_string($this->indexProcessor)) {
-			return $this->getMember($node, $this->indexProcessor[0] === '@' ? substr($this->indexProcessor, 1) : $this->indexProcessor);
+			return $this->getMember($node, $this->indexProcessor);
 		}
 		return $nodeId;
 	}
@@ -186,8 +186,8 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 * Set how to calculate indices.
 	 * The accepted value types are:
 	 * 		- NULL: do not use any processor, use the id from algorithm as index
-	 * 		- string: node's member, to avoid collisions with callable functions, use "@" prefix
-	 * 		- callable: any callable
+	 * 		- string: node's member
+	 * 		- callable: any callable; when using global namespace functions or global namespace object methods, prefix them with a backslash \ character
 	 *
 	 * The callable receives arguments:
 	 * 		- 1. string|int id of the node

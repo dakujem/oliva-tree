@@ -125,7 +125,7 @@ function coreTest()
 	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, '.'), $delimitedData, 'e2');
 
 	// custom indices
-	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, '.', '@id'), $delimitedData, 'e3');
+	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, '.', 'id'), $delimitedData, 'e3');
 	testRoutine(new MaterializedPathTreeBuilder($hierarchyMember, 3, function($hierarchy, $node) {
 		return $node->id;
 	}), $defaultData, 'e3');
