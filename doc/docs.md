@@ -13,6 +13,7 @@ For the **root readme** file, see [readme.md](../README.md).
 		* [Materialized path trees](materialized.md)
 * [Iterators](iterators.md)
 * [Interfaces](interfaces.md)
+* [Transformations](transformations.md)
 * [Caveats](caveats.md)
 
 
@@ -40,4 +41,4 @@ I will continue to update it with more examples, use cases and class description
 
 ## Comming soon (docs):
 
-* [Transformations](transformations.md)
+- transformations
