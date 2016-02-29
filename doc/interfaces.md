@@ -3,6 +3,13 @@
 
 ## Interfaces
 
+Oliva Tree is based on interfaces, so if you don't like some of the implementations, you can always provide your own.
+
+Oliva Tree tries to be as flexible as possible, so alongside interfaces it provides traits
+to help you create your own implementations without dependency on its classes.
+Most of the implemented methods are overridable as well.
+
+
 
 ### Nodes
 
@@ -22,7 +29,7 @@ Therefore the interfaces are very simple.
 `ITree` defines a tree with a single root.
 
 `IDataTree` defines a tree that carries information not only on its root but also on a builder that created the tree structure.
-This is useful when you want to rebuild the with different set of data.
+This is useful when you want to rebuild a tree structure with different set of data.
 
 
 ### Builders
@@ -33,4 +40,18 @@ Usually this means building a tree structure from some user-provided data.
 
 
 ### Other
+
+`INodeComparator` defines an implementation able to compare two `IDataNode` nodes.
+
+
+
+----
+|Reference|Full class name|File|Docs|
+|:---|:---|:---|:---|
+|`INode` | `Oliva\Utils\Tree\Node\INode` | [INode.php](../src/Node/INode.php) |[Nodes](nodes.md)|
+|`IDataNode` | `Oliva\Utils\Tree\Node\IDataNode` | [IDataNode.php](../src/Node/IDataNode.php) |[Nodes](nodes.md)|
+|`ITree` | `Oliva\Utils\Tree\ITree` | [ITree.php](../src/ITree.php) |[Trees](trees.md)|
+|`IDataTree` | `Oliva\Utils\Tree\IDataTree` | [IDataTree.php](../src/IDataTree.php) |[Trees](trees.md)|
+|`ITreeBuilder` | `Oliva\Utils\Tree\Builder\ITreeBuilder` | [ITreeBuilder.php](../src/Builder/ITreeBuilder.php) |[Building trees](building.md)|
+|`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [INodeComparator.php](../src/Comparator/INodeComparator.php) |[Comparing nodes](comparing.md)|
 
