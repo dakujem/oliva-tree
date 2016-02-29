@@ -135,8 +135,8 @@ trait BaseNodeTrait
 	 * Returns NULL when the ancestor does not exist.
 	 *
 	 * Note:
-	 *	- the 1-st ancestor is the direct parent
-	 *	- the 0-th ancestor is self
+	 * 	- the 1-st ancestor is the direct parent
+	 * 	- the 0-th ancestor is self
 	 *
 	 *
 	 * @return INode|NULL
@@ -216,6 +216,20 @@ trait BaseNodeTrait
 			$this->setParent(NULL);
 		}
 		return $this;
+	}
+
+
+	/**
+	 * Move the node to another tree.
+	 * This method detaches the node from the current tree and adds it to the $destination node as its child.
+	 *
+	 *
+	 * @param scalar $index = NULL
+	 * @return NodeBase fluent
+	 */
+	public function move(INode $destination, $index = NULL)
+	{
+		return $destination->addChild($this->detach(), $index);
 	}
 
 

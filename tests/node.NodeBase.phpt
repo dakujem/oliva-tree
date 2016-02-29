@@ -247,6 +247,17 @@ class NodeBaseTest extends Tester\TestCase
 		Assert::same($expectedLeafAncestors[3], $leaf->getNthAncestor(4));
 		Assert::same(NULL, $leaf->getNthAncestor(5));
 		Assert::same(NULL, $leaf->getNthAncestor(-1));
+
+		// move node
+		Assert::same(300, $grandchild->getContents());
+		$child->move($root); // default move
+		Assert::same($child, $root->getChild(4));
+		$child->move($root, 2); // specifying the index
+		Assert::same($child, $root->getChild(2));
+		Assert::same([$child, $root], $grandchild->getAncestors());
+		$child->move($root->getChild(1));
+		Assert::same([$child, $root->getChild(1), $root], $grandchild->getAncestors());
+
 	}
 
 
