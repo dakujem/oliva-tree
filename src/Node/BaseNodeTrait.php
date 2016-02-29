@@ -312,7 +312,7 @@ trait BaseNodeTrait
 	/**
 	 * Replace the entire children array with a new one.
 	 *
-	 * Note: using keys can overwrite any previously added nodes with the same indices.
+	 * Note: using keys will overwrite any previously added nodes with the same indices.
 	 *
 	 *
 	 * @param array|Traversable $children an array or a traversable object.
@@ -330,9 +330,9 @@ trait BaseNodeTrait
 
 	/**
 	 * Appends a child into the children array.
-	 * If an index is specified, it is possible to override an existing child node with the same index!
+	 * Consequently, this node becomes the direct parent of the inserted child node.
 	 *
-	 * This node becomes the direct parent of the inserted child node.
+	 * Note: if an index is specified, it is possible to overwrite a previously added child node with the same index!
 	 *
 	 * Note: adding to NULL index is only possible by adding to '' (empty string) index.
 	 *
