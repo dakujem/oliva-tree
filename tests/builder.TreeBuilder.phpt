@@ -20,6 +20,7 @@ use Oliva\Utils\Tree\Node\Node,
 // run tests
 subroutine1();
 subroutine2();
+subroutine3();
 
 
 function subroutine1()
@@ -108,4 +109,23 @@ function subroutine2()
 	Assert::exception(function() use ($builder) {
 		$builder->build('foo');
 	}, 'RuntimeException' /* RuntimeException::CLASS */, 'The data provided must be an array or must be traversable, string provided.', 2);
+}
+
+
+/**
+ * Tests special cases where collisions between global-namespace functions and member names collide
+ * and the builder needs to tell whether the passed parameter is a callback or a member name.
+ */
+function subroutine3(){
+
+	$builder = new RecursiveTreeBuilder();
+
+	Assert::same(FALSE, $builder->isAcceptableCallback('file'));
+	Assert::same(TRUE, $builder->isAcceptableCallback('\file'));
+	Assert::same(FALSE, $builder->isAcceptableCallback('@file'));
+	Assert::same(FALSE, $builder->isAcceptableCallback('@\file'));
+	Assert::same(TRUE, $builder->isAcceptableCallback('Oliva\Utils\Tree\Node\Node'.'::getContents'));
+	Assert::same(FALSE, $builder->isAcceptableCallback('Foo::bar'));
+
+
 }

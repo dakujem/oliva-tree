@@ -161,7 +161,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getChildIndex($nodeId, INode $node = NULL)
 	{
-		if (is_callable($this->indexProcessor) && (!is_string($this->indexProcessor) || strpos($this->indexProcessor, '\\') !== FALSE)) {
+		if ($this->isAcceptableCallback($this->indexProcessor)) {
 			return call_user_func($this->indexProcessor, $nodeId, $node);
 		} elseif ($node !== NULL && is_string($this->indexProcessor)) {
 			return $this->getMember($node, $this->indexProcessor);
@@ -203,7 +203,7 @@ class RecursiveTreeBuilder extends TreeBuilder implements ITreeBuilder
 	public function setIndex($processor = NULL)
 	{
 		if ($processor !== NULL && !is_callable($processor) && !is_string($processor)) {
-			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index. For string members to prevent collisions with standard or defined functions, prefix them with "@".', is_object($processor) ? get_class($processor) : gettype($processor)), 4);
+			throw new RuntimeException(sprintf('Invalid index processor of type %s provided. Provide a node member name that will be used as an index for the processed node or a callable function that will return the index.', is_object($processor) ? get_class($processor) : gettype($processor)), 4);
 		}
 		$this->indexProcessor = $processor;
 		return $this;

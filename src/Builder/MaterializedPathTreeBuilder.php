@@ -176,7 +176,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	public function setHierarchy($hierarchy)
 	{
-		if (is_callable($hierarchy) && (!is_string($hierarchy) || strpos($hierarchy, '\\') !== FALSE)) {
+		if ($this->isAcceptableCallback($hierarchy)) {
 			$this->hierarchyGetter = [$hierarchy, NULL];
 		} elseif (is_string($hierarchy)) {
 			$this->hierarchyGetter = [[$this, 'getMember'], $hierarchy];
@@ -210,10 +210,10 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	{
 		if (is_numeric($delimiter)) {
 			$this->delimitingProcessor = [[$this, 'getParentPositionFixedLength'], $delimiter];
-		} elseif (is_string($delimiter) && (!is_callable($delimiter) || strpos($delimiter, '\\') === FALSE)) {
-			$this->delimitingProcessor = [[$this, 'getParentPositionDelimited'], $delimiter];
-		} elseif (is_callable($delimiter)) {
+		} elseif ($this->isAcceptableCallback($delimiter)) {
 			$this->delimitingProcessor = [$delimiter, NULL];
+		} elseif (is_string($delimiter)) {
+			$this->delimitingProcessor = [[$this, 'getParentPositionDelimited'], $delimiter];
 		} else {
 			throw new RuntimeException(sprintf('Invalid delimiter of type %s provided. Either provide an integer for fixed-length hierarchy delimiting, a string containing a delimiting character or a callable function that will process the node\'s hierarchy member value.', is_object($delimiter) ? get_class($delimiter) : gettype($delimiter)), 4);
 		}
@@ -354,7 +354,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	 */
 	protected function getChildIndex($hierarchy, INode $node = NULL)
 	{
-		if (is_callable($this->indexProcessor) && (!is_string($this->indexProcessor) || strpos($this->indexProcessor, '\\') !== FALSE)) {
+		if ($this->isAcceptableCallback($this->indexProcessor)) {
 			return call_user_func($this->indexProcessor, $hierarchy, $node);
 		} elseif ($node !== NULL && is_string($this->indexProcessor)) {
 			return $this->getMember($node, $this->indexProcessor);
