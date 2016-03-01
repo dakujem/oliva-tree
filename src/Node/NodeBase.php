@@ -19,9 +19,7 @@ use Oliva\Utils\Tree\Iterator\TreeIterator;
 abstract class NodeBase implements INode, IteratorAggregate
 {
 
-	use BaseNodeTrait,
-	 FluentNodeTrait,
-	 DeepCloningTrait;
+	use ComplexNodeTrait;
 
 
 	/**
