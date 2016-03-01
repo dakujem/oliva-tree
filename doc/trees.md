@@ -24,6 +24,5 @@ $tree->rebuild($anotherDataSet);
 |:---|:---|:---|:---|
 |`ITree` | `Oliva\Utils\Tree\ITree` | [ITree.php](../src/ITree.php) ||
 |`Tree` | `Oliva\Utils\Tree\Tree` | [Tree.php](../src/Tree.php) ||
-|`IDataTree` | `Oliva\Utils\Tree\IDataTree` | [IDataTree.php](../src/IDataTree.php) ||
 |`DataTree` | `Oliva\Utils\Tree\DataTree` | [DataTree.php](../src/DataTree.php) ||
 

@@ -28,9 +28,6 @@ Therefore the interfaces are very simple.
 
 `ITree` defines a tree with a single root.
 
-`IDataTree` defines a tree that carries information not only on its root but also on a builder that created the tree structure.
-This is useful when you want to rebuild a tree structure with different set of data.
-
 
 ### Builders
 
@@ -51,7 +48,6 @@ Usually this means building a tree structure from some user-provided data.
 |`INode` | `Oliva\Utils\Tree\Node\INode` | [INode.php](../src/Node/INode.php) |[Nodes](nodes.md)|
 |`IDataNode` | `Oliva\Utils\Tree\Node\IDataNode` | [IDataNode.php](../src/Node/IDataNode.php) |[Nodes](nodes.md)|
 |`ITree` | `Oliva\Utils\Tree\ITree` | [ITree.php](../src/ITree.php) |[Trees](trees.md)|
-|`IDataTree` | `Oliva\Utils\Tree\IDataTree` | [IDataTree.php](../src/IDataTree.php) |[Trees](trees.md)|
 |`ITreeBuilder` | `Oliva\Utils\Tree\Builder\ITreeBuilder` | [ITreeBuilder.php](../src/Builder/ITreeBuilder.php) |[Building trees](building.md)|
 |`INodeComparator` | `Oliva\Utils\Tree\Comparator\INodeComparator` | [INodeComparator.php](../src/Comparator/INodeComparator.php) |[Comparing nodes](comparing.md)|
 
