@@ -42,7 +42,7 @@ The easiest way to install Oliva Tree is to use [Composer](https://getcomposer.o
 {
 	"require": {
 		"php": "^5.4 || ^7.0",
-		"oliva/tree"
+		"oliva/tree": '*'
 	}
 }
 ```
