@@ -78,6 +78,8 @@ class NodeTest extends Tester\TestCase
 		}, 'BadMethodCallException');
 
 		// requesting $array['foo'] should raise E_NOTICE
+		// Note: this behaviour should NOT be changed using property_exists and array_key_exists methods,
+		// it would break usability with objects with overloaded properties
 		Assert::error(function() use ($node) {
 			$node->foo;
 		}, E_NOTICE);
