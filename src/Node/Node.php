@@ -20,7 +20,7 @@ use RuntimeException,
  *
  *
  * Note:	when clonning a Node instance, the data is NOT clonned! Only a shallow copy is created.
- *			Use cloneContents() after clonning to clone objects.
+ * 			Use cloneContents() after clonning to clone objects.
  *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
@@ -143,7 +143,7 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 			case self::TYPE_ARRAY:
 				return $this->contents[$name];
 		}
-		throw new RuntimeException($this->formatErrorMessage('Cannot read an undeclared property %s::$%s. Furthermore, the node contains scalar data of type %s.', $name));
+		throw new RuntimeException($this->formatErrorMessage('Cannot read an undeclared property %s::$%s.' . ($this->type === self::TYPE_SCALAR ? ' Furthermore, the node contains scalar data of type %s.' : ''), $name));
 	}
 
 
@@ -204,8 +204,10 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 		switch ($this->type) {
 			case self::TYPE_OBJECT:
 				unset($this->contents->$name);
+				return;
 			case self::TYPE_ARRAY:
 				unset($this->contents[$name]);
+				return;
 		}
 		throw new RuntimeException($this->formatErrorMessage('Cannot unset an undeclared property %s::$%s. Furthermore, the node contains scalar data of type %s.', $name));
 	}
