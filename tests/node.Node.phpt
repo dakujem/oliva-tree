@@ -111,6 +111,22 @@ class NodeTest extends Tester\TestCase
 	}
 
 
+	public function testUnset()
+	{
+		$node1 = new Node([1, 2, 3]);
+		unset($node1[1]);
+		Assert::same([0 => 1, 2 => 3], $node1->getContents());
+
+		$object = (object) ['foo' => 'bar', 'bar' => 'foo'];
+		$node2 = new Node($object);
+		unset($node2->foo);
+		Assert::same($object, $node2->getContents());
+		Assert::equal((object) [ 'bar' => 'foo'], $node2->getContents());
+		Assert::same(FALSE, isset($node2->foo));
+		Assert::same(TRUE, isset($node2->bar));
+	}
+
+
 	public function testObject()
 	{
 		$dataObject = new DataWrapper(10, 'foobar');
