@@ -131,11 +131,21 @@ class NodeComparator implements INodeComparator
 			$childrenOfNode1 = $node1->getChildren();
 			$childrenOfNode2 = $node2->getChildren();
 			$same = count($childrenOfNode1) === count($childrenOfNode2);
-			while ($same && ($keyPair1 = each($childrenOfNode1)) && ($keyPair2 = each($childrenOfNode2))) {
+			while ($same && ($key1 = key($childrenOfNode1)) !== NULL && ($key2 = key($childrenOfNode2)) !== NULL) {
 				$same = $same &&
-						(!$compareChildIndices || ($strictness & self::STRICT_INDICES ? $keyPair1[0] === $keyPair2[0] : $keyPair1[0] == $keyPair2[0])) &&
-						$this->compareNodes($keyPair1[1], $keyPair2[1], $recursive, $strictness, $compareChildIndices, $compareNodeTypes, $compareFunction) // recursion
+						(!$compareChildIndices || ($strictness & self::STRICT_INDICES ? $key1 === $key2 : $key1 == $key2)) &&
+						$this->compareNodes(
+								current($childrenOfNode1), //
+								current($childrenOfNode2), //
+								$recursive, //
+								$strictness, //
+								$compareChildIndices, //
+								$compareNodeTypes, //
+								$compareFunction //
+						) // recursion
 				;
+				next($childrenOfNode1);
+				next($childrenOfNode2);
 			}
 		}
 		return $same && $compareFunction($node1->getContents(), $node2->getContents(), $strictness);

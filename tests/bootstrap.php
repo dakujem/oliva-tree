@@ -18,10 +18,12 @@ use Tracy\Debugger,
 Environment::setup();
 
 // debugging
-Debugger::$strictMode = TRUE;
-Debugger::enable();
-Debugger::$maxDepth = 10;
-Debugger::$maxLen = 500;
+if (function_exists('getallheaders') && !empty(getallheaders()) && class_exists('Tracy\Debugger')) {
+	Debugger::$strictMode = TRUE;
+	Debugger::enable();
+	Debugger::$maxDepth = 10;
+	Debugger::$maxLen = 500;
+}
 
 
 // dump shortcut
