@@ -59,6 +59,12 @@ Oliva Tree runs on PHP 5.4 and up and also PHP 7.0 and up.
 * support for nested sets data model
 
 
+## Notable Changes
+
+**1.2.3**
+- updated licensing to enable multi-licensing, i.e. one can now use any of GPL, MIT or BSD license, see [license.md](license.md) for more information
+
+
 ## Notes
 
 * great thank's to folks in **Via Aurea, s.r.o.** for providing valuable support, motivation and real-life testing
