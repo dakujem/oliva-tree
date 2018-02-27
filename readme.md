@@ -42,7 +42,7 @@ The easiest way to install Oliva Tree is to use [Composer](https://getcomposer.o
 {
 	"require": {
 		"php": "^5.4 || ^7.0",
-		"oliva/tree": '*'
+		"oliva/tree": "*"
 	}
 }
 ```
@@ -63,6 +63,3 @@ Oliva Tree runs on PHP 5.4 and up and also PHP 7.0 and up.
 
 * great thank's to folks in **Via Aurea, s.r.o.** for providing valuable support, motivation and real-life testing
 
-----
-
-> **Warning**: This library is provided **as-is** with absolutely **no warranty** nor any liability from its contributors for anything it's usage, manipulation or distribution may cause.
