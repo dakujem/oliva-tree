@@ -9,6 +9,7 @@ namespace Oliva\Test\Node;
 
 require_once __DIR__ . '/bootstrap.php';
 
+use Error;
 use Tester,
 	Tester\Assert;
 use Oliva\Test\DataWrapper;
@@ -59,10 +60,10 @@ class NodeTest extends Tester\TestCase
 
 		Assert::error(function()use($i) {
 			(int) $i;
-		}, E_NOTICE);
-		Assert::error(function()use($s) {
+		}, PHP_VERSION_ID >= 80000 ? E_WARNING : E_NOTICE);
+		Assert::exception(function()use($s) {
 			(string) $s;
-		}, E_RECOVERABLE_ERROR);
+		}, Error::class);
 	}
 
 
@@ -82,7 +83,7 @@ class NodeTest extends Tester\TestCase
 		// it would break usability with objects with overloaded properties
 		Assert::error(function() use ($node) {
 			$node->foo;
-		}, E_NOTICE);
+		}, PHP_VERSION_ID >= 80000 ? E_WARNING : E_NOTICE);
 
 		foreach (array_keys($array) as $key) {
 			Assert::same($array[$key], $node->{$key});

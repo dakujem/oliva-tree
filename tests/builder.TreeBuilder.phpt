@@ -123,8 +123,8 @@ function subroutine3(){
 	Assert::same(FALSE, $builder->isAcceptableCallback('file'));
 	Assert::same(TRUE, $builder->isAcceptableCallback('\file'));
 	Assert::same(FALSE, $builder->isAcceptableCallback('@file'));
-	Assert::same(FALSE, $builder->isAcceptableCallback('@\file'));
-	Assert::same(TRUE, $builder->isAcceptableCallback('Oliva\Utils\Tree\Node\Node'.'::getContents'));
+	Assert::same(true, $builder->isAcceptableCallback('@\file')); // this is now considered a valid callback
+	Assert::same(true, $builder->isAcceptableCallback(Node::class.'::getContents'));
 	Assert::same(FALSE, $builder->isAcceptableCallback('Foo::bar'));
 
 

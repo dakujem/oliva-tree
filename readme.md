@@ -1,5 +1,10 @@
 # Oliva Tree
 
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/oliva/tree)](https://packagist.org/packages/oliva/tree)
+[![Build Status](https://travis-ci.com/dakujem/oliva-tree.svg?branch=master)](https://travis-ci.com/dakujem/oliva-tree)
+[![Coverage Status](https://coveralls.io/repos/github/dakujem/oliva-tree/badge.svg?branch=master)](https://coveralls.io/github/dakujem/oliva-tree?branch=master)
+
+
 **Oliva Tree** is a powerful yet simple to use utility for handling tree structures in PHP.
 
 Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on arbitrary tree structures.
@@ -60,6 +65,10 @@ Oliva Tree runs on PHP 5.4 and up and also PHP 7.0 and up.
 
 
 ## Notable Changes
+
+**1.3**
+- PHP 8 support added
+- PHP >= 7.4 required
 
 **1.2.3**
 - updated licensing to enable multi-licensing, i.e. one can now use any of GPL, MIT or BSD license, see [license.md](license.md) for more information
