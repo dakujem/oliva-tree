@@ -28,7 +28,10 @@ trait CallbackTrait
 	 */
 	public function isAcceptableCallback($callback)
 	{
-		return is_callable($callback) && (!is_string($callback) || strpos($callback, '\\') !== FALSE);
+        if (is_string($callback)) {
+            return is_callable($callback, true) && strpos($callback, '\\') !== false;
+        }
+        return is_callable($callback);
 	}
 
 }
