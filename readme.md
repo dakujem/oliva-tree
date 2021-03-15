@@ -4,21 +4,25 @@
 [![Build Status](https://travis-ci.com/dakujem/oliva-tree.svg?branch=master)](https://travis-ci.com/dakujem/oliva-tree)
 [![Coverage Status](https://coveralls.io/repos/github/dakujem/oliva-tree/badge.svg?branch=master)](https://coveralls.io/github/dakujem/oliva-tree?branch=master)
 
+Utility for handling tree data structures.
 
-**Oliva Tree** is a powerful yet simple to use utility for handling tree structures in PHP.
+>
+> 💿 `composer require oliva/tree`
+> 
+> 📖 **[documentation](doc/docs.md)**
+> 
+
+**Oliva Tree** is a powerful yet simple to use utility for handling tree data structures in PHP.
 
 Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on arbitrary tree structures.
 
 
 ## Why use Oliva Tree?
 
-Because you only want one library for all your trees.
-
-Because Oliva Tree has been build for real-life usage and it is also tested in real life, along with unit tests.
-
-Because Oliva Tree provides many utilities for data manipulation, thus it makes writing components like **menus**, **tree views**, **grids**, **data lists** (and other) an easy and fun thing to do.
-
-Because Oliva Tree is [well documented](doc/docs.md) (IMHO).
+- data manipulation
+- write components like **menus**, **tree views**, **grids**, **data lists**, etc. with ease.
+- [well documented](doc/docs.md) (IMHO)
+- battle and unit tested
 
 
 ### What can you do with Oliva Tree?
@@ -42,29 +46,15 @@ For more in-depth information, use cases and other examples, see the **[document
 
 
 ## Installation
-The easiest way to install Oliva Tree is to use [Composer](https://getcomposer.org/). Just add `"oliva/tree"` to the "require" section in your `composer.json` file, like this:
-```json
-{
-	"require": {
-		"php": "^5.4 || ^7.0",
-		"oliva/tree": "*"
-	}
-}
-```
 
-Oliva Tree runs on PHP 5.4 and up and also PHP 7.0 and up.
+`composer require oliva/tree`
+
+Older versions of Oliva Tree run on PHP 5.4 and up and also PHP 7.0 and up. Latest version supports PHP 7.4+ and PHP 8+.
 
 
-## What's comming next
+## Changelog
 
-* prunning (condition- and depth-based)
-* node moving mechanism / helpers
-* tree writers - alter the node's data to reflect current tree structure (prepare for storage) - a counterpart to tree builders
-* unite and document exception codes
-* support for nested sets data model
-
-
-## Notable Changes
+> Notable changes only.
 
 **1.3**
 - PHP 8 support added
@@ -74,7 +64,22 @@ Oliva Tree runs on PHP 5.4 and up and also PHP 7.0 and up.
 - updated licensing to enable multi-licensing, i.e. one can now use any of GPL, MIT or BSD license, see [license.md](license.md) for more information
 
 
+## Missing features
+
+I never added these...
+
+* prunning (condition- and depth-based)
+* node moving mechanism / helpers
+* tree writers - alter the node's data to reflect current tree structure (prepare for storage) - a counterpart to tree builders
+* unite and document exception codes
+* support for nested sets data model
+
+
 ## Notes
 
-* great thank's to folks in **Via Aurea, s.r.o.** for providing valuable support, motivation and real-life testing
+Great thank's to folks in [**Via Aurea**](https://github.com/viaaurea) for providing valuable support, motivation and real-life testing.
 
+
+> I wrote this lib many years ago.\
+> It still works, I'm proud of that, but it's not optimal.\
+> Let me know of any alternatives.
