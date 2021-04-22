@@ -1,8 +1,8 @@
 {
   "name": "oliva/tree",
-  "description": "Tree utility for handling data stored in flat data structures like databases and more.",
+  "description": "Utility for handling tree data structures and building trees from flat data stored in database tables and alike.",
   "keywords": ["tree", "utilities", "utility", "data structures"],
-  "license": ["BSD-2-Clause", "MIT", "GPL-3.0-or-later", "GPL-2.0-or-later"],
+  "license": "Unlicense",
   "type": "library",
   "authors": [
     {

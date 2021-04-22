@@ -8,9 +8,9 @@ Utility for handling tree data structures.
 
 >
 > 💿 `composer require oliva/tree`
-> 
+>
 > 📖 **[documentation](doc/docs.md)**
-> 
+>
 
 **Oliva Tree** is a powerful yet simple to use utility for handling tree data structures in PHP.
 
@@ -59,6 +59,7 @@ Older versions of Oliva Tree run on PHP 5.4 and up and also PHP 7.0 and up. Late
 **1.3**
 - PHP 8 support added
 - PHP >= 7.4 required
+- updated to simple permissive license (Unlicense)
 
 **1.2.3**
 - updated licensing to enable multi-licensing, i.e. one can now use any of GPL, MIT or BSD license, see [license.md](license.md) for more information
