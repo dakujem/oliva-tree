@@ -10,7 +10,7 @@ use Exception,
 /**
  * TreeSimpleFilterIterator.
  *
- * 
+ *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class TreeSimpleFilterIterator extends FilterIterator
@@ -27,7 +27,7 @@ class TreeSimpleFilterIterator extends FilterIterator
 	}
 
 
-	public function accept()
+	public function accept(): bool
 	{
 		$node = $this->getInnerIterator()->current();
 		try {

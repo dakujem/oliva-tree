@@ -21,7 +21,7 @@ use Oliva\Utils\Tree\Node\INode,
  *
  * A basic tree. Supports searching, filtering (via iterators) and linear transformations.
  *
- * 
+ *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class Tree implements ITree, IteratorAggregate
@@ -43,7 +43,7 @@ class Tree implements ITree, IteratorAggregate
 
 	/**
 	 * Set the root node.
-	 * 
+	 *
 	 *
 	 * @param INode $root
 	 * @return Tree
@@ -71,12 +71,12 @@ class Tree implements ITree, IteratorAggregate
 	 * Returns RECURSIVE tree node iterator. Can also iterate non-recursively.
 	 *
 	 * @see TreeIterator for iteration modes
-	 * 
+	 *
 	 *
 	 * @param string|NULL $recursion
 	 * @return Traversable
 	 */
-	public function getIterator($recursion = TreeIterator::BREADTH_FIRST_RECURSION)
+	public function getIterator($recursion = TreeIterator::BREADTH_FIRST_RECURSION): Traversable
 	{
 		$root = $this->getRoot();
 
@@ -142,7 +142,7 @@ class Tree implements ITree, IteratorAggregate
 	{
 //		return new TreeCallbackFilterIterator($this->getIterator($recursion), $filteringCallback, ...$params); // this would work on PHP 5.6
 		// and the following is the PHP 5.4 workaround...
-		$ref = new ReflectionClass(TreeCallbackFilterIterator::className());
+		$ref = new ReflectionClass(TreeCallbackFilterIterator::class);
 		return $ref->newInstanceArgs(array_merge([$this->getIterator($recursion), $filteringCallback], array_slice(func_get_args(), 2)));
 	}
 
@@ -150,7 +150,7 @@ class Tree implements ITree, IteratorAggregate
 	/**
 	 * Find a node by specific key/value pair.
 	 *
-	 * 
+	 *
 	 * @param scalar $key
 	 * @param mixed $val
 	 * @param string|NULL $recursion
@@ -184,7 +184,7 @@ class Tree implements ITree, IteratorAggregate
 	 *
 	 * Note: array_merge([$tree->getRoot()], iterator_to_array($tree->getIterator(TreeIterator::BREADTH_FIRST_RECURSION))) === $tree->getBreadthFirst()
 	 *
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getDepthFirst()
@@ -223,7 +223,7 @@ class Tree implements ITree, IteratorAggregate
 	 * Returns an array of nodes in bredth-first manner.
 	 * Does not preserve node children indices.
 	 *
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function breadthFirstTransform(INode $root)

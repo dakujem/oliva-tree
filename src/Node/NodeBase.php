@@ -5,6 +5,7 @@ namespace Oliva\Utils\Tree\Node;
 
 use IteratorAggregate;
 use Oliva\Utils\Tree\Iterator\TreeIterator;
+use Traversable;
 
 
 /**
@@ -34,7 +35,7 @@ abstract class NodeBase implements INode, IteratorAggregate
 	 * @param string|NULL $recursion
 	 * @return TreeIterator
 	 */
-	public function getIterator($recursion = TreeIterator::NON_RECURSIVE)
+	public function getIterator($recursion = TreeIterator::NON_RECURSIVE): Traversable
 	{
 		return new TreeIterator($this, $recursion);
 	}

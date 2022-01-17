@@ -14,7 +14,7 @@ use Exception,
  * If the value of the pair is an array, an inner iteration is applied using the values of the array.
  * Either AND or OR matching system can be used for condfitions.
  *
- * 
+ *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class TreeFilterIterator extends FilterIterator
@@ -36,7 +36,7 @@ class TreeFilterIterator extends FilterIterator
 	}
 
 
-	public function accept()
+	public function accept(): bool
 	{
 		if (empty($this->filteringConditions)) {
 			return TRUE;
@@ -45,11 +45,11 @@ class TreeFilterIterator extends FilterIterator
 	}
 
 
-	protected function outerConditionsWalk($node)
+	protected function outerConditionsWalk($node): bool
 	{
 		$mode = $this->outerConditionMode;
 		$conditions = $this->filteringConditions;
-		$accept = $mode === self::MODE_AND ? TRUE : FALSE;
+		$accept = $mode === self::MODE_AND;
 
 		foreach ($conditions as $param => $expectedValue) {
 			try {
@@ -71,10 +71,10 @@ class TreeFilterIterator extends FilterIterator
 	}
 
 
-	protected function innerConditionsWalk($param, array $conditions, $node)
+	protected function innerConditionsWalk($param, array $conditions, $node): bool
 	{
 		$mode = $this->innerConditionMode;
-		$accept = $mode === self::MODE_AND ? TRUE : FALSE;
+		$accept = $mode === self::MODE_AND;
 		foreach ($conditions as $expectedValue) {
 			try {
 				$comparisonResult = $node->$param === $expectedValue;
@@ -90,7 +90,7 @@ class TreeFilterIterator extends FilterIterator
 	}
 
 
-	protected function aggregateAccept($mode, $accept, $comparisonResult)
+	protected function aggregateAccept($mode, $accept, $comparisonResult): bool
 	{
 		return $mode === self::MODE_AND ? $accept && $comparisonResult : $accept || $comparisonResult;
 	}

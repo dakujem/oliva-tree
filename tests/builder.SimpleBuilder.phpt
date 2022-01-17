@@ -48,7 +48,7 @@ function subroutine2()
 {
 	$data = ['a' => 'a', NULL => ['c', 'd', ['e' => 'ee']]];
 	$builder = new SimpleTreeBuilder('');
-	$nodeClass = SimpleNode::className(); //SimpleNode::CLASS;
+	$nodeClass = SimpleNode::class;
 	$builder->nodeClass = $nodeClass;
 
 	// default build

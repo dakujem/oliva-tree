@@ -49,17 +49,22 @@ For more in-depth information, use cases and other examples, see the **[document
 
 `composer require oliva/tree`
 
-Older versions of Oliva Tree run on PHP 5.4 and up and also PHP 7.0 and up. Latest version supports PHP 7.4+ and PHP 8+.
+Older versions of Oliva Tree run on PHP 5.4 and up and also PHP 7.0 and up.
+Latest version supports PHP 7.4+ and PHP 8+.
 
 
 ## Changelog
 
 > Notable changes only.
 
+**1.4**
+- PHP 8.1 supported
+- some return type-hints added
+
 **1.3**
-- PHP 8 support added
+- PHP 8.0 support added
 - PHP >= 7.4 required
-- updated to simple permissive license (Unlicense)
+- updated to a simple permissive license (Unlicense)
 
 **1.2.3**
 - updated licensing to enable multi-licensing, i.e. one can now use any of GPL, MIT or BSD license, see [license.md](license.md) for more information

@@ -33,10 +33,10 @@ function subroutine1()
 	]];
 
 	// default node type should be Node
-	Assert::type(Node::className() /* Node::CLASS */, $builder->build($data));
+	Assert::type(Node::class, $builder->build($data));
 
 	// change node class
-	$nodeClass = SimpleNode::className(); //SimpleNode::CLASS;
+	$nodeClass = SimpleNode::class;
 	$builder->nodeClass = $nodeClass;
 	Assert::type($nodeClass, $builder->build($data));
 

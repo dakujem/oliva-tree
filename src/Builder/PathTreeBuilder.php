@@ -104,7 +104,7 @@ class PathTreeBuilder extends TreeBuilder implements ITreeBuilder
 		$root = $this->createNode();
 		$nodes = [];
 		foreach ($data as $item) {
-			$rawPosition = $this->getMember($item, $hierarchyMember);
+			$rawPosition = $this->getMember($item, $hierarchyMember) ?? '';
 			$cutoff = substr($rawPosition, 0, strlen($this->hierarchyCutoff));
 			if (!empty($this->hierarchyCutoff) && $cutoff !== $this->hierarchyCutoff) {
 				throw new RuntimeException(sprintf('Item hierarchy member "%s" does not start with the set hierarchy cut-off string "%s".', $rawPosition, $this->hierarchyCutoff), 3);

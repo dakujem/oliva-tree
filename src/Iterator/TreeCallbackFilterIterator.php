@@ -8,7 +8,7 @@ use FilterIterator;
 
 /**
  * TreeCallbackFilterIterator.
- * 
+ *
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
@@ -26,27 +26,11 @@ class TreeCallbackFilterIterator extends FilterIterator
 	}
 
 
-	public function accept()
+	public function accept(): bool
 	{
 		return call_user_func_array(
 				$this->filteringCallback, //
 				array_merge([$this->getInnerIterator()->current(), $this->getInnerIterator()->key()], !empty($this->callbackParams) ? $this->callbackParams : []) //
 		);
 	}
-
-	//-----------------------------------------------------------------
-	//------------------------- PHP 5.4 -------------------------------
-
-
-	/**
-	 * Method added for the sake of PHP 5.4 support.
-	 * 
-	 * 
-	 * @return string
-	 */
-	public static function className()
-	{
-		return __CLASS__;
-	}
-
 }

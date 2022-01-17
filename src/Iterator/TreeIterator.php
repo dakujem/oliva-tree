@@ -20,7 +20,7 @@ use Oliva\Utils\Tree\Node\INode;
  * Recursive depth-first mode iterates to the furthest leaves first then continues to the next furthest node and so on.
  * http://en.wikipedia.org/wiki/Depth-first_search
  *
- * 
+ *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 class TreeIterator implements Iterator
@@ -62,8 +62,8 @@ class TreeIterator implements Iterator
 
 	/**
 	 * Return the recursion mode.
-	 * 
-	 * 
+	 *
+	 *
 	 * @return mixed TreeIterator constants
 	 */
 	public function getRecursion()
@@ -72,10 +72,7 @@ class TreeIterator implements Iterator
 	}
 
 
-	/**
-	 * @return INode
-	 */
-	public function current()
+	public function current(): ?INode
 	{
 		$this->init();
 		if (empty($this->queue)) {
@@ -86,7 +83,7 @@ class TreeIterator implements Iterator
 	}
 
 
-	public function next()
+	public function next(): void
 	{
 		$this->init();
 		if (!empty($this->queue)) {
@@ -99,7 +96,8 @@ class TreeIterator implements Iterator
 	}
 
 
-	public function key()
+    #[\ReturnTypeWillChange]
+	public function key() // :mixed
 	{
 		$this->init();
 		if (empty($this->queue)) {
@@ -110,14 +108,14 @@ class TreeIterator implements Iterator
 	}
 
 
-	public function valid()
+	public function valid(): bool
 	{
 		$this->init();
 		return !empty($this->queue);
 	}
 
 
-	public function rewind()
+	public function rewind(): void
 	{
 		$this->queue = [];
 		$this->ready = FALSE;
@@ -137,7 +135,7 @@ class TreeIterator implements Iterator
 
 	/**
 	 * Set recursion mode.
-	 * 
+	 *
 	 *
 	 * @param string|NULL $mode
 	 * @return TreeIterator fluent

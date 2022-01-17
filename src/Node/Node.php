@@ -223,27 +223,28 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 	//----------------------- \ArrayAccess ----------------------------
 
 
-	public function offsetExists($offset)
-	{
+    public function offsetExists($offset): bool
+    {
 		return $this->__isset($offset);
 	}
 
 
+    #[\ReturnTypeWillChange]
 	public function offsetGet($offset)
 	{
 		return $this->__get($offset);
 	}
 
 
-	public function offsetSet($offset, $value)
+	public function offsetSet($offset, $value): void
 	{
-		return $this->__set($offset, $value);
+		$this->__set($offset, $value);
 	}
 
 
-	public function offsetUnset($offset)
+	public function offsetUnset($offset): void
 	{
-		return $this->__unset($offset);
+		$this->__unset($offset);
 	}
 
 	//-----------------------------------------------------------------
@@ -255,7 +256,7 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 	 *
 	 * This is useful when clonning a branch or a node.
 	 *
-	 * 
+	 *
 	 * @return self fluent
 	 */
 	public function cloneContents()
@@ -265,20 +266,4 @@ class Node extends NodeBase implements ArrayAccess, IDataNode
 		}
 		return $this;
 	}
-
-	//-----------------------------------------------------------------
-	//------------------------- PHP 5.4 -------------------------------
-
-
-	/**
-	 * Method added for the sake of PHP 5.4 support.
-	 *
-	 *
-	 * @return string
-	 */
-	public static function className()
-	{
-		return __CLASS__;
-	}
-
 }

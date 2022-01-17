@@ -288,7 +288,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	protected function getCurrentHierarchy($data)
 	{
 		$str = call_user_func($this->hierarchyGetter[0], $data, $this->hierarchyGetter[1]);
-		if ($str === FALSE || strlen($str) === 0) {
+		if ($str === FALSE || $str === null || strlen((string)$str) === 0) {
 			return NULL;
 		}
 		return $str;
@@ -403,7 +403,7 @@ class MaterializedPathTreeBuilder extends TreeBuilder implements ITreeBuilder
 	/**
 	 * Replaces a node with a new one. Copies all its relationships and resets its child index if it has a parent.
 	 * @internal
-	 * 
+	 *
 	 *
 	 * @param INode $source
 	 * @param mixed $data data for the node
