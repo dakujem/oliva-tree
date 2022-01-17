@@ -14,7 +14,7 @@
     "php": "^8.0 || ^7.4"
   },
   "require-dev": {
-    "nette/tester": "^2",
+    "nette/tester": "^2.4.1",
     "tracy/tracy": "^2.3"
   },
   "autoload": {
@@ -25,6 +25,6 @@
   "scripts": {
     "test": "@test:local",
     "test:local": "tester tests -C",
-    "test:ci": "tester tests -C --coverage tests/output/clover.xml --coverage-src src"
+    "test:ci": "tester tests"
   }
 }
