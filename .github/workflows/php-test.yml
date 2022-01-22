@@ -17,11 +17,9 @@ jobs:
             matrix:
                 include:
                     -   php: '7.4'
-                        coverage: 'pcov'
                         composer-flags: '--prefer-lowest'
                     -   php: '8.0'
                     -   php: '8.1'
-                        coverage: 'pcov'
         # Steps represent a sequence of tasks that will be executed as part of the job
         name: "PHP${{ matrix.php }} ${{ matrix.composer-flags }}"
         steps:
@@ -32,7 +30,7 @@ jobs:
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php }}
-                    coverage: ${{ matrix.coverage || 'none' }}
+                    coverage: pcov
 
             -   name: Validate composer.json and composer.lock
                 run: composer validate --strict
@@ -55,7 +53,6 @@ jobs:
                 run: composer global require -o --no-interaction --no-progress php-coveralls/php-coveralls
 
             -   name: Upload coverage results to Coveralls
-                if: matrix.coverage
                 uses: nick-invision/retry@v2
                 env:
                     COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
