@@ -47,7 +47,7 @@ jobs:
                 run: composer update -o --no-interaction --no-progress ${{ matrix.composer-flags }}
 
             -   name: Run TEST suite
-                run: composer run-script test:ci -- -C --coverage tests/output/coverage.xml
+                run: vendor/bin/tester tests -C --coverage tests/output/coverage.xml --coverage-src=src
 
             -   name: Install php-coveralls
                 run: composer global require -o --no-interaction --no-progress php-coveralls/php-coveralls
