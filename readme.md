@@ -2,9 +2,7 @@
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/oliva/tree)](https://packagist.org/packages/oliva/tree)
 [![Tests](https://github.com/dakujem/oliva-tree/actions/workflows/php-test.yml/badge.svg)](https://github.com/dakujem/oliva-tree/actions/workflows/php-test.yml)
-<!--
 [![Coverage Status](https://coveralls.io/repos/github/dakujem/oliva-tree/badge.svg?branch=master)](https://coveralls.io/github/dakujem/oliva-tree?branch=master)
--->
 
 Utility for handling tree data structures.
 
