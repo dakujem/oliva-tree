@@ -1,93 +1,74 @@
 name: Test Suite
 
 on:
-  # Controls when the action will be triggered.
-  push:           # A push to any branch.
-  pull_request:   # A pull request to the main/master branch.
-    branches: [ master ]
+    # Controls when the action will be triggered.
+    push:           # A push to any branch.
+    pull_request:   # A pull request to the main/master branch.
+        branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "test"
-  php-tests:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    php-tests:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                include:
+                    -   php: '7.4'
+                        composer-flags: '--prefer-lowest'
+                    -   php: '8.0'
+                    -   php: '8.1'
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        name: "PHP${{ matrix.php }} ${{ matrix.composer-flags }}"
+        steps:
+            -   name: Checkout source
+                uses: actions/checkout@v2
 
-    strategy:
-      matrix:
-        php-versions: [ '7.4', '8.0', '8.1' ]
+            -   name: Install PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    coverage: pcov
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    name: Run tests @ PHP ${{ matrix.php-versions }}
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+            -   name: Validate composer.json and composer.lock
+                run: composer validate --strict
 
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-versions }}
-      #    extensions: json
-      #    ini-values: "post_max_size=256M" #optional
+            -   name: Cache Composer packages
+                id: composer-cache
+                uses: actions/cache@v2
+                with:
+                    path: vendor
+                    key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+                    restore-keys: ${{ runner.os }}-php-
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
+            -   name: Update composer dependencies
+                run: composer update -o --no-interaction --no-progress ${{ matrix.composer-flags }}
 
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
+            -   name: Run TEST suite
+                run: vendor/bin/tester tests -C --coverage tests/output/coverage.xml --coverage-src=src
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+            -   name: Install php-coveralls
+                run: composer global require -o --no-interaction --no-progress php-coveralls/php-coveralls
 
-      - name: Run TEST suite
-        run: composer run-script test:ci -- -C
+            -   name: Upload coverage results to Coveralls
+                uses: nick-invision/retry@v2
+                env:
+                    COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    COVERALLS_PARALLEL: true
+                    COVERALLS_FLAG_NAME: "PHP${{ matrix.php }}"
+                with:
+                    timeout_seconds: 60
+                    max_attempts: 3
+                    command: php-coveralls -x tests/output/coverage.xml -o tests/output/upload.json -v
 
-# Note to future dev:
-#   We don't need "lowest dependencies" because there are none.
-#   I gave up on Coveralls since I have no idea how to set it up. Pity.
-#
-#  lowest-deps:
-#    name: Lowest dependencies
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: shivammathur/setup-php@v2
-#        with:
-#          php-version: 7.4
-#          coverage: none
-#      - run: composer update --prefer-dist --no-progress --prefer-lowest --prefer-stable
-#      - name: Run TEST suite
-#        run: composer run-script test:ci -- -C
-#
-#
-#  coverage:
-#    name: Coverage report
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: shivammathur/setup-php@v2
-#        with:
-#          php-version: 8.0
-#          coverage: none
-#      - name: Install dependencies
-#        run: composer install --prefer-dist --no-progress
-#      - name: Generate coverage report
-#        run: composer run-script test:ci -- -C -p phpdbg --coverage tests/output/clover.xml --coverage-src src
-#
-#      # https://github.com/php-coveralls/php-coveralls/#github-actions
-#      - name: Upload coverage report to Coveralls
-#        env:
-#          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          composer global require php-coveralls/php-coveralls
-#          php-coveralls --coverage_clover=tests/output/clover.xml -v --json_path=tests/output/
-#
+    coveralls-finish:
+        needs: php-tests
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Notify Coveralls when build is finished
+                uses: coverallsapp/github-action@master
+                with:
+                    github-token: ${{ secrets.GITHUB_TOKEN }}
+                    parallel-finished: true
