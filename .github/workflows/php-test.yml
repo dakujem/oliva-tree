@@ -30,6 +30,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          #  extensions: json
+          #  ini-values: "post_max_size=256M" #optional
           coverage: pcov
 
       - name: Validate composer.json and composer.lock
@@ -44,13 +46,14 @@ jobs:
           restore-keys: ${{ runner.os }}-php-
 
       - name: Update composer dependencies
-        run: composer update -o --no-interaction --no-progress ${{ matrix.composer-flags }}
+        run: composer update -o --no-interaction --no-progress --prefer-dist ${{ matrix.composer-flags }}
 
       - name: Run TEST suite
-        run: vendor/bin/tester tests -C --coverage tests/output/coverage.xml --coverage-src=src
+        run: composer run-script test:ci -- -C --coverage tests/output/coverage.xml --coverage-src=src
+        #run: vendor/bin/tester tests -C --coverage tests/output/coverage.xml --coverage-src=src
 
       - name: Install php-coveralls
-        run: composer global require -o --no-interaction --no-progress php-coveralls/php-coveralls
+        run: composer global require -o --no-interaction --no-progress --prefer-dist php-coveralls/php-coveralls
 
       - name: Upload coverage results to Coveralls
         uses: nick-invision/retry@v2
