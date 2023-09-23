@@ -50,7 +50,7 @@ For more in-depth information, use cases and other examples, see the **[document
 `composer require oliva/tree`
 
 Older versions of Oliva Tree run on PHP 5.4 and up and also PHP 7.0 and up.
-Latest version supports PHP 7.4+ and PHP 8+.
+Latest version supports PHP 7.4+ and PHP 8+ (including PHP 8.2 and PHP 8.3).
 
 
 ## Changelog
@@ -58,7 +58,7 @@ Latest version supports PHP 7.4+ and PHP 8+.
 > Notable changes only.
 
 **1.4**
-- PHP 8.1 supported
+- PHP 8.1+ supported
 - some return type-hints added
 
 **1.3**
