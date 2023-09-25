@@ -21,10 +21,24 @@ subroutine2();
 
 function subroutine1()
 {
-	$data = ['a' => 'a', 'b' => 'b', 'children' => [
-			['c' => 'c', 'children' => [['e' => 'e', 'f' => 'f',]]],
-			['d' => 'd', 'children' => [['g' => 'g', 'h' => 'h',]]],
-	]];
+    $data = [
+        'a' => 'a',
+        'b' => 'b',
+        'children' => [
+            [
+                'c' => 'c',
+                'children' => [
+                    ['e' => 'e', 'f' => 'f',],
+                ],
+            ],
+            [
+                'd' => 'd',
+                'children' => [
+                    ['g' => 'g', 'h' => 'h',],
+                ],
+            ],
+        ],
+    ];
 
 	$builder = new SimpleTreeBuilder('children');
 	$root = $builder->build($data);

@@ -20,3 +20,6 @@ refactor
 - traits into classes
 - ditch all PHP 5 constructs
 - fully typed
+
+add
+- address object/interface

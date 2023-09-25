@@ -19,7 +19,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Oliva\\Utils\\Tree\\": "src/"
+      "Oliva\\Utils\\Tree\\": "src/",
+      "Dakujem\\Oliva\\": "lib/"
     }
   },
   "scripts": {
