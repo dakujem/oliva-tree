@@ -24,7 +24,7 @@ jobs:
           - php: '8.2'
           - php: '8.3'
           - php: '8.4'
-    continue-on-error: ${{ matrix.php > '8.2' }}
+    continue-on-error: ${{ matrix.php > '8.3' }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     name: "PHP${{ matrix.php }} ${{ matrix.composer-flags }}"
