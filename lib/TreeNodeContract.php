@@ -18,6 +18,8 @@ interface TreeNodeContract
 
     /**
      * Get the node's children.
+     *
+     * @return iterable<int|string,TreeNodeContract>
      */
     public function children(): iterable;
 
