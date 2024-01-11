@@ -66,4 +66,10 @@ echo $str;
 echo "\n";
 Assert::same('FBGADICEH', $str);
 
+echo "\n";
+foreach($root as $i){
+    echo $i->data();
+}
+echo "\n";
+
 //$root->addChild(new)

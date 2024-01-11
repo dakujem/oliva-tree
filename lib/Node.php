@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Dakujem\Oliva;
 
+use Dakujem\Oliva\Iterator\PreOrderTraversalIterator;
 use Exception;
+use IteratorAggregate;
 use JsonSerializable;
 
 /**
@@ -12,7 +14,7 @@ use JsonSerializable;
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
-class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, AttachableNodeContract, JsonSerializable
+class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, AttachableNodeContract, IteratorAggregate, JsonSerializable
 {
     public function __construct(
         protected mixed $data,
@@ -196,6 +198,11 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
             // Possible child-detached event handling here.
         }
         return $this;
+    }
+
+    public function getIterator(): PreOrderTraversalIterator
+    {
+        return new PreOrderTraversalIterator($this);
     }
 
     public function jsonSerialize(): mixed
