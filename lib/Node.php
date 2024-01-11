@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Dakujem\Oliva;
 
 use Exception;
+use JsonSerializable;
 
 /**
  * Base data node implementation.
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
-class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, AttachableNodeContract
+class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, AttachableNodeContract, JsonSerializable
 {
     public function __construct(
         protected mixed $data,
-        protected ?TreeNodeContract $parent,
+        protected ?TreeNodeContract $parent = null,
         protected array $children = [],
     ) {
     }
@@ -79,6 +80,12 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
     public function data(): mixed
     {
         return $this->data;
+    }
+
+    public function fill(mixed $data): self
+    {
+        $this->data = $data;
+        return $this;
     }
 
     /**
@@ -192,5 +199,13 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
             // Possible child-detached event handling here.
         }
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'data' => $this->data(),
+            'children' => $this->children(),
+        ];
     }
 }
