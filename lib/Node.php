@@ -88,9 +88,12 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
         return $this;
     }
 
-    /**
-     * Low-level method.
-     */
+    public function setParent(?TreeNodeContract $parent): self
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
     public function addChild(TreeNodeContract $child, string|int|null $index = null): self
     {
         if (null === $index) {
@@ -103,9 +106,6 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
         return $this;
     }
 
-    /**
-     * Low-level method.
-     */
     public function removeChild(TreeNodeContract|string|int $child): self
     {
         $index = is_scalar($child) ? $child : $this->childIndex($child);
@@ -115,12 +115,9 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
         return $this;
     }
 
-    /**
-     * Low-level method.
-     */
-    public function setParent(?TreeNodeContract $parent): self
+    public function removeChildren(): self
     {
-        $this->parent = $parent;
+        $this->children = [];
         return $this;
     }
 
