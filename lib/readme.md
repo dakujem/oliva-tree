@@ -6,6 +6,8 @@
 
 tree generics
 - node visitor (base for possible future filter, comparator, etc.)
+  - no need for visitors, visitors may be implemented in userland
+  - iterators are enough, but thre need to be 4 of them: DFS preorder, inorder, postorder; and BFS
 
 builder:
 - only native callables for tree building

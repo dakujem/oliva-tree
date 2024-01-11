@@ -11,25 +11,46 @@ namespace Dakujem\Oliva;
  */
 interface TreeNodeContract
 {
+    /**
+     * Get the node's parent, if any.
+     */
     public function parent(): ?TreeNodeContract;
 
+    /**
+     * Get the node's children.
+     */
     public function children(): iterable;
 
     /**
-     * Returns `true` if the node has no children.
+     * Get a specific child, if possible.
+     * Returns `null` when there is no such a child.
+     */
+    public function child(string|int $index): ?TreeNodeContract;
+
+    /**
+     * Get a child's index, if possible.
+     * Returns `null` when the node is not a child.
+     */
+    public function childIndex(TreeNodeContract $node): string|int|null;
+
+    /**
+     * Discover whether the given node is one or the given index points to one of this node's children.
+     */
+    public function hasChild(TreeNodeContract|string|int $child): bool;
+
+    /**
+     * Returns `true` if the node has no children, i.e. it is a leaf node.
      */
     public function isLeaf(): bool;
 
     /**
-     * Get a specific child.
-     *
-     * @param string|int $index
-     * @return mixed
+     * Returns `true` if the node has no parent, i.e. it is a root node.
      */
-    public function child(/*string|int*/ $index): ?TreeNodeContract;
+    public function isRoot(): bool;
 
     /**
-     * @return string|int|null
+     * Get the root node.
+     * May be self.
      */
-    public function childIndex(TreeNodeContract $node);//:mixed;
+    public function root(): TreeNodeContract;
 }

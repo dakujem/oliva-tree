@@ -11,8 +11,5 @@ namespace Dakujem\Oliva;
  */
 interface DataNodeContract
 {
-    /**
-     * @return mixed
-     */
-    public function data(); //:mixed;
+    public function data(): mixed;
 }
