@@ -12,6 +12,7 @@ tree generics
 builder:
 - only native callables for tree building
 - use strategy instead of traits
+- use shadowing - internal nodes for building, then return the shadow tree
 
 omit:
 - tree classes (not needed)

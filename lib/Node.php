@@ -82,7 +82,7 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
     }
 
     /**
-     * @internal Low-level internal method.
+     * Low-level method.
      */
     public function addChild(TreeNodeContract $child, string|int|null $index = null): self
     {
@@ -97,7 +97,7 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
     }
 
     /**
-     * @internal Low-level internal method.
+     * Low-level method.
      */
     public function removeChild(TreeNodeContract|string|int $child): self
     {
@@ -109,7 +109,7 @@ class Node implements TreeNodeContract, DataNodeContract, MovableNodeContract, A
     }
 
     /**
-     * @internal Low-level internal method.
+     * Low-level method.
      */
     public function setParent(?TreeNodeContract $parent): self
     {
