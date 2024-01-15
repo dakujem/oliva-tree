@@ -12,6 +12,19 @@ Utility for handling tree data structures.
 > 📖 **[documentation](doc/docs.md)**
 >
 
+>
+> 📢
+>
+> It's been a long time since the dawn of this library.
+> It still runs on modern PHP, but it's far from optimal.
+>
+> See a modern reimplementation of this library: [👉 `dakujem/oliva`](https://github.com/dakujem/oliva)
+>
+> I finally found a reason to reimplement the idea
+> and will soon release a stable version of the aforementioned new tool for building and managing trees.
+>
+
+
 **Oliva Tree** is a powerful yet simple to use utility for handling tree data structures in PHP.
 
 Useful for handling **tree data stored in database** or for performing **search** and **filter** operations on arbitrary tree structures.
@@ -21,7 +34,7 @@ Useful for handling **tree data stored in database** or for performing **search*
 
 - data manipulation
 - write components like **menus**, **tree views**, **grids**, **data lists**, etc. with ease.
-- [well documented](doc/docs.md) (IMHO)
+- [documented](doc/docs.md) (IMHO)
 - battle and unit tested
 
 
@@ -86,6 +99,3 @@ I never added these...
 Great thank's to folks in [**Via Aurea**](https://github.com/viaaurea) for providing valuable support, motivation and real-life testing.
 
 
-> I wrote this lib many years ago.\
-> It still works, I'm proud of that, but it's not optimal.\
-> Let me know of any alternatives.
