@@ -1,3 +1,16 @@
+>
+> 📢
+>
+> It's been a long time since the dawn of this library.
+> It still runs on modern PHP, but it's far from optimal.
+>
+> See a modern reimplementation of this library: [👉 `dakujem/oliva`](https://github.com/dakujem/oliva)
+>
+> I finally found a reason to reimplement the idea
+> and will soon release a stable version of the aforementioned new tool for building and managing trees.
+>
+
+
 # Oliva Tree
 
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/oliva/tree)](https://packagist.org/packages/oliva/tree)
@@ -11,19 +24,6 @@ Utility for handling tree data structures.
 >
 > 📖 **[documentation](doc/docs.md)**
 >
-
->
-> 📢
->
-> It's been a long time since the dawn of this library.
-> It still runs on modern PHP, but it's far from optimal.
->
-> See a modern reimplementation of this library: [👉 `dakujem/oliva`](https://github.com/dakujem/oliva)
->
-> I finally found a reason to reimplement the idea
-> and will soon release a stable version of the aforementioned new tool for building and managing trees.
->
-
 
 **Oliva Tree** is a powerful yet simple to use utility for handling tree data structures in PHP.
 
