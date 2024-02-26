@@ -4,10 +4,7 @@
 > It's been a long time since the dawn of this library.
 > It still runs on modern PHP, but it's far from optimal.
 >
-> See a modern reimplementation of this library: [👉 `dakujem/oliva`](https://github.com/dakujem/oliva)
->
-> I finally found a reason to reimplement the idea
-> and will soon release a stable version of the aforementioned new tool for building and managing trees.
+> See a modern reimplementation of this library here: [👉 `dakujem/oliva`](https://github.com/dakujem/oliva)
 >
 
 
@@ -34,11 +31,12 @@ Useful for handling **tree data stored in database** or for performing **search*
 
 - data manipulation
 - write components like **menus**, **tree views**, **grids**, **data lists**, etc. with ease.
-- [documented](doc/docs.md) (IMHO)
+- [it's documented](doc/docs.md)
 - battle and unit tested
 
 
 ### What can you do with Oliva Tree?
+
 * **build** tree structures **from arbitrary flat data** with support for
     *  materialized path data model
     *  recursive trees (parent - id) (adjacency list data model, self-joined tables)
@@ -63,7 +61,7 @@ For more in-depth information, use cases and other examples, see the **[document
 `composer require oliva/tree`
 
 Older versions of Oliva Tree run on PHP 5.4 and up and also PHP 7.0 and up.
-Latest version supports PHP 7.4+ and PHP 8+ (including PHP 8.2 and PHP 8.3).
+Versions since `1.3` support PHP 7.4+ and PHP 8+ (including PHP 8.2 and PHP 8.3).
 
 
 ## Changelog
@@ -93,9 +91,19 @@ I never added these...
 * unite and document exception codes
 * support for nested sets data model
 
+> On the second thought, most of these things are outside the scope of this library anyway. 
+
 
 ## Notes
 
-Great thank's to folks in [**Via Aurea**](https://github.com/viaaurea) for providing valuable support, motivation and real-life testing.
+Great thank's to folks in [**Via Aurea**](https://github.com/viaaurea) for providing valuable support, motivation and real-world testing.
+
+> 
+> 🎉
+>
+> I finally found a reason to reimplement the idea of this tool for building and managing trees.
+> 
+> See the modern reimplementation here: [👉 `dakujem/oliva`](https://github.com/dakujem/oliva)
+> 
 
 
